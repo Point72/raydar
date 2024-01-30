@@ -1,0 +1,37 @@
+{
+  "version": "0.1.0",
+  "private": true,
+  "name": "raydar",
+  "repository": "https://github.com/point72/raydar",
+  "author": "OSPO@Point72.com",
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "build:pre": "mkdir -p dist/layouts ../raydar/dashboard/static",
+    "build:esbuild": "node build.js",
+    "build:cpjs": "cp -r ./dist/* ../raydar/dashboard/static",
+    "build": "npm-run-all -s build:*",
+    "clean": "rimraf dist lib coverage junit.xml",
+    "lint": "prettier --check \"src/*.js\" \"src/*.html\" \"src/*.css\" \"*.js\" \"*.json\"",
+    "fix": "prettier --write  \"src/*.js\" \"src/*.html\" \"src/*.css\" \"*.js\" \"*.json\"",
+    "test": ":",
+    "watch:esbuild": "yarn build:esbuild --watch",
+    "watch": "npm-run-all -p watch:*"
+  },
+  "dependencies": {
+    "@finos/perspective": "^2.5.0",
+    "@finos/perspective-viewer": "^2.5.0",
+    "@finos/perspective-viewer-d3fc": "^2.5.0",
+    "@finos/perspective-viewer-datagrid": "^2.5.0",
+    "@finos/perspective-workspace": "^2.5.0"
+  },
+  "devDependencies": {
+    "@finos/perspective-esbuild-plugin": "^2.5.0",
+    "@prospective.co/procss": "^0.1.13",
+    "esbuild": "^0.19.2",
+    "esbuild-plugin-less": "^1.2.4",
+    "eslint": "^8.47.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.0.2"
+  }
+}

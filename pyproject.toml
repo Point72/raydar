@@ -1,0 +1,157 @@
+[build-system]
+requires = [
+    "hatchling>=1.22.4,<1.23",
+    "pkginfo>=1.10,<1.11",
+    "hatch-jupyter-builder",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "raydar"
+description = "A perspective powered, user editable ray dashboard via ray serve"
+version = "0.1.0"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+authors = [
+    { name = "Point72", email = "OSPO@Point72.com" },
+]
+keywords = [
+    "perspective",
+    "ray",
+    "dashboard",
+    "dataviz",
+    "data visualization",
+    "cluster",
+    "cluster visualization",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: Jupyter",
+    "Framework :: Jupyter :: JupyterLab",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: Apache Software License",
+]
+
+dependencies = [
+    "coolname",
+    "fastapi",
+    "packaging",
+    "perspective-python",
+    "pydantic<2",
+    "ray[serve]>=2.8",
+]
+
+[project.optional-dependencies]
+develop = [
+    "bump2version>=1.0.0",
+    "check-manifest",
+    "hatchling",
+    "hatch-jupyter-builder",
+    "isort",
+    "ruff>=0.3,<0.4",
+    # Test deps
+    "polars",
+    "pyarrow",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+    "pytest-sugar",
+]
+
+test = [
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+    "pytest-sugar",
+]
+
+[project.urls]
+Repository = "https://github.com/point72/raydar"
+Homepage = "https://github.com/point72/raydar"
+
+[tool.check-manifest]
+ignore = [
+    "raydar/dashboard/static/*",
+	"js/**",
+]
+
+[tool.hatch.build]
+artifacts = [
+    "raydar/dashboard/static"
+]
+
+[tool.hatch.build.sources]
+src = "/"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/raydar",
+    "/js",
+    "LICENSE",
+    "README.md",
+]
+exclude = [
+    "/.github",
+    "/.gitignore",
+    "/.mypy_cache",
+    "/.ruff_cache",
+    "/dist",
+    "/docs",
+    "/js/node_modules",
+]
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "/raydar",
+]
+exclude = [
+    "/.github",
+    "/.gitignore",
+    "/.mypy_cache",
+    "/.ruff_cache",
+    "/pyproject.toml",
+    "/dist",
+    "/docs",
+    "/js"
+]
+
+[tool.hatch.build.hooks.jupyter-builder]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = [
+    "raydar/dashboard/static/index.js",
+    "raydar/dashboard/static/index.html",
+    "raydar/dashboard/static/index.css",
+]
+skip-if-exists = [
+    "raydar/dashboard/static/index.js",
+]
+dependencies = [
+    "hatch-jupyter-builder>=0.5.0",
+]
+
+[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
+path = "js"
+build_cmd = "build"
+npm = "yarn"
+
+[tool.isort]
+combine_as_imports = true
+include_trailing_comma = true
+line_length = 120
+profile = "black"
+default_section = "THIRDPARTY"
+sections = "FUTURE,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
+known_first_party = "raydar"
+
+[tool.ruff]
+line-length = 150
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "F403"]

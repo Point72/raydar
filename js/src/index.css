@@ -1,0 +1,14 @@
+@import url("https://fonts.googleapis.com/css?family=Material+Icons");
+@import url("https://fonts.googleapis.com/css?family=Roboto+Mono");
+
+html {
+  font-family: "Roboto Mono";
+}
+
+perspective-workspace {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
