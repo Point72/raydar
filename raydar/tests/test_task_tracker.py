@@ -22,6 +22,7 @@ class TestRayTaskTracker:
         time.sleep(30)
         df = task_tracker.get_df()
         assert df[["name", "state"]].row(0) == ("do_some_work", "FINISHED")
+        task_tracker.exit()
 
     def test_get_proxy_server(self):
         from raydar.dashboard.server import PerspectiveRayServer
@@ -37,4 +38,19 @@ class TestRayTaskTracker:
         server.remote("update", "test_table", [dict(a="foo", b=1, c=1.0, d=time.time())])
         time.sleep(2)
         response = requests.get("http://localhost:8000/tables")
-        assert eval(response.text) == ["test_table"]
+        tables = eval(response.text)
+        assert "test_table" in tables
+
+    def test_scrape_prometheus_metrics(self):
+        task_tracker = RayTaskTracker(
+            enable_perspective_dashboard=True,
+            scrape_prometheus_metrics=True,
+        )
+        time.sleep(30)
+        response = requests.get("http://localhost:8000/tables")
+        tables = eval(response.text)
+        assert len(tables) > 100
+        assert "ray_tasks" in tables
+        assert "ray_actors" in tables
+        assert "ray_resources" in tables
+        task_tracker.exit()
