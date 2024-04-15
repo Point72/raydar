@@ -89,7 +89,7 @@ task_tracker = RayTaskTracker(enable_perspective_dashboard=True)
 
 ![Example](docs/img/example_perspective_dashboard.gif)
 
-# Recreating custom perspective views is supported.
+## Create/Store Custom Views
 From the developer console, save your workspace layout locally.
 
 ```javascript
@@ -114,11 +114,13 @@ workspace.save().then(config => {
     document.body.removeChild(link);
 });
 ```
+
 Then, move this json file to `js/src/layouts/default.json`.
 
 ![Example](docs/img/example_perspective_dashboard_layouts.gif)
 
-# The data available to you includes much of what Ray's GCS tracks, and also allows for user defined metadata per task.
+## Expose Ray GCS Information
+The data available to you includes much of what Ray's GCS tracks, and also allows for user defined metadata per task.
 
 Specifically, tracked fields include:
  * `task_id`
@@ -148,7 +150,7 @@ Specifically, tracked fields include:
 
 ![Example](docs/img/example_task_metadata.gif)
 
-# Custom data sources and update logic are also suported
+## Custom Sources / Update Logic
 
 The proxy server helpd by the `RayTaskTracker` is exposed via the `.proxy_server()` property, meaning we can create new tables as follows:
 
@@ -168,14 +170,15 @@ proxy_server.remote(
 )
 ```
 
+### Example: Live Per-Node Training Loss Metrics
+
 If a user were to then update this table with data coming from, for example, a pytorch model training loop with metrics:
 
 ```python
 def my_model_training_loop()
 
 	for epoch in range(num_epochs):
-
-    # ... my training code here ...
+        # ... my training code here ...
 
 		data = dict(
 			node_id=ray.get_runtime_context().get_node_id(),
@@ -196,13 +199,13 @@ Then they can expose a live view at per-node loss metrics across our model train
 To install `raydar` via **pip**, run this command in your terminal:
 
 ```bash
-    pip install raydar
+pip install raydar
 ```
 
 To install `raydar` via **conda**, run this command in your terminal:
 
 ```bash
-    conda install raydar -c conda-forge
+conda install raydar -c conda-forge
 ```
 
 ## License
