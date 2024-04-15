@@ -14,7 +14,7 @@ readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.8"
 authors = [
-    { name = "Point72", email = "OSPO@Point72.com" },
+    { name = "Point72", email = "OpenSource@Point72.com" },
 ]
 keywords = [
     "perspective",
