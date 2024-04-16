@@ -144,7 +144,7 @@ npm = "yarn"
 [tool.isort]
 combine_as_imports = true
 include_trailing_comma = true
-line_length = 120
+line_length = 150
 profile = "black"
 default_section = "THIRDPARTY"
 sections = "FUTURE,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
