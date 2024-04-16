@@ -44,7 +44,9 @@ dependencies = [
     "fastapi",
     "packaging",
     "perspective-python",
-    "pydantic<2",
+    "polars",
+    "pyarrow",
+    "pydantic",
     "ray[serve]>=2.8",
 ]
 
@@ -57,8 +59,6 @@ develop = [
     "isort",
     "ruff>=0.3,<0.4",
     # Test deps
-    "polars",
-    "pyarrow",
     "pytest",
     "pytest-asyncio",
     "pytest-cov",
