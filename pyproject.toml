@@ -9,7 +9,7 @@ build-backend = "hatchling.build"
 [project]
 name = "raydar"
 description = "A perspective powered, user editable ray dashboard via ray serve"
-version = "0.2.0"
+version = "0.2.1"
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.8"

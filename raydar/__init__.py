@@ -1,4 +1,4 @@
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 # import this first, might need to monkeypatch ray
 # https://github.com/ray-project/ray/issues/42654
