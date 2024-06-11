@@ -57,7 +57,7 @@ develop = [
     "hatchling",
     "hatch-jupyter-builder",
     "isort",
-    "ruff>=0.3,<0.4",
+    "ruff>=0.3,<0.5",
     # Test deps
     "pytest",
     "pytest-asyncio",
