@@ -10,9 +10,9 @@
 
 A [perspective](https://perspective.finos.org/) powered, user editable ray dashboard via ray serve.
 
-[![PyPI](https://img.shields.io/pypi/v/raydar.svg?style=flat)](https://pypi.python.org/pypi/raydar)
-[![License](https://img.shields.io/badge/license-Apache--2.0-green)](https://github.com/Point72/raydar/LICENSE)
 [![Build Status](https://github.com/Point72/raydar/actions/workflows/build.yml/badge.svg)](https://github.com/Point72/raydar/actions/workflows/build.yml)
+[![PyPI Version](https://img.shields.io/pypi/v/raydar.svg)](https://pypi.python.org/pypi/raydar)
+[![License](https://img.shields.io/pypi/l/raydar.svg)](https://github.com/Point72/raydar/blob/main/LICENSE)
 [![Python Versions](https://img.shields.io/badge/python-3.8_%7C_3.9_%7C_3.10_%7C_3.11-blue)](https://github.com/Point72/raydar/blob/main/pyproject.toml)
 
 <br/>
@@ -45,41 +45,16 @@ task_tracker.process(refs)
 
 This internal dataframe can be accessed via the `.get_df()` method.
 
-```raw
-┌────────────────────────┬────────────────────────┬────────────────┬────────────────────────┬───┬───────────────────┬───────────────────┬───────────────────────┬───────────────┐
 
-│ task_id                ┆ user_defined_metadata  ┆ attempt_number ┆ name                   ┆ … ┆ start_time_ms     ┆ end_time_ms       ┆ task_log_info         ┆ error_message │
-
-│ ---                    ┆ ---                    ┆ ---            ┆ ---                    ┆   ┆ ---               ┆ ---               ┆ ---                   ┆ ---           │
-
-│ str                    ┆ f32                    ┆ i64            ┆ str                    ┆   ┆ datetime[ms,      ┆ datetime[ms,      ┆ struct[6]             ┆ str           │
-
-│                        ┆                        ┆                ┆                        ┆   ┆ America/New_York] ┆ America/New_York] ┆                       ┆               │
-
-╞════════════════════════╪════════════════════════╪════════════════╪════════════════════════╪═══╪═══════════════════╪═══════════════════╪═══════════════════════╪═══════════════╡
-
-│ 16310a0f0a45af5cffffff ┆ null                   ┆ 0              ┆ example_remote_functio ┆ … ┆ 2024-01-29        ┆ 2024-01-29        ┆ {"/tmp/ray/session_20 ┆ null          │
-
-│ ffffffffff…            ┆                        ┆                ┆ n                      ┆   ┆ 07:17:09.340 EST  ┆ 07:17:12.115 EST  ┆ 24-01-29_07…          ┆               │
-
-│ c2668a65bda616c1ffffff ┆ null                   ┆ 0              ┆ example_remote_functio ┆ … ┆ 2024-01-29        ┆ 2024-01-29        ┆ {"/tmp/ray/session_20 ┆ null          │
-
-│ ffffffffff…            ┆                        ┆                ┆ n                      ┆   ┆ 07:17:09.341 EST  ┆ 07:17:12.107 EST  ┆ 24-01-29_07…          ┆               │
-
-│ 32d950ec0ccf9d2affffff ┆ null                   ┆ 0              ┆ example_remote_functio ┆ … ┆ 2024-01-29        ┆ 2024-01-29        ┆ {"/tmp/ray/session_20 ┆ null          │
-
-│ ffffffffff…            ┆                        ┆                ┆ n                      ┆   ┆ 07:17:09.342 EST  ┆ 07:17:12.115 EST  ┆ 24-01-29_07…          ┆               │
-
-│ e0dc174c83599034ffffff ┆ null                   ┆ 0              ┆ example_remote_functio ┆ … ┆ 2024-01-29        ┆ 2024-01-29        ┆ {"/tmp/ray/session_20 ┆ null          │
-
-│ ffffffffff…            ┆                        ┆                ┆ n                      ┆   ┆ 07:17:09.343 EST  ┆ 07:17:12.115 EST  ┆ 24-01-29_07…          ┆               │
-
-│ f4402ec78d3a2607ffffff ┆ null                   ┆ 0              ┆ example_remote_functio ┆ … ┆ 2024-01-29        ┆ 2024-01-29        ┆ {"/tmp/ray/session_20 ┆ null          │
-
-│ ffffffffff…            ┆                        ┆                ┆ n                      ┆   ┆ 07:17:09.343 EST  ┆ 07:17:12.115 EST  ┆ 24-01-29_07…          ┆               │
-
-└────────────────────────┴────────────────────────┴────────────────┴────────────────────────┴───┴───────────────────┴───────────────────┴───────────────────────┴───────────────┘
-```
+| task_id       | user_defined_metadata  | attempt_number | name                      | ... | start_time_ms                    | end_time_ms                        | task_log_info                         | error_message |
+| :---          | :---                   | :---           | :---                      | :-- | :---                             | :---                               | :---                                  | :---          |
+| `str`         | `f32`                  | `i64`          | `str`                     |     | `datetime[ms,America/New_York]`  | `datetime[ms,America/New_York]`    | `struct[6]`                           | `str`         |
+|               |                        |                |                           |     |                                  |                                    |                                       |               |
+| 16310a0f0a... | `null`                 | 0              | `example_remote_function` | ... | 2024-01-29 07:17:09.340 EST      | 2024-01-29 07:17:12.115 EST        | `{"/tmp/ray/session_2024-01-29_07...` | `null`        |
+| c2668a65bd... | `null`                 | 0              | `example_remote_function` | ... | 2024-01-29 07:17:09.341 EST      | 2024-01-29 07:17:12.107 EST        | `{"/tmp/ray/session_2024-01-29_07...` | `null`        |
+| 32d950ec0c... | `null`                 | 0              | `example_remote_function` | ... | 2024-01-29 07:17:09.342 EST      | 2024-01-29 07:17:12.115 EST        | `{"/tmp/ray/session_2024-01-29_07...` | `null`        |
+| e0dc174c83... | `null`                 | 0              | `example_remote_function` | ... | 2024-01-29 07:17:09.343 EST      | 2024-01-29 07:17:12.115 EST        | `{"/tmp/ray/session_2024-01-29_07...` | `null`        |
+| f4402ec78d... | `null`                 | 0              | `example_remote_function` | ... | 2024-01-29 07:17:09.343 EST      | 2024-01-29 07:17:12.115 EST        | `{"/tmp/ray/session_2024-01-29_07...` | `null`        |
 
 Additionally, setting the `enable_perspective_dashboard` flag to `True` in the `RayTaskTracker`'s construction serves a perspective dashboard with live views of your completed references.
 
