@@ -9,7 +9,6 @@ import ray
 from collections.abc import Iterable
 from packaging.version import Version
 from ray.serve import shutdown
-from ray.util.state.common import TaskState
 from typing import Optional
 
 from .schema import schema as default_schema
@@ -81,7 +80,7 @@ class AsyncMetadataTracker:
             path: A Cloudpathlib.AnyPath, used for saving its internal polars DataFrame object.
             enable_perspective_dashboard: To enable an experimental perspective dashboard.
 
-        """
+        """        
         logger.info(f"Initializing an AsyncMetadataTracker in namespace {namespace} with name {name}.")
         # Passing 'self' to the AsyncMetadataTrackerCallback converts this actor class to a
         # modify_Class.<locals>.Class object. So for now, we pass the name and
@@ -203,7 +202,7 @@ class AsyncMetadataTracker:
         if self.perspective_dashboard_enabled:
             self.update_perspective_dashboard(completed_tasks)
 
-    def update_perspective_dashboard(self, completed_tasks: Iterable[TaskState]) -> None:
+    def update_perspective_dashboard(self, completed_tasks) -> None:
         """A helper function, which updates this actor's proxy_server attribute with processed data.
 
         That proxy_server serves perspective tables which anticipate the data formats we provide.
@@ -314,7 +313,7 @@ class RayTaskTracker:
         Args:
             Optional[name]: The named used to construct a AsyncMetadataTracker, also used to form the name of its AsyncMetadataTrackerCallback.
             Optional[namespace]: Ray namespace for the AsyncMetadataTracker and its AsyncMetadataTrackerCallback.
-        """
+        """        
         if namespace is None:
             namespace = coolname.generate_slug(2)
             logger.critical(f'No namespace provided, using namespace "{namespace}"')
