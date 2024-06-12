@@ -9,17 +9,39 @@ import ray
 from collections.abc import Iterable
 from packaging.version import Version
 from ray.serve import shutdown
+from ray.serve.handle import DeploymentHandle
 from typing import Optional
 
 from .schema import schema as default_schema
 
 logger = logging.getLogger(__name__)
 
-__all__ = ("AsyncMetadataTracker", "RayTaskTracker")
+__all__ = ("AsyncMetadataTracker", "RayTaskTracker", "get_proxy_sever")
 
 
 def get_callback_actor_name(name: str) -> str:
     return f"{name}_callback_actor"
+
+
+def get_proxy_sever(proxy_server_name="proxy", proxy_server_route_prefix="/proyx", **kwargs) -> DeploymentHandle:
+    """Construct a webserver, and bind it to a PerspectiveProxyRayServer.
+
+    Args:
+        proxy_server_name: the name passed to ray.serve.run for the PerspectiveProxyRayServer
+        proxy_server_route_prefix: the route_prefix passed to ray.serve.run for the PerspectiveProxyRayServer
+        **kwargs: arguments forwarded to ray.serve.run() for the webserver
+
+    Returns: A DeploymentHAndle for the PerspectiveProxyRayServer
+    """
+    from raydar.dashboard.server import PerspectiveProxyRayServer
+
+    webserver = ray.serve.run(**kwargs)
+    proxy_server = ray.serve.run(
+        PerspectiveProxyRayServer.bind(webserver),
+        name=proxy_server_name,
+        route_prefix=proxy_server_route_prefix,
+    )
+    return proxy_server
 
 
 @ray.remote(resources={"node:__internal_head__": 0.1}, num_cpus=0)
@@ -80,7 +102,7 @@ class AsyncMetadataTracker:
             path: A Cloudpathlib.AnyPath, used for saving its internal polars DataFrame object.
             enable_perspective_dashboard: To enable an experimental perspective dashboard.
 
-        """        
+        """
         logger.info(f"Initializing an AsyncMetadataTracker in namespace {namespace} with name {name}.")
         # Passing 'self' to the AsyncMetadataTrackerCallback converts this actor class to a
         # modify_Class.<locals>.Class object. So for now, we pass the name and
@@ -107,7 +129,7 @@ class AsyncMetadataTracker:
         self.client = StateApiClient(address=ray.get_runtime_context().gcs_address)
 
         if self.perspective_dashboard_enabled:
-            from raydar.dashboard.server import PerspectiveProxyRayServer, PerspectiveRayServer
+            from raydar.dashboard.server import PerspectiveRayServer
 
             kwargs = dict(
                 target=PerspectiveRayServer.bind(),
@@ -117,12 +139,7 @@ class AsyncMetadataTracker:
             if Version(ray.__version__) < Version("2.10"):
                 kwargs["port"] = os.environ.get("RAYDAR_PORT", 8000)
 
-            self.webserver = ray.serve.run(**kwargs)
-            self.proxy_server = ray.serve.run(
-                PerspectiveProxyRayServer.bind(self.webserver),
-                name="proxy",
-                route_prefix="/proxy",
-            )
+            self.proxy_severt = get_proxy_sever(**kwargs)
             self.proxy_server.remote(
                 "new",
                 self.perspective_table_name,
@@ -313,7 +330,7 @@ class RayTaskTracker:
         Args:
             Optional[name]: The named used to construct a AsyncMetadataTracker, also used to form the name of its AsyncMetadataTrackerCallback.
             Optional[namespace]: Ray namespace for the AsyncMetadataTracker and its AsyncMetadataTrackerCallback.
-        """        
+        """
         if namespace is None:
             namespace = coolname.generate_slug(2)
             logger.critical(f'No namespace provided, using namespace "{namespace}"')
