@@ -37,6 +37,7 @@ tests: testpy testjs ## run the tests
 lintpy:  ## Black/flake8 python
 	python -m isort raydar setup.py --check
 	python -m ruff check raydar setup.py
+	python -m ruff format --check raydar setup.py
 
 lintjs:  ## ESlint javascript
 	cd js; yarn lint

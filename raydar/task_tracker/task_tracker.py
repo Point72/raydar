@@ -80,7 +80,7 @@ class AsyncMetadataTracker:
             path: A Cloudpathlib.AnyPath, used for saving its internal polars DataFrame object.
             enable_perspective_dashboard: To enable an experimental perspective dashboard.
 
-        """        
+        """
         logger.info(f"Initializing an AsyncMetadataTracker in namespace {namespace} with name {name}.")
         # Passing 'self' to the AsyncMetadataTrackerCallback converts this actor class to a
         # modify_Class.<locals>.Class object. So for now, we pass the name and
@@ -313,7 +313,7 @@ class RayTaskTracker:
         Args:
             Optional[name]: The named used to construct a AsyncMetadataTracker, also used to form the name of its AsyncMetadataTrackerCallback.
             Optional[namespace]: Ray namespace for the AsyncMetadataTracker and its AsyncMetadataTrackerCallback.
-        """        
+        """
         if namespace is None:
             namespace = coolname.generate_slug(2)
             logger.critical(f'No namespace provided, using namespace "{namespace}"')
