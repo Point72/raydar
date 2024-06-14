@@ -23,17 +23,13 @@ window.addEventListener("load", async () => {
     tables.map(async (tableName) => {
       if (registeredTables.has(tableName)) return;
       registeredTables.add(tableName);
-      fetch("static/layouts/default.json")
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Loading layout from static/layouts/default.json...");
-          workspace.restore(data);
-        })
-        .catch((error) => {
-          console.error("ERROR:", error);
-        });
       workspace.addTable(tableName, websocket.open_table(tableName));
     });
+
+    const layouts = await fetch("static/layouts/default.json");
+    const layoutData = await layouts.json();
+    console.log("Loading layout from static/layouts/default.json...");
+    workspace.restore(layoutData);
   };
 
   await updateTables();
