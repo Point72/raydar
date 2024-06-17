@@ -52,12 +52,16 @@ dependencies = [
 
 [project.optional-dependencies]
 develop = [
+    "build",
     "bump2version>=1.0.0",
     "check-manifest",
     "hatchling",
     "hatch-jupyter-builder",
     "isort",
     "ruff>=0.3,<0.5",
+    "toml",
+    "twine",
+    "wheel",
     # Test deps
     "pytest",
     "pytest-asyncio",
