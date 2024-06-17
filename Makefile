@@ -6,9 +6,12 @@
 build:  ## build python/javascript
 	python -m build .
 
+requirements:  ## install prerequisite python build requirements
+	python -m pip install --upgrade pip toml
+	python -m pip install `python -c 'import toml; c = toml.load("pyproject.toml"); print("\n".join(c["build-system"]["requires"]))'`
+	python -m pip install `python -c 'import toml; c = toml.load("pyproject.toml"); print(" ".join(c["project"]["optional-dependencies"]["develop"]))'`
+
 develop:  ## install to site-packages in editable mode
-	python -m pip install --upgrade build pip setuptools toml twine wheel
-	pip install `python -c 'import toml; c = toml.load("pyproject.toml"); print(" ".join(c["project"]["optional-dependencies"]["develop"]))'`
 	cd js; yarn
 	python -m pip install -e .[develop]
 

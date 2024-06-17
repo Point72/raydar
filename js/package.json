@@ -12,8 +12,8 @@
     "build:cpjs": "cp -r ./dist/* ../raydar/dashboard/static",
     "build": "npm-run-all -s build:*",
     "clean": "rimraf dist lib coverage junit.xml",
-    "lint": "prettier --check \"src/*.js\" \"src/*.html\" \"src/*.css\" \"*.js\" \"*.json\"",
-    "fix": "prettier --write  \"src/*.js\" \"src/*.html\" \"src/*.css\" \"*.js\" \"*.json\"",
+    "lint": "prettier --check \"src/*.js\" \"src/*.html\" \"src/*.css\" \"*.js\" \"*.json\" \"../*.md\" \"../docs/wiki/*.md\"",
+    "fix": "prettier --write  \"src/*.js\" \"src/*.html\" \"src/*.css\" \"*.js\" \"*.json\" \"../*.md\" \"../docs/wiki/*.md\"",
     "test": ":",
     "watch:esbuild": "yarn build:esbuild --watch",
     "watch": "npm-run-all -p watch:*"
