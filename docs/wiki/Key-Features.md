@@ -25,16 +25,15 @@ task_tracker.process(refs)
 
 This internal dataframe can be accessed via the `.get_df()` method.
 
-
-| task_id       | user_defined_metadata  | attempt_number | name                      | ... | start_time_ms                    | end_time_ms                        | task_log_info                         | error_message |
-| :---          | :---                   | :---           | :---                      | :-- | :---                             | :---                               | :---                                  | :---          |
-| `str`         | `f32`                  | `i64`          | `str`                     |     | `datetime[ms,America/New_York]`  | `datetime[ms,America/New_York]`    | `struct[6]`                           | `str`         |
-|               |                        |                |                           |     |                                  |                                    |                                       |               |
-| 16310a0f0a... | `null`                 | 0              | `example_remote_function` | ... | 2024-01-29 07:17:09.340 EST      | 2024-01-29 07:17:12.115 EST        | `{"/tmp/ray/session_2024-01-29_07...` | `null`        |
-| c2668a65bd... | `null`                 | 0              | `example_remote_function` | ... | 2024-01-29 07:17:09.341 EST      | 2024-01-29 07:17:12.107 EST        | `{"/tmp/ray/session_2024-01-29_07...` | `null`        |
-| 32d950ec0c... | `null`                 | 0              | `example_remote_function` | ... | 2024-01-29 07:17:09.342 EST      | 2024-01-29 07:17:12.115 EST        | `{"/tmp/ray/session_2024-01-29_07...` | `null`        |
-| e0dc174c83... | `null`                 | 0              | `example_remote_function` | ... | 2024-01-29 07:17:09.343 EST      | 2024-01-29 07:17:12.115 EST        | `{"/tmp/ray/session_2024-01-29_07...` | `null`        |
-| f4402ec78d... | `null`                 | 0              | `example_remote_function` | ... | 2024-01-29 07:17:09.343 EST      | 2024-01-29 07:17:12.115 EST        | `{"/tmp/ray/session_2024-01-29_07...` | `null`        |
+| task_id       | user_defined_metadata | attempt_number | name                      | ... | start_time_ms                   | end_time_ms                     | task_log_info                         | error_message |
+| :------------ | :-------------------- | :------------- | :------------------------ | :-- | :------------------------------ | :------------------------------ | :------------------------------------ | :------------ |
+| `str`         | `f32`                 | `i64`          | `str`                     |     | `datetime[ms,America/New_York]` | `datetime[ms,America/New_York]` | `struct[6]`                           | `str`         |
+|               |                       |                |                           |     |                                 |                                 |                                       |               |
+| 16310a0f0a... | `null`                | 0              | `example_remote_function` | ... | 2024-01-29 07:17:09.340 EST     | 2024-01-29 07:17:12.115 EST     | `{"/tmp/ray/session_2024-01-29_07...` | `null`        |
+| c2668a65bd... | `null`                | 0              | `example_remote_function` | ... | 2024-01-29 07:17:09.341 EST     | 2024-01-29 07:17:12.107 EST     | `{"/tmp/ray/session_2024-01-29_07...` | `null`        |
+| 32d950ec0c... | `null`                | 0              | `example_remote_function` | ... | 2024-01-29 07:17:09.342 EST     | 2024-01-29 07:17:12.115 EST     | `{"/tmp/ray/session_2024-01-29_07...` | `null`        |
+| e0dc174c83... | `null`                | 0              | `example_remote_function` | ... | 2024-01-29 07:17:09.343 EST     | 2024-01-29 07:17:12.115 EST     | `{"/tmp/ray/session_2024-01-29_07...` | `null`        |
+| f4402ec78d... | `null`                | 0              | `example_remote_function` | ... | 2024-01-29 07:17:09.343 EST     | 2024-01-29 07:17:12.115 EST     | `{"/tmp/ray/session_2024-01-29_07...` | `null`        |
 
 Additionally, setting the `enable_perspective_dashboard` flag to `True` in the `RayTaskTracker`'s construction serves a perspective dashboard with live views of your completed references.
 
@@ -45,28 +44,29 @@ task_tracker = RayTaskTracker(enable_perspective_dashboard=True)
 ![Example](images/example_perspective_dashboard.gif)
 
 ## Create/Store Custom Views
+
 From the developer console, save your workspace layout locally.
 
 ```javascript
-let workspace = document.getElementById('perspective-workspace');
+let workspace = document.getElementById("perspective-workspace");
 
 // Save the current layout
-workspace.save().then(config => {
-    // Convert the configuration object to a JSON string
-    let json = JSON.stringify(config);
+workspace.save().then((config) => {
+  // Convert the configuration object to a JSON string
+  let json = JSON.stringify(config);
 
-    // Create a Blob object from the JSON string
-    let blob = new Blob([json], {type: "application/json"});
+  // Create a Blob object from the JSON string
+  let blob = new Blob([json], { type: "application/json" });
 
-    // Create a download link
-    let link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'workspace.json';
+  // Create a download link
+  let link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "workspace.json";
 
-    // Append the link to the document body and click it to start the download
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  // Append the link to the document body and click it to start the download
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 });
 ```
 
@@ -75,40 +75,41 @@ Then, move this json file to `js/src/layouts/default.json`.
 ![Example](images/example_perspective_dashboard_layouts.gif)
 
 ## Expose Ray GCS Information
+
 The data available to you includes much of what Ray's GCS tracks, and also allows for user defined metadata per task.
 
 Specifically, tracked fields include:
- * `task_id`
- * `user_defined_metadata`
- * `attempt_number`
- * `name`
- * `state`
- * `job_id`
- * `actor_id`
- * `type`
- * `func_or_class_name`
- * `parent_task_id`
- * `node_id`
- * `worker_id`
- * `error_type`
- * `language`
- * `required_resources`
- * `runtime_env_info`
- * `placement_group_id`
- * `events`
- * `profiling_data`
- * `creation_time_ms`
- * `start_time_ms`
- * `end_time_ms`
- * `task_log_info`
- * `error_message`
+
+- `task_id`
+- `user_defined_metadata`
+- `attempt_number`
+- `name`
+- `state`
+- `job_id`
+- `actor_id`
+- `type`
+- `func_or_class_name`
+- `parent_task_id`
+- `node_id`
+- `worker_id`
+- `error_type`
+- `language`
+- `required_resources`
+- `runtime_env_info`
+- `placement_group_id`
+- `events`
+- `profiling_data`
+- `creation_time_ms`
+- `start_time_ms`
+- `end_time_ms`
+- `task_log_info`
+- `error_message`
 
 ![Example](images/example_task_metadata.gif)
 
 ## Custom Sources / Update Logic
 
 The proxy server helpd by the `RayTaskTracker` is exposed via the `.proxy_server()` property, meaning we can create new tables as follows:
-
 
 ```python
 task_tracker = RayTaskTracker(enable_perspective_dashboard=True)

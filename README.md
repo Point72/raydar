@@ -16,12 +16,13 @@ A [perspective](https://perspective.finos.org/) powered, user editable ray dashb
 [![Python Versions](https://img.shields.io/badge/python-3.8_%7C_3.9_%7C_3.10_%7C_3.11-blue)](https://github.com/Point72/raydar/blob/main/pyproject.toml)
 
 ## Features
+
 `raydar` provides an interface to create and interact with [perspective](https://github.com/finos/perspective) tables, as well as a UI served through [ray serve](https://docs.ray.io/en/latest/serve/index.html). It comes with a variety of ray integrations, including a detailed and scalable task tracker which scales far beyond the ray default task tracking view.
 
 [More information is available in our wiki](https://github.com/Point72/csp/wiki)
 
-
 ## Installation
+
 `raydar` can be installed via [pip](https://pip.pypa.io) or [conda](https://docs.conda.io/en/latest/), the two primary package managers for the Python ecosystem.
 
 To install `raydar` via **pip**, run this command in your terminal:
@@ -37,5 +38,5 @@ conda install raydar -c conda-forge
 ```
 
 ## License
-This software is licensed under the Apache 2.0 license. See the [LICENSE](LICENSE) file for details.
 
+This software is licensed under the Apache 2.0 license. See the [LICENSE](LICENSE) file for details.

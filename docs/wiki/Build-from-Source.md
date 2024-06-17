@@ -80,12 +80,12 @@ make build
 
 `raydar` has linting and auto formatting.
 
-| Language   | Linter     | Autoformatter  | Description |
-| :--------- | :--------- | :------------- | :---------- |
-| Python     | `ruff`     | `ruff`         | Style       |
-| Python     | `isort`    | `isort`        | Imports     |
-| JavaScript | `prettier` | `prettier`     | Style       |
-| Markdown   | `prettier` | `prettier`     | Style       |
+| Language   | Linter     | Autoformatter | Description |
+| :--------- | :--------- | :------------ | :---------- |
+| Python     | `ruff`     | `ruff`        | Style       |
+| Python     | `isort`    | `isort`       | Imports     |
+| JavaScript | `prettier` | `prettier`    | Style       |
+| Markdown   | `prettier` | `prettier`    | Style       |
 
 **Python Linting**
 
