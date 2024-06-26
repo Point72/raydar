@@ -13,13 +13,13 @@ A [perspective](https://perspective.finos.org/) powered, user editable ray dashb
 [![Build Status](https://github.com/Point72/raydar/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/Point72/raydar/actions/workflows/build.yml)
 [![PyPI Version](https://img.shields.io/pypi/v/raydar.svg)](https://pypi.python.org/pypi/raydar)
 [![License](https://img.shields.io/pypi/l/raydar.svg)](https://github.com/Point72/raydar/blob/main/LICENSE)
-[![Python Versions](https://img.shields.io/badge/python-3.8_%7C_3.9_%7C_3.10_%7C_3.11-blue)](https://github.com/Point72/raydar/blob/main/pyproject.toml)
+[![Python Versions](https://img.shields.io/badge/python-3.8_%7C_3.9_%7C_3.10_%7C_3.11_&7C3.12-blue)](https://github.com/Point72/raydar/blob/main/pyproject.toml)
 
 ## Features
 
 `raydar` provides an interface to create and interact with [perspective](https://github.com/finos/perspective) tables, as well as a UI served through [ray serve](https://docs.ray.io/en/latest/serve/index.html). It comes with a variety of ray integrations, including a detailed and scalable task tracker which scales far beyond the ray default task tracking view.
 
-[More information is available in our wiki](https://github.com/Point72/csp/wiki)
+[More information is available in our wiki](https://github.com/Point72/raydar/wiki)
 
 ## Installation
 
