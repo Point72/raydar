@@ -23,38 +23,38 @@ install:  ## install to site-packages
 ###########
 .PHONY: testpy testjs test tests
 
-testpy: ## Clean and Make unit tests
+testpy: ## run the python unit tests
 	python -m pytest -v raydar/tests --junitxml=junit.xml --cov=raydar --cov-report=xml:.coverage.xml --cov-branch --cov-fail-under=1 --cov-report term-missing
 
-testjs: ## Clean and Make js tests
+testjs: ## run the javascript unit tests
 	cd js; yarn test
 
 test: tests
-tests: testpy testjs ## run the tests
+tests: testpy testjs ## run all the unit tests
 
 ###########
 # Linting #
 ###########
 .PHONY: lintpy lintjs lint fixpy fixjs fix format
 
-lintpy:  ## Black/flake8 python
+lintpy:  ## lint python with isort and ruff
 	python -m isort raydar setup.py --check
 	python -m ruff check raydar setup.py
 	python -m ruff format --check raydar setup.py
 
-lintjs:  ## ESlint javascript
+lintjs:  ## lint javascript with eslint
 	cd js; yarn lint
 
-lint: lintpy lintjs  ## run linter
+lint: lintpy lintjs  ## run all linters
 
-fixpy:  ## Black python
+fixpy:  ## autoformat python code with isort and ruff
 	python -m isort raydar setup.py
 	python -m ruff format raydar setup.py
 
-fixjs:  ## ESlint Autofix JS
+fixjs:  ## autoformat javascript code with eslint
 	cd js; yarn fix
 
-fix: fixpy fixjs  ## run black/tslint fix
+fix: fixpy fixjs  ## run all autofixers
 format: fix
 
 #################
