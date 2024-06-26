@@ -54,11 +54,6 @@ Python build and develop dependencies are specified in the `pyproject.toml`, but
 
 ```bash
 make requirements
-
-# or
-# python -m pip install toml
-# python -m pip install `python -c 'import toml; c = toml.load("pyproject.toml"); print("\n".join(c["build-system"]["requires"]))'`
-# python -m pip install `python -c 'import toml; c = toml.load("pyproject.toml"); print("\n".join(c["project"]["optional-dependencies"]["develop"]))'`
 ```
 
 Note that these dependencies would otherwise be installed normally as part of [PEP517](https://peps.python.org/pep-0517/) / [PEP518](https://peps.python.org/pep-0518/).
@@ -69,11 +64,6 @@ Build the python project in the usual manner:
 
 ```bash
 make build
-
-# on aarch64 linux, comment the above command and use this instead
-# VCPKG_FORCE_SYSTEM_BINARIES=1 make build
-# or
-# python setup.py build build_ext --inplace
 ```
 
 ## Lint and Autoformat
@@ -91,35 +81,24 @@ make build
 
 ```bash
 make lintpy
-# or
-# python -m isort --check raydar/ setup.py
-# python -m ruff check raydar/ setup.py
-# python -m ruff format --check raydar/ setup.py
 ```
 
 **Python Autoformatting**
 
 ```bash
 make fixpy
-# or
-# python -m isort raydar/ setup.py
-# python -m ruff format raydar/ setup.py
 ```
 
 **JavaScript Linting**
 
 ```bash
 make lintjs
-# or
-# cd js; yarn lint
 ```
 
 **JavaScript Autoformatting**
 
 ```bash
 make fixjs
-# or
-# cd js; yarn fix
 ```
 
 **Documentation Linting**
@@ -138,14 +117,10 @@ make develop
 
 ```bash
 make testpy
-# or
-# python -m pytest -v raydar/tests --junitxml=junit.xml --cov=raydar --cov-report=xml:.coverage.xml --cov-branch --cov-fail-under=1 --cov-report term-missing
 ```
 
 **JavaScript**
 
 ```bash
 make testjs
-# or
-# cd js; yarn test
 ```
