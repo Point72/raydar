@@ -86,9 +86,6 @@ jobs:
             **/junit.xml
       if: ${{ matrix.os == 'ubuntu-latest' }}
 
-    - name: Upload coverage
-      uses: codecov/codecov-action@v4
-
     - name: Twine check
       run: make dist
 
