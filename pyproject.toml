@@ -53,7 +53,7 @@ dependencies = [
 [project.optional-dependencies]
 develop = [
     "build",
-    "bump2version>=1.0.0",
+    "bump-my-version",
     "check-manifest",
     "hatchling",
     "hatch-jupyter-builder",
@@ -79,6 +79,27 @@ test = [
 [project.urls]
 Repository = "https://github.com/point72/raydar"
 Homepage = "https://github.com/point72/raydar"
+
+[tool.bumpversion]
+current_version = "0.2.2"
+commit = true
+tag = false
+commit_args = "-s"
+
+[[tool.bumpversion.files]]
+filaname = "pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "raydar/__init__.py"
+search = '__version__ = "{current_version}"'
+replace = '__version__ = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "js/package.json"
+search = '"version": "{current_version}"'
+replace = '"version": "{new_version}"'
 
 [tool.check-manifest]
 ignore = [
