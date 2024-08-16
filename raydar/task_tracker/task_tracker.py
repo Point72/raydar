@@ -9,7 +9,7 @@ import ray
 from collections.abc import Iterable
 from packaging.version import Version
 from ray.serve import shutdown
-from typing import Optional
+from typing import Dict, List, Optional
 
 from .schema import schema as default_schema
 
@@ -351,6 +351,16 @@ class RayTaskTracker:
     def clear(self) -> None:
         """Clear the dataframe used by this object's AsyncMetadataTracker actor"""
         return ray.get(self.tracker.clear_df.remote())
+
+    def create_table(self, table_name: str, table_schema: Dict[str, str]) -> None:
+        """Create a new perspective table using the proxy server used by the RayTaskTracker's AsyncMetadataTracker actor"""
+        proxy_server = self.proxy_server()
+        return ray.get(proxy_server.remote("new", table_name, table_schema))
+
+    def update_table(self, table_name: str, data: List[Dict]) -> None:
+        """Update rows of perspective table held by the proxy server used by the RayTaskTracker's AsyncMetadataTracker actor"""
+        proxy_server = self.proxy_server()
+        return ray.get(proxy_server.remote("update", table_name, data))
 
     def proxy_server(self) -> ray.serve.handle.DeploymentHandle:
         """Fetch the proxy server used by this object's AsyncMetadataTracker actor"""
