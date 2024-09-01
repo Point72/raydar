@@ -58,7 +58,7 @@ develop = [
     "hatchling",
     "hatch-jupyter-builder",
     "isort",
-    "ruff>=0.5.0,<0.6",
+    "ruff>=0.5.0,<0.7",
     "toml",
     "twine",
     "wheel",
