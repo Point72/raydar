@@ -43,7 +43,7 @@ dependencies = [
     "coolname",
     "fastapi",
     "packaging",
-    "perspective-python",
+    "perspective-python>=2,<3",
     "polars",
     "pyarrow",
     "pydantic",
