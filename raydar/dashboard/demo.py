@@ -20,8 +20,10 @@ def test_job(backoff, tablename, proxy):
 if __name__ == "__main__":
     os.environ["RAY_SERVE_ENABLE_EXPERIMENTAL_STREAMING"] = "1"
 
-    ray.init(dashboard_host="0.0.0.0", dashboard_port=8989, runtime_env={"py_modules": [starlette]})
-    ray.serve.start(http_options={"port": 8988})
+    host = "127.0.0.1"  # NOTE: change if you run on another machine
+    port = 8989
+    ray.init(dashboard_host=host, dashboard_port=port, runtime_env={"py_modules": [starlette]})
+    ray.serve.start(http_options={"host": host, "port": port})
 
     webserver = ray.serve.run(PerspectiveRayServer.bind(), name="webserver", route_prefix="/")
     proxy_server = ray.serve.run(PerspectiveProxyRayServer.bind(webserver), name="proxy", route_prefix="/proxy")
