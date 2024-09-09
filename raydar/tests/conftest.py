@@ -35,7 +35,6 @@ def unittest_ray_config():
     config = dict(
         num_cpus=5,
         include_dashboard=True,
-        dashboard_host="0.0.0.0",
     )
     return config
 

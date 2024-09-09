@@ -9,17 +9,39 @@ import ray
 from collections.abc import Iterable
 from packaging.version import Version
 from ray.serve import shutdown
+from ray.serve.handle import DeploymentHandle
 from typing import Dict, List, Optional
 
 from .schema import schema as default_schema
 
 logger = logging.getLogger(__name__)
 
-__all__ = ("AsyncMetadataTracker", "RayTaskTracker")
+__all__ = ("AsyncMetadataTracker", "RayTaskTracker", "setup_proxy_server")
 
 
 def get_callback_actor_name(name: str) -> str:
     return f"{name}_callback_actor"
+
+
+def setup_proxy_server(proxy_server_name="proxy", proxy_server_route_prefix="/proxy", **kwargs) -> DeploymentHandle:
+    """Construct a webserver, and bind it to a PerspectiveProxyRayServer.
+
+    Args:
+        proxy_server_name: the name passed to ray.serve.run for the PerspectiveProxyRayServer
+        proxy_server_route_prefix: the route_prefix passed to ray.serve.run for the PerspectiveProxyRayServer
+        **kwargs: arguments forwarded to ray.serve.run() for the webserver
+
+    Returns: A DeploymentHandle for the PerspectiveProxyRayServer
+    """
+    from raydar.dashboard.server import PerspectiveProxyRayServer
+
+    webserver = ray.serve.run(**kwargs)
+    proxy_server = ray.serve.run(
+        PerspectiveProxyRayServer.bind(webserver),
+        name=proxy_server_name,
+        route_prefix=proxy_server_route_prefix,
+    )
+    return proxy_server
 
 
 @ray.remote(resources={"node:__internal_head__": 0.1}, num_cpus=0)
@@ -107,22 +129,18 @@ class AsyncMetadataTracker:
         self.client = StateApiClient(address=ray.get_runtime_context().gcs_address)
 
         if self.perspective_dashboard_enabled:
-            from raydar.dashboard.server import PerspectiveProxyRayServer, PerspectiveRayServer
+            from raydar.dashboard.server import PerspectiveRayServer
 
             kwargs = dict(
                 target=PerspectiveRayServer.bind(),
                 name="webserver",
                 route_prefix="/",
             )
+
             if Version(ray.__version__) < Version("2.10"):
                 kwargs["port"] = os.environ.get("RAYDAR_PORT", 8000)
 
-            self.webserver = ray.serve.run(**kwargs)
-            self.proxy_server = ray.serve.run(
-                PerspectiveProxyRayServer.bind(self.webserver),
-                name="proxy",
-                route_prefix="/proxy",
-            )
+            self.proxy_server = setup_proxy_server(**kwargs)
             self.proxy_server.remote(
                 "new",
                 self.perspective_table_name,
@@ -148,14 +166,6 @@ class AsyncMetadataTracker:
                     "error_message": "str",
                 },
             )
-
-    def get_proxy_server(self) -> ray.serve.handle.DeploymentHandle:
-        """A getter for this actors proxy server attribute. Can be used to create custom perspective visuals.
-        Returns: this actors proxy_server attribute
-        """
-        if self.proxy_server:
-            return self.proxy_server
-        raise Exception("This task_tracker has no active proxy_server.")
 
     def callback(self, tasks: Iterable[ray.ObjectRef]) -> None:
         """A remote function used by this actor's processor actor attribute. Will be called by a separate actor
@@ -286,6 +296,14 @@ class AsyncMetadataTracker:
             schema_overrides=default_schema,
         )
         return self.df
+
+    def get_proxy_server(self) -> ray.serve.handle.DeploymentHandle:
+        """A getter for this actors proxy server attribute. Can be used to create custom perspective visuals.
+        Returns: this actors proxy_server attribute
+        """
+        if self.proxy_server:
+            return self.proxy_server
+        raise Exception("This task_tracker has no active proxy_server.")
 
     def save_df(self) -> None:
         """Saves the internally maintained dataframe of task related information from the ray GCS"""

@@ -51,9 +51,6 @@ class PerspectiveRayServer:
         if tablename in self._tables:
             self._tables[tablename].clear()
 
-    def get_table(self, tablename: str) -> None:
-        return self._schemas.get(tablename, None)
-
     @app.get("/")
     async def site(self):
         return FileResponse(join(static_files_dir, "index.html"))
