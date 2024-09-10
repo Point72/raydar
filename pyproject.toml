@@ -87,7 +87,7 @@ tag = false
 commit_args = "-s"
 
 [[tool.bumpversion.files]]
-filaname = "pyproject.toml"
+filename = "pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
 
