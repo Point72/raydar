@@ -9,7 +9,7 @@ build-backend = "hatchling.build"
 [project]
 name = "raydar"
 description = "A perspective powered, user editable ray dashboard via ray serve"
-version = "0.2.2"
+version = "0.2.3"
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.8"
@@ -81,13 +81,13 @@ Repository = "https://github.com/point72/raydar"
 Homepage = "https://github.com/point72/raydar"
 
 [tool.bumpversion]
-current_version = "0.2.2"
+current_version = "0.2.3"
 commit = true
 tag = false
 commit_args = "-s"
 
 [[tool.bumpversion.files]]
-filaname = "pyproject.toml"
+filename = "pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
 

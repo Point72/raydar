@@ -33,12 +33,12 @@ window.addEventListener("load", async () => {
       registeredTables.add(tableName);
       workspace.addTable(tableName, websocket.open_table(tableName));
     });
-
-    const layouts = await fetch("static/layouts/default.json");
-    const layoutData = await layouts.json();
-    console.log("Loading layout from static/layouts/default.json...");
-    workspace.restore(layoutData);
   };
+
+  const layouts = await fetch("static/layouts/default.json");
+  const layoutData = await layouts.json();
+  console.log("Loading layout from static/layouts/default.json...");
+  workspace.restore(layoutData);
 
   await updateTables();
 
