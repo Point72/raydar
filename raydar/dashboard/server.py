@@ -1,3 +1,5 @@
+import json
+import os
 from fastapi import FastAPI, HTTPException, Request, Response, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -106,6 +108,16 @@ class PerspectiveRayServer:
             self.update(tablename, data)
         except BaseException as exception:
             raise HTTPException(503, f"Exception during data ingestion: {tablename} / {format_exc()}") from exception
+
+    @app.post("/save_workspace_layout")
+    async def save_workspace_layout(self, layout: dict) -> Response:
+        file_path = os.path.join(static_files_dir, "layouts", "default.json")
+        try:
+            with open(file_path, "w") as f:
+                json.dump(layout, f, indent=2)
+            return Response(status_code=200)
+        except Exception as e:
+            raise HTTPException(502, f"Exception thrown when saving layout!: {str(e)}")
 
     def update(self, tablename: str, data):
         if isinstance(data, dict):
