@@ -29,7 +29,7 @@ static_files_dir = join(abspath(dirname(__file__)), "static")
 app.mount("/static", StaticFiles(directory=static_files_dir, check_dir=False, html=True))
 
 
-@deployment(name="Perspective_Web_Server", num_replicas=1)
+@deployment(name="Perspective_Web_Server", logging_config={"enable_access_log": False}, num_replicas=1)
 @ingress(app)
 class PerspectiveRayServer:
     def __init__(self, args: PerspectiveRayServerArgs = None):
@@ -113,7 +113,7 @@ class PerspectiveRayServer:
         self._tables[tablename].update(data)
 
 
-@deployment(name="Perspective_Proxy_Server")
+@deployment(name="Perspective_Proxy_Server", logging_config={"enable_access_log": False})
 class PerspectiveProxyRayServer:
     def __init__(self, psp_handle):
         self._psp_handle = psp_handle
