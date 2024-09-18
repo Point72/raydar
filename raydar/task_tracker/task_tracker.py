@@ -373,12 +373,12 @@ class RayTaskTracker:
     def create_table(self, table_name: str, table_schema: Dict[str, str]) -> None:
         """Create a new perspective table using the proxy server used by the RayTaskTracker's AsyncMetadataTracker actor"""
         proxy_server = self.proxy_server()
-        return ray.get(proxy_server.remote("new", table_name, table_schema))
+        return proxy_server.remote("new", table_name, table_schema)
 
     def update_table(self, table_name: str, data: List[Dict]) -> None:
         """Update rows of perspective table held by the proxy server used by the RayTaskTracker's AsyncMetadataTracker actor"""
         proxy_server = self.proxy_server()
-        return ray.get(proxy_server.remote("update", table_name, data))
+        return proxy_server.remote("update", table_name, data)
 
     def proxy_server(self) -> ray.serve.handle.DeploymentHandle:
         """Fetch the proxy server used by this object's AsyncMetadataTracker actor"""
