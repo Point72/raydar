@@ -7,8 +7,32 @@ html {
 
 perspective-workspace {
   position: absolute;
-  top: 0;
+  top: 40px;
   bottom: 0;
   left: 0;
   right: 0;
+}
+
+.title-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  z-index: 1000;
+  border-bottom: 1px solid #ccc;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: bold;
+}
+.save-button {
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
 }
