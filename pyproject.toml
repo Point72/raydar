@@ -101,6 +101,11 @@ filename = "js/package.json"
 search = '"version": "{current_version}"'
 replace = '"version": "{new_version}"'
 
+[[tool.bumpversion.files]]
+filename = "js/src/index.html"
+search = 'Raydar v{current_version}'
+replace = 'Raydar v{new_version}'
+
 [tool.check-manifest]
 ignore = [
     "raydar/dashboard/static/*",
