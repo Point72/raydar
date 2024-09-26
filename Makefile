@@ -37,8 +37,7 @@ tests: testpy testjs ## run all the unit tests
 ###########
 .PHONY: lintpy lintjs lint fixpy fixjs fix format
 
-lintpy:  ## lint python with isort and ruff
-	python -m isort raydar setup.py --check
+lintpy:  ## lint python with ruff
 	python -m ruff check raydar setup.py
 	python -m ruff format --check raydar setup.py
 
@@ -48,7 +47,7 @@ lintjs:  ## lint javascript with eslint
 lint: lintpy lintjs  ## run all linters
 
 fixpy:  ## autoformat python code with isort and ruff
-	python -m isort raydar setup.py
+	python -m ruff check --fix raydar setup.py
 	python -m ruff format raydar setup.py
 
 fixjs:  ## autoformat javascript code with eslint
