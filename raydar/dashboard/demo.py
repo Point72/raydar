@@ -1,8 +1,9 @@
 import os
 import random
+import time
+
 import ray
 import starlette
-import time
 
 from .server import PerspectiveProxyRayServer, PerspectiveRayServer
 

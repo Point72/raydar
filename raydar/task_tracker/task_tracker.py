@@ -1,16 +1,17 @@
 import asyncio
-import coolname
 import itertools
 import logging
 import os
+from collections.abc import Iterable
+from typing import Dict, List, Optional
+
+import coolname
 import pandas as pd
 import polars as pl
 import ray
-from collections.abc import Iterable
 from packaging.version import Version
 from ray.serve import shutdown
 from ray.serve.handle import DeploymentHandle
-from typing import Dict, List, Optional
 
 from .schema import schema as default_schema
 
