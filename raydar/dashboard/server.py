@@ -1,3 +1,4 @@
+import logging
 from os import environ
 from os.path import abspath, dirname, join
 from threading import Thread
@@ -25,7 +26,7 @@ def perspective_thread(manager: PerspectiveManager):
 
 
 app = FastAPI()
-
+logger = logging.getLogger("ray.serve")
 static_files_dir = join(abspath(dirname(__file__)), "static")
 app.mount("/static", StaticFiles(directory=static_files_dir, check_dir=False, html=True))
 
@@ -34,6 +35,7 @@ app.mount("/static", StaticFiles(directory=static_files_dir, check_dir=False, ht
 @ingress(app)
 class PerspectiveRayServer:
     def __init__(self, args: PerspectiveRayServerArgs = None):
+        logger.setLevel(logging.ERROR)
         args = args or PerspectiveRayServerArgs()
         self._manager = args.manager
         self._schemas = {}
@@ -117,6 +119,7 @@ class PerspectiveRayServer:
 @deployment(name="Perspective_Proxy_Server")
 class PerspectiveProxyRayServer:
     def __init__(self, psp_handle):
+        logger.setLevel(logging.ERROR)
         self._psp_handle = psp_handle
 
     def __call__(self, op, tablename, data_or_schema):
