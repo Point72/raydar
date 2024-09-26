@@ -1,7 +1,8 @@
+import time
+
 import pytest
 import ray
 import requests
-import time
 
 from raydar import RayTaskTracker, setup_proxy_server
 

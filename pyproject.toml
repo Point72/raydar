@@ -57,7 +57,6 @@ develop = [
     "check-manifest",
     "hatchling",
     "hatch-jupyter-builder",
-    "isort",
     "ruff>=0.5.0,<0.6",
     "toml",
     "twine",
@@ -171,17 +170,17 @@ path = "js"
 build_cmd = "build"
 npm = "yarn"
 
-[tool.isort]
-combine_as_imports = true
-include_trailing_comma = true
-line_length = 150
-profile = "black"
-default_section = "THIRDPARTY"
-sections = "FUTURE,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
-known_first_party = "raydar"
-
 [tool.ruff]
 line-length = 150
+
+[tool.ruff.lint]
+extend-select = ["I"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+default-section = "third-party"
+known-first-party = ["raydar"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401", "F403"]

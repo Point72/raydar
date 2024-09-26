@@ -1,13 +1,14 @@
+from os import environ
+from os.path import abspath, dirname, join
+from threading import Thread
+from traceback import format_exc
+
 from fastapi import FastAPI, HTTPException, Request, Response, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from os import environ
-from os.path import abspath, dirname, join
 from perspective import PerspectiveManager, PerspectiveStarletteHandler, Table
 from pydantic import BaseModel, Field
 from ray.serve import Application, deployment, ingress
-from threading import Thread
-from traceback import format_exc
 
 
 class PerspectiveRayServerArgs(BaseModel):

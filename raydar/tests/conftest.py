@@ -1,8 +1,9 @@
 import json
 import os
+import tempfile
+
 import pytest
 import ray
-import tempfile
 
 
 class RayFixture(object):
