@@ -4,3 +4,4 @@ docs/* linguist-documentation
 *.js text eol=lf
 *.py text eol=lf
 *.md text eol=lf
+docs/img/*.gif filter=lfs diff=lfs merge=lfs -text
