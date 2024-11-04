@@ -19,7 +19,7 @@ Ray offers powerful metrics visualizations powered by graphana and prometheus. A
 
 Raydar, enables out-of-the-box live cluster metrics and user visualizations for Ray workflows with just a simple pip install. It helps unlock distributed machine learning visualizations on Anyscale clusters, runs live and at scale, is easily customizable, and enables all the in-browser aggregations that [perspective](https://perspective.finos.org/) has to offer.
 
-![Example](docs/img/ml_example.gif)
+![Example](https://media.githubusercontent.com/media/Point72/raydar/refs/heads/main/docs/img/ml_example.gif)
 
 ## Features
 
@@ -31,19 +31,7 @@ Raydar, enables out-of-the-box live cluster metrics and user visualizations for 
 
 ## Installation
 
-`raydar` can be installed via [pip](https://pip.pypa.io) or [conda](https://docs.conda.io/en/latest/), the two primary package managers for the Python ecosystem.
-
-To install `raydar` via **pip**, run this command in your terminal:
-
-```bash
-pip install raydar
-```
-
-To install `raydar` via **conda**, run this command in your terminal:
-
-```bash
-conda install raydar -c conda-forge
-```
+`raydar` can be installed via [pip](https://pip.pypa.io) or [conda](https://docs.conda.io/en/latest/), the two primary package managers for the Python ecosystem. See [our wiki](https://github.com/Point72/raydar/wiki/Installation) for more information.
 
 ## Launching The UI, Tracking Tasks, Creating/Updating Custom Tables
 
@@ -72,7 +60,7 @@ task_tracker.process(refs)
 
 The perspective UI is served on port 8000 by default.
 
-![Example](docs/img/example_perspective_dashboard.gif)
+![Example](https://media.githubusercontent.com/media/Point72/raydar/refs/heads/main/docs/img/example_perspective_dashboard.gif)
 
 Passing a `name` and `namespace` arguments allows the RayTaskTracker to skip construction when an actor already exists. This also means we can access the correct ray actor handle from arbitrary ray code, once the correct name and namespace are provided.
 
@@ -114,7 +102,7 @@ def add_data_to_demo_table(i):
     task_tracker.update_table("demo_table", [data])
 ```
 
-![Example](docs/img/custom_user_table.gif)
+![Example](https://media.githubusercontent.com/media/Point72/raydar/refs/heads/main/docs/img/custom_user_table.gif)
 
 ## FAQ
 
@@ -126,7 +114,7 @@ Currently, in memory. There are plans to integrate alternatives to this configur
 
 The `Save Layout` button saves a json file containing layout information. Dragging and dropping this file into the UI browser window restores that layout.
 
-![Example](docs/img/layout_restoration.gif)
+![Example](https://media.githubusercontent.com/media/Point72/raydar/refs/heads/main/docs/img/layout_restoration.gif)
 
 ## License
 

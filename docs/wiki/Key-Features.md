@@ -1,3 +1,5 @@
+# Key Features
+
 ## Task Tracker
 
 The `raydar` module provides an actor which can process collections of ray object references on your behalf, and can serve a [perspective](https://github.com/finos/perspective) dashboard in which to visualize that data.

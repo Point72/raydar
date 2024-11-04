@@ -6,17 +6,12 @@ Notes for editors:
 - Use only the filenames in this page (without the filepath and file extension)
 -->
 
-**[Home](Home)**
+- [Home](Home)
 
 **Get Started**
 
 - [Installation](Installation)
-- [First steps](First-Steps)
 - [Key features](Key-Features)
-
-**References**
-
-- [API Reference](API-Reference)
 
 **Developer Guide**
 
