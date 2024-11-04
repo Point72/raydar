@@ -9,9 +9,9 @@
 # raydar
 
 [![Build Status](https://github.com/Point72/raydar/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/Point72/raydar/actions/workflows/build.yml)
+[![GitHub issues](https://img.shields.io/github/issues/point72/raydar.svg)](https://github.com/point72/raydar/issues)
 [![PyPI Version](https://img.shields.io/pypi/v/raydar.svg)](https://pypi.python.org/pypi/raydar)
 [![License](https://img.shields.io/pypi/l/raydar.svg)](https://github.com/Point72/raydar/blob/main/LICENSE)
-[![Python Versions](https://img.shields.io/badge/python-3.8_%7C_3.9_%7C_3.10_%7C_3.11_%7C_3.12-blue)](https://github.com/Point72/raydar/blob/main/pyproject.toml)
 
 A [perspective](https://perspective.finos.org/) powered, user editable ray dashboard via ray serve.
 
