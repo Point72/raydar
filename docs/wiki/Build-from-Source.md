@@ -42,10 +42,10 @@ cd raydar
 
 ## Install NodeJS
 
-Follow the instructions for [installing NodeJS](https://nodejs.org/en/download/package-manager/all) for your system. Once installed, you can [install `yarn`](https://classic.yarnpkg.com/lang/en/docs/install/) with:
+Follow the instructions for [installing NodeJS](https://nodejs.org/en/download/package-manager/all) for your system. Once installed, you can [install `pnpm`](https://pnpm.io) with:
 
 ```bash
-npm instal --global yarn
+npm install --global pnpm
 ```
 
 ## Install Python dependencies

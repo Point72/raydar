@@ -11,18 +11,16 @@ function removeTrailingSlash(url) {
   return url.replace(/\/$/, "");
 }
 
-window.addEventListener("load", async () => {
+async function load() {
   const workspace = document.querySelector("perspective-workspace");
   const saveButton = document.getElementById("save-layout-button");
   const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-  const websocket = perspective.websocket(
+  const websocket = await perspective.websocket(
     `${protocol}//${window.location.host}${removeTrailingSlash(
       window.location.pathname,
     )}/ws`,
   );
   const registeredTables = new Set();
-  const worker = perspective.worker();
-
   const updateTables = async () => {
     const response = await fetch(
       `${removeTrailingSlash(window.location.href)}/tables`,
@@ -32,7 +30,7 @@ window.addEventListener("load", async () => {
     tables.map(async (tableName) => {
       if (registeredTables.has(tableName)) return;
       registeredTables.add(tableName);
-      workspace.addTable(tableName, websocket.open_table(tableName));
+      workspace.addTable(tableName, await websocket.open_table(tableName));
     });
   };
 
@@ -90,4 +88,6 @@ window.addEventListener("load", async () => {
 
   // update tables every 5s
   setInterval(updateTables, 5000);
-});
+}
+
+load();

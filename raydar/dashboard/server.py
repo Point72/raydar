@@ -4,30 +4,51 @@ from os.path import abspath, dirname, join
 from threading import Thread
 from traceback import format_exc
 
+import perspective
 from fastapi import FastAPI, HTTPException, Request, Response, WebSocket, WebSocketDisconnect
-from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from perspective import PerspectiveManager, PerspectiveStarletteHandler, Table
+from fastapi.templating import Jinja2Templates
+from packaging.version import parse
+from perspective.handlers.starlette import PerspectiveStarletteHandler
 from pydantic import BaseModel, Field
 from ray.serve import Application, deployment, ingress
+
+from .. import __version__
+
+# Perspective 2/3 compatibility functions
+if parse(perspective.__version__) >= parse("3"):
+    JS_FILE = "index.js"
+    PerspectiveManager = lambda: None  # noqa: E731
+    MakeTable = lambda name, schema: perspective.table(schema, name=name)  # noqa: E731
+    HostTable = lambda manager, name, table: None  # noqa: E731
+    SetLoopCallback = lambda client, psp_loop: perspective.GLOBAL_CLIENT.set_loop_callback(psp_loop.call_soon_threadsafe)  # noqa: E731
+    MakeHandler = lambda websocket, manager: PerspectiveStarletteHandler(websocket=websocket)  # noqa: E731
+else:
+    from perspective import PerspectiveManager, Table
+
+    JS_FILE = "index.psp2.js"
+    MakeTable = lambda name, schema: Table(schema)  # noqa: E731
+    HostTable = lambda manager, name, table: manager.host_table(name, table)  # noqa: E731
+    SetLoopCallback = lambda client, psp_loop: client.set_loop_callback(psp_loop.call_soon_threadsafe)  # noqa: E731
+    MakeHandler = lambda websocket, manager: PerspectiveStarletteHandler(websocket=websocket, manager=manager)  # noqa: E731
 
 
 class PerspectiveRayServerArgs(BaseModel):
     name: str = Field(default="Perspective")
-    manager: str = Field(default_factory=PerspectiveManager)
 
 
-def perspective_thread(manager: PerspectiveManager):
+def perspective_thread(client):
     from asyncio import new_event_loop
 
     psp_loop = new_event_loop()
-    manager.set_loop_callback(psp_loop.call_soon_threadsafe)
+    SetLoopCallback(client, psp_loop)
     psp_loop.run_forever()
 
 
 app = FastAPI()
 logger = logging.getLogger("ray.serve")
 static_files_dir = join(abspath(dirname(__file__)), "static")
+templates = Jinja2Templates(static_files_dir)
 app.mount("/static", StaticFiles(directory=static_files_dir, check_dir=False, html=True))
 
 
@@ -37,9 +58,9 @@ class PerspectiveRayServer:
     def __init__(self, args: PerspectiveRayServerArgs = None):
         logger.setLevel(logging.ERROR)
         args = args or PerspectiveRayServerArgs()
-        self._manager = args.manager
         self._schemas = {}
         self._tables = {}
+        self._manager = PerspectiveManager()
         self._psp_thread = Thread(target=perspective_thread, args=(self._manager,), daemon=True)
         self._psp_thread.start()
 
@@ -47,24 +68,33 @@ class PerspectiveRayServer:
         if tablename in self._schemas:
             return self._schemas[tablename]
         self._schemas[tablename] = schema
-        self._tables[tablename] = Table(schema)
-        self._manager.host_table(tablename, self._tables[tablename])
+        self._tables[tablename] = MakeTable(tablename, schema)
+        HostTable(self._manager, tablename, self._tables[tablename])
 
     def clear_table(self, tablename: str, schema) -> None:
         if tablename in self._tables:
             self._tables[tablename].clear()
 
-    @app.get("/")
-    async def site(self):
-        return FileResponse(join(static_files_dir, "index.html"))
+    def update(self, tablename: str, data):
+        if isinstance(data, dict):
+            data = [data]
+        self._tables[tablename].update(data)
 
     @app.websocket("/ws")
     async def ws(self, ws: WebSocket):
-        handler = PerspectiveStarletteHandler(manager=self._manager, websocket=ws)
+        handler = MakeHandler(ws, self._manager)
         try:
             await handler.run()
         except WebSocketDisconnect:
             ...
+
+    @app.get("/")
+    async def site(self, request: Request):
+        return templates.TemplateResponse(request=request, name="index.html", context={"version": __version__, "javascript": JS_FILE})
+
+    @app.get("/version")
+    async def version(self):
+        return __version__
 
     @app.get("/tables")
     async def tables(self):
@@ -74,7 +104,6 @@ class PerspectiveRayServer:
     async def new_table_rest(self, tablename: str, request: Request) -> Response:
         if tablename in self._schemas:
             raise HTTPException(501, "Table already exists, replace not yet supported")
-
         try:
             schema = await request.json()
         except BaseException as exception:
@@ -109,11 +138,6 @@ class PerspectiveRayServer:
             self.update(tablename, data)
         except BaseException as exception:
             raise HTTPException(503, f"Exception during data ingestion: {tablename} / {format_exc()}") from exception
-
-    def update(self, tablename: str, data):
-        if isinstance(data, dict):
-            data = [data]
-        self._tables[tablename].update(data)
 
 
 @deployment(name="Perspective_Proxy_Server")

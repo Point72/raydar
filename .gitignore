@@ -155,4 +155,5 @@ $RECYCLE.BIN/
 **/coverage/
 
 # Compiled JS assets
-raydar/dashboard/static/
+raydar/dashboard/static/*
+!raydar/dashboard/static/index.psp2.js

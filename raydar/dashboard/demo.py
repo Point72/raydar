@@ -3,7 +3,6 @@ import random
 import time
 
 import ray
-import starlette
 
 from .server import PerspectiveProxyRayServer, PerspectiveRayServer
 
@@ -23,8 +22,8 @@ if __name__ == "__main__":
 
     host = "127.0.0.1"  # NOTE: change if you run on another machine
     port = 8989
-    ray.init(dashboard_host=host, dashboard_port=port, runtime_env={"py_modules": [starlette]})
-    ray.serve.start(http_options={"host": host, "port": port})
+    ray.init(dashboard_host=host, dashboard_port=port)
+    ray.serve.start(http_options={"host": host, "port": port + 1})
 
     webserver = ray.serve.run(PerspectiveRayServer.bind(), name="webserver", route_prefix="/")
     proxy_server = ray.serve.run(PerspectiveProxyRayServer.bind(webserver), name="proxy", route_prefix="/proxy")
