@@ -12,7 +12,7 @@ requirements:  ## install prerequisite python build requirements
 	python -m pip install `python -c 'import toml; c = toml.load("pyproject.toml"); print(" ".join(c["project"]["optional-dependencies"]["develop"]))'`
 
 develop:  ## install to site-packages in editable mode
-	cd js; yarn
+	cd js; pnpm install
 	python -m pip install -e .[develop]
 
 install:  ## install to site-packages
@@ -27,7 +27,7 @@ testpy: ## run the python unit tests
 	python -m pytest -v raydar/tests --junitxml=junit.xml --cov=raydar --cov-report=xml:.coverage.xml --cov-branch --cov-fail-under=1 --cov-report term-missing
 
 testjs: ## run the javascript unit tests
-	cd js; yarn test
+	cd js; pnpm run test
 
 test: tests
 tests: testpy testjs ## run all the unit tests
@@ -42,7 +42,7 @@ lintpy:  ## lint python with ruff
 	python -m ruff format --check raydar setup.py
 
 lintjs:  ## lint javascript with eslint
-	cd js; yarn lint
+	cd js; pnpm run lint
 
 lint: lintpy lintjs  ## run all linters
 
@@ -51,7 +51,7 @@ fixpy:  ## autoformat python code with isort and ruff
 	python -m ruff format raydar setup.py
 
 fixjs:  ## autoformat javascript code with eslint
-	cd js; yarn fix
+	cd js; pnpm run fix
 
 fix: fixpy fixjs  ## run all autofixers
 format: fix
@@ -95,7 +95,7 @@ clean: ## clean the repository
 	find . -name ".ipynb_checkpoints" | xargs  rm -rf
 	rm -rf .coverage coverage *.xml build dist *.egg-info lib node_modules .pytest_cache *.egg-info
 	rm -rf raydar/dashboard/static
-	cd js && yarn clean
+	cd js; pnpm run clean
 	git clean -fd
 
 ###########

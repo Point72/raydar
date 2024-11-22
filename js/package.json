@@ -15,23 +15,24 @@
     "lint": "prettier --check \"src/*.js\" \"src/*.html\" \"src/*.css\" \"*.js\" \"*.json\" \"../*.md\" \"../docs/wiki/*.md\"",
     "fix": "prettier --write  \"src/*.js\" \"src/*.html\" \"src/*.css\" \"*.js\" \"*.json\" \"../*.md\" \"../docs/wiki/*.md\"",
     "test": ":",
-    "watch:esbuild": "yarn build:esbuild --watch",
+    "watch:esbuild": "pnpm run build:esbuild --watch",
     "watch": "npm-run-all -p watch:*"
   },
   "dependencies": {
-    "@finos/perspective": "^2.5.0",
-    "@finos/perspective-viewer": "^2.5.0",
-    "@finos/perspective-viewer-d3fc": "^2.5.0",
-    "@finos/perspective-viewer-datagrid": "^2.5.0",
-    "@finos/perspective-workspace": "^2.5.0"
+    "@finos/perspective": "^3.1.4",
+    "@finos/perspective-viewer": "^3.1.4",
+    "@finos/perspective-viewer-d3fc": "^3.1.4",
+    "@finos/perspective-viewer-datagrid": "^3.1.4",
+    "@finos/perspective-workspace": "^3.1.4"
   },
   "devDependencies": {
-    "@finos/perspective-esbuild-plugin": "^2.5.0",
+    "@finos/perspective-esbuild-plugin": "^3.1.4",
     "@prospective.co/procss": "^0.1.13",
     "esbuild": "^0.19.2",
     "esbuild-plugin-less": "^1.2.4",
     "eslint": "^8.47.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^3.0.2"
+    "prettier": "^3.0.2",
+    "rimraf": "^6.0.1"
   }
 }
