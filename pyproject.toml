@@ -43,7 +43,7 @@ dependencies = [
     "coolname",
     "fastapi",
     "packaging",
-    "perspective-python>=2,<3",
+    "perspective-python>=2,<4",
     "polars",
     "pyarrow",
     "pydantic",
@@ -62,6 +62,7 @@ develop = [
     "twine",
     "wheel",
     # Test deps
+    "pandas",
     "pytest",
     "pytest-asyncio",
     "pytest-cov",
