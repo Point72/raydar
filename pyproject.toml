@@ -62,6 +62,7 @@ develop = [
     "twine",
     "wheel",
     # Test deps
+    "pandas",
     "pytest",
     "pytest-asyncio",
     "pytest-cov",
