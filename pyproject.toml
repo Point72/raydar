@@ -57,7 +57,7 @@ develop = [
     "check-manifest",
     "hatchling",
     "hatch-jupyter-builder",
-    "ruff>=0.5.0,<0.8",
+    "ruff>=0.5.0,<0.9",
     "toml",
     "twine",
     "wheel",
