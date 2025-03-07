@@ -1,12 +1,8 @@
-<!--
 <a href="https://github.com/point72/raydar">
   <img src="https://github.com/point72/raydar/raw/main/docs/img/logo.png?raw=true" alt="raydar" width="400"></a>
 </a>
 <br/>
 <br/>
--->
-
-# raydar
 
 [![Build Status](https://github.com/Point72/raydar/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/Point72/raydar/actions/workflows/build.yml)
 [![GitHub issues](https://img.shields.io/github/issues/point72/raydar.svg)](https://github.com/point72/raydar/issues)
