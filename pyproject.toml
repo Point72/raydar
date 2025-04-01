@@ -42,6 +42,7 @@ classifiers = [
 dependencies = [
     "coolname",
     "fastapi",
+    "jinja2",
     "packaging",
     "perspective-python>=2,<4",
     "polars",
