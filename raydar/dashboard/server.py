@@ -8,40 +8,22 @@ import perspective
 from fastapi import FastAPI, HTTPException, Request, Response, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from packaging.version import parse
 from perspective.handlers.starlette import PerspectiveStarletteHandler
 from pydantic import BaseModel, Field
 from ray.serve import Application, deployment, ingress
 
 from .. import __version__
 
-# Perspective 2/3 compatibility functions
-if parse(perspective.__version__) >= parse("3"):
-    JS_FILE = "index.js"
-    PerspectiveManager = lambda: None  # noqa: E731
-    MakeTable = lambda name, schema: perspective.table(schema, name=name)  # noqa: E731
-    HostTable = lambda manager, name, table: None  # noqa: E731
-    SetLoopCallback = lambda client, psp_loop: perspective.GLOBAL_CLIENT.set_loop_callback(psp_loop.call_soon_threadsafe)  # noqa: E731
-    MakeHandler = lambda websocket, manager: PerspectiveStarletteHandler(websocket=websocket)  # noqa: E731
-else:
-    from perspective import PerspectiveManager, Table
-
-    JS_FILE = "index.psp2.js"
-    MakeTable = lambda name, schema: Table(schema)  # noqa: E731
-    HostTable = lambda manager, name, table: manager.host_table(name, table)  # noqa: E731
-    SetLoopCallback = lambda client, psp_loop: client.set_loop_callback(psp_loop.call_soon_threadsafe)  # noqa: E731
-    MakeHandler = lambda websocket, manager: PerspectiveStarletteHandler(websocket=websocket, manager=manager)  # noqa: E731
-
 
 class PerspectiveRayServerArgs(BaseModel):
     name: str = Field(default="Perspective")
 
 
-def perspective_thread(client):
+def perspective_thread():
     from asyncio import new_event_loop
 
     psp_loop = new_event_loop()
-    SetLoopCallback(client, psp_loop)
+    perspective.GLOBAL_CLIENT.set_loop_callback(psp_loop.call_soon_threadsafe)
     psp_loop.run_forever()
 
 
@@ -60,16 +42,14 @@ class PerspectiveRayServer:
         args = args or PerspectiveRayServerArgs()
         self._schemas = {}
         self._tables = {}
-        self._manager = PerspectiveManager()
-        self._psp_thread = Thread(target=perspective_thread, args=(self._manager,), daemon=True)
+        self._psp_thread = Thread(target=perspective_thread, daemon=True)
         self._psp_thread.start()
 
     def new_table(self, tablename: str, schema) -> None:
         if tablename in self._schemas:
             return self._schemas[tablename]
         self._schemas[tablename] = schema
-        self._tables[tablename] = MakeTable(tablename, schema)
-        HostTable(self._manager, tablename, self._tables[tablename])
+        self._tables[tablename] = perspective.table(schema, name=tablename)
 
     def clear_table(self, tablename: str, schema) -> None:
         if tablename in self._tables:
@@ -82,7 +62,7 @@ class PerspectiveRayServer:
 
     @app.websocket("/ws")
     async def ws(self, ws: WebSocket):
-        handler = MakeHandler(ws, self._manager)
+        handler = PerspectiveStarletteHandler(websocket=ws)
         try:
             await handler.run()
         except WebSocketDisconnect:
@@ -90,7 +70,7 @@ class PerspectiveRayServer:
 
     @app.get("/")
     async def site(self, request: Request):
-        return templates.TemplateResponse(request=request, name="index.html", context={"version": __version__, "javascript": JS_FILE})
+        return templates.TemplateResponse(request=request, name="index.html", context={"version": __version__, "javascript": "index.js"})
 
     @app.get("/version")
     async def version(self):
