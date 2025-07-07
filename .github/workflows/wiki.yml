@@ -27,6 +27,6 @@ jobs:
         run: cat README.md docs/wiki/_Home.md > docs/wiki/Home.md
 
       - name: Upload Documentation to Wiki
-        uses: Andrew-Chen-Wang/github-wiki-action@v4
+        uses: Andrew-Chen-Wang/github-wiki-action@v5
         with:
           path: docs/wiki
