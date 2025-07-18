@@ -4,7 +4,8 @@
 <br/>
 <br/>
 
-[![Build Status](https://github.com/Point72/raydar/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/Point72/raydar/actions/workflows/build.yml)
+[![Build Status](https://github.com/Point72/raydar/actions/workflows/build.yaml/badge.svg?branch=main&event=push)](https://github.com/Point72/raydar/actions/workflows/build.yaml)
+[![codecov](https://codecov.io/gh/point72/raydar/branch/main/graph/badge.svg)](https://codecov.io/gh/point72/raydar)
 [![GitHub issues](https://img.shields.io/github/issues/point72/raydar.svg)](https://github.com/point72/raydar/issues)
 [![PyPI Version](https://img.shields.io/pypi/v/raydar.svg)](https://pypi.python.org/pypi/raydar)
 [![License](https://img.shields.io/pypi/l/raydar.svg)](https://github.com/Point72/raydar/blob/main/LICENSE)
