@@ -1,6 +1,5 @@
 import json
 import os
-import tempfile
 
 import pytest
 import ray
@@ -42,7 +41,5 @@ def unittest_ray_config():
 
 @pytest.fixture(scope="module")
 def unittest_ray_cluster(unittest_ray_config):
-    with tempfile.TemporaryDirectory() as tmpdir:
-        unittest_ray_config["storage"] = tmpdir
-        with RayFixture(unittest_ray_config) as _:
-            yield None
+    with RayFixture(unittest_ray_config) as _:
+        yield None
