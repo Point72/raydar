@@ -1,7 +1,6 @@
 import logging
 from os import environ
 from os.path import abspath, dirname, join
-from threading import Thread
 from traceback import format_exc
 
 import perspective
@@ -19,14 +18,6 @@ class PerspectiveRayServerArgs(BaseModel):
     name: str = Field(default="Perspective")
 
 
-def perspective_thread():
-    from asyncio import new_event_loop
-
-    psp_loop = new_event_loop()
-    perspective.GLOBAL_CLIENT.set_loop_callback(psp_loop.call_soon_threadsafe)
-    psp_loop.run_forever()
-
-
 app = FastAPI()
 logger = logging.getLogger("ray.serve")
 static_files_dir = join(abspath(dirname(__file__)), "static")
@@ -42,8 +33,6 @@ class PerspectiveRayServer:
         args = args or PerspectiveRayServerArgs()
         self._schemas = {}
         self._tables = {}
-        self._psp_thread = Thread(target=perspective_thread, daemon=True)
-        self._psp_thread.start()
 
     def new_table(self, tablename: str, schema) -> None:
         if tablename in self._schemas:
