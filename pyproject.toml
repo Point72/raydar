@@ -44,7 +44,7 @@ dependencies = [
     "fastapi",
     "jinja2",
     "packaging",
-    "perspective-python>=3,<4",
+    "perspective-python>=3,<5",
     "polars",
     "pyarrow",
     "pydantic",
