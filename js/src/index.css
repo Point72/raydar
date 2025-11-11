@@ -1,5 +1,15 @@
-@import url("https://fonts.googleapis.com/css?family=Material+Icons");
-@import url("https://fonts.googleapis.com/css?family=Roboto+Mono");
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material%20Icons&display=swap");
+
+@import "perspective-viewer-pro.css";
+@import "perspective-viewer-pro-dark.css";
+@import "perspective-viewer-monokai.css";
+@import "perspective-viewer-vaporwave.css";
+@import "perspective-viewer-solarized.css";
+@import "perspective-viewer-solarized-dark.css";
+@import "perspective-viewer-gruvbox.css";
+@import "perspective-viewer-gruvbox-dark.css";
 
 html {
   font-family: "Roboto Mono";

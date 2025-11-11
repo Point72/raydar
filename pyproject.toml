@@ -1,21 +1,15 @@
 [build-system]
-requires = [
-    "hatchling>=1.22.4,<1.28",
-    "pkginfo>=1.10,<1.13",
-    "hatch-jupyter-builder",
-]
-build-backend = "hatchling.build"
+requires = ["hatchling", "hatch-js"]
+build-backend="hatchling.build"
 
 [project]
 name = "raydar"
+authors = [{name = "Point72, L.P.", email = "OpenSource@point72.com"}]
 description = "A perspective powered, user editable ray dashboard via ray serve"
-version = "0.2.4"
 readme = "README.md"
-license = { file = "LICENSE" }
-requires-python = ">=3.9"
-authors = [
-    { name = "Point72", email = "OpenSource@Point72.com" },
-]
+license = { text = "Apache-2.0" }
+version = "0.2.4"
+requires-python = ">=3.10"
 keywords = [
     "perspective",
     "ray",
@@ -25,18 +19,18 @@ keywords = [
     "cluster",
     "cluster visualization",
 ]
+
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Framework :: Jupyter",
-    "Framework :: Jupyter :: JupyterLab",
+    "Development Status :: 3 - Alpha",
     "Programming Language :: Python",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
-    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.14",
 ]
 
 dependencies = [
@@ -44,7 +38,7 @@ dependencies = [
     "fastapi",
     "jinja2",
     "packaging",
-    "perspective-python>=3,<4",
+    "perspective-python>=3,<5",
     "polars",
     "pyarrow",
     "pydantic",
@@ -56,46 +50,43 @@ develop = [
     "build",
     "bump-my-version",
     "check-manifest",
+    "codespell>=2.4,<2.5",
+    "hatch-js",
     "hatchling",
-    "hatch-jupyter-builder",
-    "ruff>=0.5.0,<0.15",
-    "toml",
+    "mdformat>=0.7.22,<1.1",
+    "mdformat-tables>=1",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+    "pytest-sugar",
+    "ruff>=0.9,<0.15",
     "twine",
     "wheel",
     # Test deps
     "pandas",
-    "pytest",
-    "pytest-asyncio",
-    "pytest-cov",
-    "pytest-sugar",
 ]
 
-test = [
-    "pytest",
-    "pytest-asyncio",
-    "pytest-cov",
-    "pytest-sugar",
-]
+[project.scripts]
 
 [project.urls]
-Repository = "https://github.com/point72/raydar"
-Homepage = "https://github.com/point72/raydar"
+Repository = "https://github.com/Point72/raydar"
+Homepage = "https://github.com/Point72/raydar"
 
 [tool.bumpversion]
 current_version = "0.2.4"
 commit = true
-tag = false
+tag = true
 commit_args = "-s"
-
-[[tool.bumpversion.files]]
-filename = "pyproject.toml"
-search = 'version = "{current_version}"'
-replace = 'version = "{new_version}"'
 
 [[tool.bumpversion.files]]
 filename = "raydar/__init__.py"
 search = '__version__ = "{current_version}"'
 replace = '__version__ = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
 
 [[tool.bumpversion.files]]
 filename = "js/package.json"
@@ -109,9 +100,28 @@ replace = 'Raydar v{new_version}'
 
 [tool.check-manifest]
 ignore = [
-    "raydar/dashboard/static/*",
-	"js/**",
+    ".copier-answers.yaml",
+    "js/pnpm-lock.yaml",
+    "Makefile",
+    ".vscode/*",
+    "docs/**/*",
+    "js/dist/**/*",
+    "raydar/dashboard/static/**/*",
 ]
+
+[tool.coverage.run]
+branch = true
+omit = [
+    "raydar/tests/integration/",
+]
+[tool.coverage.report]
+exclude_also = [
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "@(abc\\.)?abstractmethod",
+]
+ignore_errors = true
+fail_under = 40
 
 [tool.hatch.build]
 artifacts = [
@@ -122,55 +132,25 @@ artifacts = [
 src = "/"
 
 [tool.hatch.build.targets.sdist]
-include = [
-    "/raydar",
-    "/js",
-    "LICENSE",
-    "README.md",
-]
+packages = ["raydar", "js"]
 exclude = [
-    "/.github",
-    "/.gitignore",
-    "/.mypy_cache",
-    "/.ruff_cache",
-    "/dist",
-    "/docs",
+    "/js/dist",
     "/js/node_modules",
 ]
 
 [tool.hatch.build.targets.wheel]
-include = [
-    "/raydar",
-]
-exclude = [
-    "/.github",
-    "/.gitignore",
-    "/.mypy_cache",
-    "/.ruff_cache",
-    "/pyproject.toml",
-    "/dist",
-    "/docs",
-    "/js"
-]
+packages = ["raydar"]
+exclude = ["/js"]
 
-[tool.hatch.build.hooks.jupyter-builder]
-build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = [
-    "raydar/dashboard/static/index.js",
-    "raydar/dashboard/static/index.html",
-    "raydar/dashboard/static/index.css",
-]
-skip-if-exists = [
-    "raydar/dashboard/static/index.js",
-]
-dependencies = [
-    "hatch-jupyter-builder>=0.5.0",
-]
-
-[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
+[tool.hatch.build.hooks.hatch-js]
 path = "js"
 build_cmd = "build"
-npm = "pnpm"
+tool = "pnpm"
+targets = ["raydar/dashboard/static/index.js"]
+
+[tool.pytest.ini_options]
+addopts = ["-vvv", "--junitxml=junit.xml"]
+testpaths = "raydar/tests"
 
 [tool.ruff]
 line-length = 150

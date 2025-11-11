@@ -1,106 +1,165 @@
-###############
-# Build Tools #
-###############
-.PHONY: build develop install
+#########
+# BUILD #
+#########
+.PHONY: develop-py develop-js develop
+develop-py:
+	uv pip install -e .[develop]
 
-build:  ## build python/javascript
-	python -m build .
+develop-js: requirements-js
 
-requirements:  ## install prerequisite python build requirements
+develop: develop-js develop-py  ## setup project for development
+
+.PHONY: requirements-py requirements-js requirements
+requirements-py:  ## install prerequisite python build requirements
 	python -m pip install --upgrade pip toml
 	python -m pip install `python -c 'import toml; c = toml.load("pyproject.toml"); print("\n".join(c["build-system"]["requires"]))'`
 	python -m pip install `python -c 'import toml; c = toml.load("pyproject.toml"); print(" ".join(c["project"]["optional-dependencies"]["develop"]))'`
 
-develop:  ## install to site-packages in editable mode
-	cd js; pnpm install
-	python -m pip install -e .[develop]
+requirements-js:  ## install prerequisite javascript build requirements
+	cd js; pnpm install && npx playwright install
 
-install:  ## install to site-packages
-	python -m pip install .
+requirements: requirements-js requirements-py  ## setup project for development
 
-###########
-# Testing #
-###########
-.PHONY: testpy testjs test tests
+.PHONY: build-py build-js build
+build-py:
+	python -m build -w -n
 
-testpy: ## run the python unit tests
-	python -m pytest -v raydar/tests --junitxml=junit.xml --cov=raydar --cov-report=xml:.coverage.xml --cov-branch --cov-fail-under=1 --cov-report term-missing
+build-js:
+	cd js; pnpm build
 
-testjs: ## run the javascript unit tests
-	cd js; pnpm run test
+build: build-js build-py  ## build the project
 
-test: tests
-tests: testpy testjs ## run all the unit tests
+.PHONY: install
+install:  ## install python library
+	uv pip install .
 
-###########
-# Linting #
-###########
-.PHONY: lintpy lintjs lint fixpy fixjs fix format
-
-lintpy:  ## lint python with ruff
+#########
+# LINTS #
+#########
+.PHONY: lint-py lint-js lint lints
+lint-py:  ## run python linter with ruff
 	python -m ruff check raydar
 	python -m ruff format --check raydar
 
-lintjs:  ## lint javascript with eslint
-	cd js; pnpm run lint
+lint-js:  ## run js linter
+	cd js; pnpm lint
 
-lint: lintpy lintjs  ## run all linters
+lint-docs:  ## lint docs with mdformat and codespell
+	python -m mdformat --check README.md docs/wiki/
+	python -m codespell_lib README.md docs/wiki/
 
-fixpy:  ## autoformat python code with isort and ruff
+lint: lint-js lint-py lint-docs  ## run project linters
+
+# alias
+lints: lint
+
+.PHONY: fix-py fix-js fix-docs fix format
+fix-py:  ## fix python formatting with ruff
 	python -m ruff check --fix raydar
 	python -m ruff format raydar
 
-fixjs:  ## autoformat javascript code with eslint
-	cd js; pnpm run fix
+fix-js:  ## fix js formatting
+	cd js; pnpm fix
 
-fix: fixpy fixjs  ## run all autofixers
+fix-docs:  ## autoformat docs with mdformat and codespell
+	python -m mdformat README.md docs/wiki/
+	python -m codespell_lib --write README.md docs/wiki/
+
+fix: fix-js fix-py fix-docs  ## run project autoformatters
+
+# alias
 format: fix
 
-#################
+################
 # Other Checks #
-#################
-.PHONY: check checks check-manifest
+################
+.PHONY: check-manifest checks check
 
-check: checks
-
-checks: check-manifest  ## run security, packaging, and other checks
-
-check-manifest:  ## run manifest checker for sdist
+check-manifest:  ## check python sdist manifest with check-manifest
 	check-manifest -v
 
-################
-# Distribution #
-################
-.PHONY: dist publishpy publishjs publish
+checks: check-manifest
 
-dist: clean build  ## create dists
+# alias
+check: checks
+
+#########
+# TESTS #
+#########
+.PHONY: test-py tests-py coverage-py
+test-py:  ## run python tests
+	python -m pytest -v raydar/tests
+
+# alias
+tests-py: test-py
+
+coverage-py:  ## run python tests and collect test coverage
+	python -m pytest -v raydar/tests --cov=raydar --cov-report term-missing --cov-report xml
+
+.PHONY: test-js tests-js coverage-js
+test-js:  ## run js tests
+	cd js; pnpm test
+
+# alias
+tests-js: test-js
+
+coverage-js: test-js  ## run js tests and collect test coverage
+
+.PHONY: test coverage tests
+test: test-py test-js  ## run all tests
+coverage: coverage-py coverage-js  ## run all tests and collect test coverage
+
+# alias
+tests: test
+
+###########
+# VERSION #
+###########
+.PHONY: show-version patch minor major
+
+show-version:  ## show current library version
+	@bump-my-version show current_version
+
+patch:  ## bump a patch version
+	@bump-my-version bump patch
+
+minor:  ## bump a minor version
+	@bump-my-version bump minor
+
+major:  ## bump a major version
+	@bump-my-version bump major
+
+########
+# DIST #
+########
+.PHONY: dist dist-py dist-js dist-check publish
+
+dist-py:  ## build python dists
+	python -m build -w -s
+
+dist-js:  # build js dists
+	cd js; pnpm pack
+
+dist-check:  ## run python dist checker with twine
 	python -m twine check dist/*
 
-publishpy:  ## dist to pypi
-	python -m twine upload dist/* --skip-existing
+dist: clean build dist-js dist-py dist-check  ## build all dists
 
-publishjs:  ## dist to npm
-	cd js; npm publish || echo "can't publish - might already exist"
+publish: dist  ## publish python assets
 
-publish: dist publishpy publishjs  ## dist to pypi and npm
+#########
+# CLEAN #
+#########
+.PHONY: deep-clean clean
 
-############
-# Cleaning #
-############
-.PHONY: clean
+deep-clean: ## clean everything from the repository
+	git clean -fdx
 
 clean: ## clean the repository
-	find . -name "__pycache__" | xargs  rm -rf
-	find . -name "*.pyc" | xargs rm -rf
-	find . -name ".ipynb_checkpoints" | xargs  rm -rf
-	rm -rf .coverage coverage *.xml build dist *.egg-info lib node_modules .pytest_cache *.egg-info
-	rm -rf raydar/dashboard/static
-	cd js; pnpm run clean
-	git clean -fd
+	rm -rf .coverage coverage cover htmlcov logs build dist *.egg-info
 
-###########
-# Helpers #
-###########
+############################################################################################
+
 .PHONY: help
 
 # Thanks to Francoise at marmelab.com for this
@@ -110,4 +169,3 @@ help:
 
 print-%:
 	@echo '$*=$($*)'
-

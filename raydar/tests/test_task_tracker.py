@@ -33,7 +33,7 @@ class TestRayTaskTracker:
             route_prefix="/",
         )
         server = setup_proxy_server(**kwargs)
-        server.remote("new", "test_table", dict(a="str", b="int", c="float", d="datetime"))
+        server.remote("new", "test_table", dict(a="string", b="integer", c="float", d="datetime"))
         time.sleep(2)
         server.remote("update", "test_table", [dict(a="foo", b=1, c=1.0, d=time.time())])
         time.sleep(2)

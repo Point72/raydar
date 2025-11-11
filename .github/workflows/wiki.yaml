@@ -1,4 +1,4 @@
-name: Publish Docs
+name: Publish Wiki
 
 on:
   push:
@@ -20,13 +20,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-      
-      - name: Make home file
-        run: cat README.md docs/wiki/_Home.md > docs/wiki/Home.md
-
-      - name: Upload Documentation to Wiki
-        uses: Andrew-Chen-Wang/github-wiki-action@v5
+      - uses: actions/checkout@v5
+      - run: cp README.md docs/wiki/Home.md
+      - uses: Andrew-Chen-Wang/github-wiki-action@v5
         with:
           path: docs/wiki

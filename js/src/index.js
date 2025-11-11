@@ -1,17 +1,23 @@
-import perspective from "@finos/perspective";
-import "@finos/perspective-viewer";
-import "@finos/perspective-viewer-datagrid";
-import "@finos/perspective-viewer-d3fc";
-import "@finos/perspective-workspace/dist/css/pro.css";
-import "@finos/perspective-viewer/dist/css/themes.css";
-import "@finos/perspective-workspace";
-import "./index.css";
+import perspective from "@perspective-dev/client";
+import perspective_viewer from "@perspective-dev/viewer";
+import SERVER_WASM from "@perspective-dev/server/dist/wasm/perspective-server.wasm";
+import CLIENT_WASM from "@perspective-dev/viewer/dist/wasm/perspective-viewer.wasm";
+
+import "@perspective-dev/workspace";
+import "@perspective-dev/viewer-datagrid";
+import "@perspective-dev/viewer-d3fc";
+
+const perspective_init_promise = Promise.all([
+  perspective.init_server(fetch(SERVER_WASM)),
+  perspective_viewer.init_client(fetch(CLIENT_WASM)),
+]);
 
 function removeTrailingSlash(url) {
   return url.replace(/\/$/, "");
 }
 
 async function load() {
+  await perspective_init_promise;
   const workspace = document.querySelector("perspective-workspace");
   const saveButton = document.getElementById("save-layout-button");
   const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
@@ -21,6 +27,7 @@ async function load() {
     )}/ws`,
   );
   const registeredTables = new Set();
+
   const updateTables = async () => {
     const response = await fetch(
       `${removeTrailingSlash(window.location.href)}/tables`,
@@ -29,8 +36,12 @@ async function load() {
 
     tables.map(async (tableName) => {
       if (registeredTables.has(tableName)) return;
+      console.log(`Registering table: ${tableName}`);
       registeredTables.add(tableName);
-      workspace.addTable(tableName, await websocket.open_table(tableName));
+      await workspace.addTable(
+        tableName,
+        await websocket.open_table(tableName),
+      );
     });
   };
 
@@ -82,7 +93,10 @@ async function load() {
   const layouts = await fetch("static/layouts/default.json");
   const layoutData = await layouts.json();
   console.log("Loading layout from static/layouts/default.json...");
-  workspace.restore(layoutData);
+
+  if (Object.keys(layoutData).length > 0) {
+    await workspace.restore(layoutData);
+  }
 
   await updateTables();
 
