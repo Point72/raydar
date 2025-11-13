@@ -7,8 +7,8 @@
 [![Build Status](https://github.com/Point72/raydar/actions/workflows/build.yaml/badge.svg?branch=main&event=push)](https://github.com/Point72/raydar/actions/workflows/build.yaml)
 [![codecov](https://codecov.io/gh/point72/raydar/branch/main/graph/badge.svg)](https://codecov.io/gh/point72/raydar)
 [![GitHub issues](https://img.shields.io/github/issues/point72/raydar.svg)](https://github.com/point72/raydar/issues)
-[![PyPI Version](https://img.shields.io/pypi/v/raydar.svg)](https://pypi.python.org/pypi/raydar)
-[![License](https://img.shields.io/pypi/l/raydar.svg)](https://github.com/Point72/raydar/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/Point72/raydar)](https://github.com/Point72/raydar)
+[![PyPI](https://img.shields.io/pypi/v/raydar.svg)](https://pypi.python.org/pypi/raydar)
 
 A [perspective](https://perspective.finos.org/) powered, user editable ray dashboard via ray serve.
 
@@ -20,8 +20,8 @@ Raydar, enables out-of-the-box live cluster metrics and user visualizations for 
 
 ## Features
 
-- Convenience wrappers for the tracking and persistence of ray GCS task metdata. Can scale beyond the existing ray dashboard / GCS task tracking limitations.
-- Serves a UI through [ray serve](https://docs.ray.io/en/latest/serve/index.html) for the vizualization of [perspective](https://github.com/finos/perspective) tables.
+- Convenience wrappers for the tracking and persistence of ray GCS task metadata. Can scale beyond the existing ray dashboard / GCS task tracking limitations.
+- Serves a UI through [ray serve](https://docs.ray.io/en/latest/serve/index.html) for the visualization of [perspective](https://github.com/finos/perspective) tables.
 - A python interface to create and update perspective tables from within ray tasks.
 
 [More information is available in our wiki](https://github.com/Point72/raydar/wiki)
@@ -67,16 +67,16 @@ from raydar import RayTaskTracker
 task_tracker = RayTaskTracker(
     enable_perspective_dashboard=True,
     name="my_actor_name",
-    namespace="my_actor_namespace”
+    namespace="my_actor_namespace"
 )
 
 task_tracker.create_table(
     table_name="demo_table",
     table_schema=dict(
-        worker_id="str",
-        metric_value="int",
+        worker_id="string",
+        metric_value="integer",
         other_metric_value="float",
-        timestamp="datetime”
+        timestamp="datetime"
     )
 )
 ```
@@ -97,6 +97,10 @@ def add_data_to_demo_table(i):
         timestamp = datetime.datetime.now()
     )
     task_tracker.update_table("demo_table", [data])
+
+
+for i in range(100):
+    ray.get(add_data_to_demo_table.remote(i))
 ```
 
 ![Example](https://media.githubusercontent.com/media/Point72/raydar/refs/heads/main/docs/img/custom_user_table.gif)
@@ -116,3 +120,6 @@ The `Save Layout` button saves a json file containing layout information. Draggi
 ## License
 
 This software is licensed under the Apache 2.0 license. See the [LICENSE](LICENSE) file for details.
+
+> [!NOTE]
+> This library was generated using [copier](https://copier.readthedocs.io/en/stable/) from the [Base Python Project Template repository](https://github.com/python-project-templates/base).

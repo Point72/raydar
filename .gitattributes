@@ -1,7 +1,15 @@
+examples/* linguist-documentation
 docs/* linguist-documentation
 *.ipynb linguist-documentation
-*.js text eol=lf
-*.py text eol=lf
-*.md text eol=lf
-docs/img/*.gif filter=lfs diff=lfs merge=lfs -text
-raydar/dashboard/static/index.psp2.js filter=lfs diff=lfs merge=lfs
+Makefile linguist-documentation
+
+*.css text=auto eol=lf
+*.html text=auto eol=lf
+*.js text=auto eol=lf
+*.json text=auto eol=lf
+*.less text=auto eol=lf
+*.md text=auto eol=lf
+*.py text=auto eol=lf
+*.toml text=auto eol=lf
+*.ts text=auto eol=lf
+*.yaml text=auto eol=lf

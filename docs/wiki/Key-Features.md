@@ -120,8 +120,8 @@ proxy_server.remote(
     "new",
     "metrics_table",
     {
-        "node_id": "str",
-        "metric_name": "str",
+        "node_id": "string",
+        "metric_name": "string",
         "value": "float",
         "timestamp": "datetime",
     },

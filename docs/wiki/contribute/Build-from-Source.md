@@ -1,12 +1,8 @@
-`raydar` is written in Python and Javascript. While prebuilt wheels are provided for end users, it is also straightforward to build `raydar` from either the Python [source distribution](https://packaging.python.org/en/latest/specifications/source-distribution-format/) or the GitHub repository.
+`raydar` is written in Python and JavaScript. While prebuilt wheels are provided for end users, it is also straightforward to build `raydar` from either the Python [source distribution](https://packaging.python.org/en/latest/specifications/source-distribution-format/) or the GitHub repository.
 
-## Table of Contents
-
-- [Table of Contents](#table-of-contents)
 - [Make commands](#make-commands)
 - [Prerequisites](#prerequisites)
 - [Clone](#clone)
-- [Install NodeJS](#install-nodejs)
 - [Install Python dependencies](#install-python-dependencies)
 - [Build](#build)
 - [Lint and Autoformat](#lint-and-autoformat)
@@ -42,7 +38,7 @@ cd raydar
 
 ## Install NodeJS
 
-Follow the instructions for [installing NodeJS](https://nodejs.org/en/download/package-manager/all) for your system. Once installed, you can [install `pnpm`](https://pnpm.io) with:
+Follow the instructions for [installing NodeJS](https://nodejs.org/en/download/package-manager/all) for your system. Once installed, you can [install `pnpm`](https://pnpm.io/installation) with:
 
 ```bash
 npm install --global pnpm
@@ -70,40 +66,49 @@ make build
 
 `raydar` has linting and auto formatting.
 
-| Language   | Linter     | Autoformatter | Description |
-| :--------- | :--------- | :------------ | :---------- |
-| Python     | `ruff`     | `ruff`        | Style       |
-| Python     | `isort`    | `isort`       | Imports     |
-| JavaScript | `prettier` | `prettier`    | Style       |
-| Markdown   | `prettier` | `prettier`    | Style       |
+| Language   | Linter      | Autoformatter | Description |
+| :--------- | :---------- | :------------ | :---------- |
+| Python     | `ruff`      | `ruff`        | Style       |
+| Python     | `ruff`      | `ruff`        | Imports     |
+| JavaScript | `prettier`  | `prettier`    | Style       |
+| Markdown   | `mdformat`  | `mdformat`    | Style       |
+| Markdown   | `codespell` |               | Spelling    |
 
 **Python Linting**
 
 ```bash
-make lintpy
+make lint-py
 ```
 
 **Python Autoformatting**
 
 ```bash
-make fixpy
+make fix-py
 ```
 
 **JavaScript Linting**
 
 ```bash
-make lintjs
+make lint-js
 ```
 
 **JavaScript Autoformatting**
 
 ```bash
-make fixjs
+make fix-js
 ```
 
 **Documentation Linting**
 
-We use `prettier` for our Markdown linting, so follow the above docs.
+```bash
+make lint-docs
+```
+
+**Documentation Autoformatting**
+
+```bash
+make fix-docs
+```
 
 ## Testing
 
@@ -116,11 +121,11 @@ make develop
 **Python**
 
 ```bash
-make testpy
+make test-py
 ```
 
 **JavaScript**
 
 ```bash
-make testjs
+make test-js
 ```

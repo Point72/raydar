@@ -1,0 +1,12 @@
+# Changes here will be overwritten by Copier
+_commit: 973c39c
+_src_path: https://github.com/python-project-templates/base.git
+add_docs: false
+add_extension: js
+add_wiki: true
+email: OpenSource@point72.com
+github: Point72
+project_description: A perspective powered, user editable ray dashboard via ray serve
+project_name: raydar
+python_version_primary: '3.11'
+team: Point72, L.P.
