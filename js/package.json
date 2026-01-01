@@ -45,7 +45,7 @@
     "@perspective-dev/viewer": "^4.0.0",
     "@perspective-dev/viewer-d3fc": "^4.0.1",
     "@perspective-dev/viewer-datagrid": "^4.0.1",
-    "@perspective-dev/workspace": "^4.0.0"
+    "@perspective-dev/workspace": "^4.0.1"
   },
   "devDependencies": {
     "@finos/perspective-esbuild-plugin": "^3.2.1",
