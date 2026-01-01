@@ -24,8 +24,8 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
       '@perspective-dev/workspace':
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.1
+        version: 4.0.1
     devDependencies:
       '@finos/perspective-esbuild-plugin':
         specifier: ^3.2.1
@@ -326,44 +326,44 @@ packages:
   '@finos/perspective-esbuild-plugin@3.2.1':
     resolution: {integrity: sha512-6EqacFm5rGA0EtzD2p9RuxtVLEci9AEC4NPiOCpqFdgxxX8Msv8LlL7Ml3opxyaEeKpndVsLFdOD5U+PNaaa+A==}
 
-  '@lumino/algorithm@2.0.3':
-    resolution: {integrity: sha512-DIcF7cIrGEC1Wh8DNjdwaL7IdcNs4Jj1VjO/90oHefeQPszKgc6DSfCxvbQiRanKR6tl/JL7tq4ZRPZES2oVAA==}
+  '@lumino/algorithm@2.0.4':
+    resolution: {integrity: sha512-gddBhESPqu25KWLeAK9Kz8tS9Ph7P45i0CNG7Ia4XMhK9PHLtTsBdJTC9jP+MqhbzC8zDT/4ekvYRV9ojRPj7Q==}
 
-  '@lumino/collections@2.0.3':
-    resolution: {integrity: sha512-Y9Wtvuk8SD6xcKgkqe3SUx5RywOcRz6DyWE4f5FvBT3OdANq76p9r0wtf8OKPt4BGE41kAQR+bdq3k+MfHlUsQ==}
+  '@lumino/collections@2.0.4':
+    resolution: {integrity: sha512-D/Py9L5HET6+XUYGxFqDEEth4B65X2c7B/GQVRR8q5Fl7EArVL6e98ZXw8BMkuPcTNa0zlENpCKXzlcoJZxXgQ==}
 
-  '@lumino/commands@2.3.2':
-    resolution: {integrity: sha512-aAFEiUpp2hrkQU82Z85w1L80g0iDzsQRncLBa+pqVR/k0k1lz6H9F6xZ1ff+lBumZKKtsxBxNomvd0hfxLLqGw==}
+  '@lumino/commands@2.3.3':
+    resolution: {integrity: sha512-7Ci0QdFzt4NKFMhULr19sJPpOLHJw/oYlq6Pb0/Kq1s05+cIoLimr5wiyjkbAlNoGO/8A8SEBGHy3uctZz6G3A==}
 
-  '@lumino/coreutils@2.2.1':
-    resolution: {integrity: sha512-yij4TnxDIum7xfFUsVvZB0oLv4shs2mNbn3juwtEIsruvVBPmurNzKX0Y8z2QetbP2AZ6MSFtBzEKsihf0H0VA==}
+  '@lumino/coreutils@2.2.2':
+    resolution: {integrity: sha512-zaKJaK7rawPATn2BGHkbMrR6oK3s9PxNe9KreLwWF2dB4ZBHDiEmNLRyHRorfJ7XqVOEXAsAAj0jFn+qJPC/4Q==}
 
-  '@lumino/disposable@2.1.4':
-    resolution: {integrity: sha512-qTJiDbglPE2QnG4x4gtBcRbcfKQibxyyinNGKcNDrcK2TGTbbhK5PpMQ8d70l2V2Xw2pb/LfksBAg5pxkJ/G4A==}
+  '@lumino/disposable@2.1.5':
+    resolution: {integrity: sha512-hO9AkJK0oEGzxopuxI8LaZqwzSNwXJTGCdr5K4gh6al+zxpN7rOCh6Aq3zDxkIHJU4zybxv8r02ardx9XJsG3A==}
 
-  '@lumino/domutils@2.0.3':
-    resolution: {integrity: sha512-bXAbZg3mf2ZDNdBBpCGDike3U+osRGHePTh8H2Ud2KwaN4g/5IryFJm/TiO4K5IYs91bWF2Zqhf3FsdbZKHlGw==}
+  '@lumino/domutils@2.0.4':
+    resolution: {integrity: sha512-naYGUQn3e0CLtz/tjKOZP8SOBg0SW7EguhkxLpNUXlVUvx7rVsfr0VI22FVL+jgI0FbxXpEkxpSMxtK73jxJAg==}
 
-  '@lumino/dragdrop@2.1.6':
-    resolution: {integrity: sha512-N9aqdOYl5HTuTAIVvjTXxlPKK3e9JAj5yEtJ4nA/tNE7J8C9y3BRQ4fBAtk7O0z/8yx8tO8a0j5oSt2zAfvYuA==}
+  '@lumino/dragdrop@2.1.7':
+    resolution: {integrity: sha512-oa5EtBC37EiiJsuIFVcK1DywpEb4dnQCMzWnymvjlBXG3/fAIC+65Q/iLoNUWkMz1pc3ET2SZWDporlznxlEbw==}
 
-  '@lumino/keyboard@2.0.3':
-    resolution: {integrity: sha512-bU2OxAR8a9eNBdV0YFjU6/lVVpbOw1gM7yHOuDGDdNu4J0UpKapFoR9gopNGSaHTmTwDtx9RHdFfIAgHwjZ+VQ==}
+  '@lumino/keyboard@2.0.4':
+    resolution: {integrity: sha512-kIVkdSz8F5wtZr8hZp0CMX+E0eMCOnFH6XCT7j2UBQ80ERJHFy0eX+IbNo3dtRQ7+CcDhBV4hQquFNFa+/04QQ==}
 
-  '@lumino/messaging@2.0.3':
-    resolution: {integrity: sha512-//NAE+FG9UWSoXs4i5imduGY1XDvhjMGNF82aMyFTv8wVU6bdRfRmj0xLlQ8ixzA0eXPOFL4ugWZNdlu48P1+Q==}
+  '@lumino/messaging@2.0.4':
+    resolution: {integrity: sha512-NbZnchAPOciSe9Qn/g6EzG0LRaw7bygFIXbCD440ZhzvugdBeAerwYhrA795jkXPNrrl3olp5AlO0cBB/XZNtg==}
 
-  '@lumino/properties@2.0.3':
-    resolution: {integrity: sha512-zkXIU5uYz/ScHCHGl5Bt4gMYsfPxZEduZd80zqDslBWvTIMro3NnzLe66NMnecbdr5N3hDJagYyA8//Qy3XjiA==}
+  '@lumino/properties@2.0.4':
+    resolution: {integrity: sha512-XsL2qLZk+1FbfuTrkyjciI8PMDw3YcaBkqVQ+iv7OOJf9bUlrmTpCMY0Hu5d3hV2W3TWlRsdbvRRLEBJSKv0iA==}
 
-  '@lumino/signaling@2.1.4':
-    resolution: {integrity: sha512-nC5Z6d9om369Jkh1Vp3b7C89hV4cjr1fQDVcxhemyKXwc9r6VW7FpKixC+jElcAknP5KLj1FAa8Np+K06mMkEA==}
+  '@lumino/signaling@2.1.5':
+    resolution: {integrity: sha512-Wkx6WR45ynmKBlW0GBEoh4xk9+QluKr1JHuMftqcStBHSQBCnN54UKRRDbySXHGRhhx6p4neu7sGomgQSlQK8w==}
 
-  '@lumino/virtualdom@2.0.3':
-    resolution: {integrity: sha512-q2C8eBxPvvOOQjN3KuxZ+vJi082JH/GF7KwMdaWsy5g+7wjKdnXPuLQFTBLOrVqIzmbxBDlLeFr93CEhdQXcyQ==}
+  '@lumino/virtualdom@2.0.4':
+    resolution: {integrity: sha512-7MFthA9KUsqZTGm/D98FZt1QupjIGyd3XyB4SIugn6DQAqhjBiyykCZydnRq3qmuMHybQel33dNIbHpzyNyQwA==}
 
-  '@lumino/widgets@2.7.1':
-    resolution: {integrity: sha512-gGq3zB1260gG1aK1m3SkqVoWZ/yfUxCKZvUOmRKLIcZPJUs33bgessm4P65oY5C1eAXalU4erLmKBiBaOn5gtw==}
+  '@lumino/widgets@2.7.2':
+    resolution: {integrity: sha512-svp4Si10PcTr6Hfd1hZgkue1rKPYpnuCheGWkou/RlMZih94mVbQoDO1xppo/haYQg4GX2IgCFpUKsNb19oBAg==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -401,8 +401,8 @@ packages:
   '@perspective-dev/viewer@4.0.1':
     resolution: {integrity: sha512-0zZ3eMgY0Jmj27m6WX7CsR2knDPYhBs6NFTVEbzprMqED5w8ocX18DK1ZCKtiynfFSYN0d1hUJFSMp2DhxXzAw==}
 
-  '@perspective-dev/workspace@4.0.0':
-    resolution: {integrity: sha512-OzMJG7O32PrI9wPWtHfimNQM8VcQ/8r+zR7JtG19elnQUEcC3b7VlIDhK/ePzVsciLotYR9X253ep5rFS+efoA==}
+  '@perspective-dev/workspace@4.0.1':
+    resolution: {integrity: sha512-CXBz12vNggyHhgnIgDwcJ+uZi6tvgNIq/vIStBHd9z+hqreNoZnxbrZERf+7ONCWZtB3FkcLvsx5l0LJlxaGFw==}
 
   '@prospective.co/procss@0.1.17':
     resolution: {integrity: sha512-jZCbEji9gTgJIJ41a0VQQV8GARUNKp9ils8/6347fbNkGBtA3cRwhQfRAxnqc0dhyo6pTSjMSflqop5ToIiSwQ==}
@@ -1738,68 +1738,68 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@lumino/algorithm@2.0.3': {}
+  '@lumino/algorithm@2.0.4': {}
 
-  '@lumino/collections@2.0.3':
+  '@lumino/collections@2.0.4':
     dependencies:
-      '@lumino/algorithm': 2.0.3
+      '@lumino/algorithm': 2.0.4
 
-  '@lumino/commands@2.3.2':
+  '@lumino/commands@2.3.3':
     dependencies:
-      '@lumino/algorithm': 2.0.3
-      '@lumino/coreutils': 2.2.1
-      '@lumino/disposable': 2.1.4
-      '@lumino/domutils': 2.0.3
-      '@lumino/keyboard': 2.0.3
-      '@lumino/signaling': 2.1.4
-      '@lumino/virtualdom': 2.0.3
+      '@lumino/algorithm': 2.0.4
+      '@lumino/coreutils': 2.2.2
+      '@lumino/disposable': 2.1.5
+      '@lumino/domutils': 2.0.4
+      '@lumino/keyboard': 2.0.4
+      '@lumino/signaling': 2.1.5
+      '@lumino/virtualdom': 2.0.4
 
-  '@lumino/coreutils@2.2.1':
+  '@lumino/coreutils@2.2.2':
     dependencies:
-      '@lumino/algorithm': 2.0.3
+      '@lumino/algorithm': 2.0.4
 
-  '@lumino/disposable@2.1.4':
+  '@lumino/disposable@2.1.5':
     dependencies:
-      '@lumino/signaling': 2.1.4
+      '@lumino/signaling': 2.1.5
 
-  '@lumino/domutils@2.0.3': {}
+  '@lumino/domutils@2.0.4': {}
 
-  '@lumino/dragdrop@2.1.6':
+  '@lumino/dragdrop@2.1.7':
     dependencies:
-      '@lumino/coreutils': 2.2.1
-      '@lumino/disposable': 2.1.4
+      '@lumino/coreutils': 2.2.2
+      '@lumino/disposable': 2.1.5
 
-  '@lumino/keyboard@2.0.3': {}
+  '@lumino/keyboard@2.0.4': {}
 
-  '@lumino/messaging@2.0.3':
+  '@lumino/messaging@2.0.4':
     dependencies:
-      '@lumino/algorithm': 2.0.3
-      '@lumino/collections': 2.0.3
+      '@lumino/algorithm': 2.0.4
+      '@lumino/collections': 2.0.4
 
-  '@lumino/properties@2.0.3': {}
+  '@lumino/properties@2.0.4': {}
 
-  '@lumino/signaling@2.1.4':
+  '@lumino/signaling@2.1.5':
     dependencies:
-      '@lumino/algorithm': 2.0.3
-      '@lumino/coreutils': 2.2.1
+      '@lumino/algorithm': 2.0.4
+      '@lumino/coreutils': 2.2.2
 
-  '@lumino/virtualdom@2.0.3':
+  '@lumino/virtualdom@2.0.4':
     dependencies:
-      '@lumino/algorithm': 2.0.3
+      '@lumino/algorithm': 2.0.4
 
-  '@lumino/widgets@2.7.1':
+  '@lumino/widgets@2.7.2':
     dependencies:
-      '@lumino/algorithm': 2.0.3
-      '@lumino/commands': 2.3.2
-      '@lumino/coreutils': 2.2.1
-      '@lumino/disposable': 2.1.4
-      '@lumino/domutils': 2.0.3
-      '@lumino/dragdrop': 2.1.6
-      '@lumino/keyboard': 2.0.3
-      '@lumino/messaging': 2.0.3
-      '@lumino/properties': 2.0.3
-      '@lumino/signaling': 2.1.4
-      '@lumino/virtualdom': 2.0.3
+      '@lumino/algorithm': 2.0.4
+      '@lumino/commands': 2.3.3
+      '@lumino/coreutils': 2.2.2
+      '@lumino/disposable': 2.1.5
+      '@lumino/domutils': 2.0.4
+      '@lumino/dragdrop': 2.1.7
+      '@lumino/keyboard': 2.0.4
+      '@lumino/messaging': 2.0.4
+      '@lumino/properties': 2.0.4
+      '@lumino/signaling': 2.1.5
+      '@lumino/virtualdom': 2.0.4
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -1903,18 +1903,18 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@perspective-dev/workspace@4.0.0':
+  '@perspective-dev/workspace@4.0.1':
     dependencies:
-      '@lumino/algorithm': 2.0.3
-      '@lumino/commands': 2.3.2
-      '@lumino/coreutils': 2.2.1
-      '@lumino/domutils': 2.0.3
-      '@lumino/messaging': 2.0.3
-      '@lumino/signaling': 2.1.4
-      '@lumino/virtualdom': 2.0.3
-      '@lumino/widgets': 2.7.1
-      '@perspective-dev/client': 4.0.0
-      '@perspective-dev/viewer': 4.0.0
+      '@lumino/algorithm': 2.0.4
+      '@lumino/commands': 2.3.3
+      '@lumino/coreutils': 2.2.2
+      '@lumino/domutils': 2.0.4
+      '@lumino/messaging': 2.0.4
+      '@lumino/signaling': 2.1.5
+      '@lumino/virtualdom': 2.0.4
+      '@lumino/widgets': 2.7.2
+      '@perspective-dev/client': 4.0.1
+      '@perspective-dev/viewer': 4.0.1
       lodash: 4.17.21
     transitivePeerDependencies:
       - bufferutil
