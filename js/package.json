@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@perspective-dev/client": "^4.0.0",
-    "@perspective-dev/server": "^4.0.0",
+    "@perspective-dev/server": "^4.0.1",
     "@perspective-dev/viewer": "^4.0.0",
     "@perspective-dev/viewer-d3fc": "^4.0.1",
     "@perspective-dev/viewer-datagrid": "^4.0.1",
