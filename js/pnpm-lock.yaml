@@ -21,8 +21,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0(d3-brush@3.0.0)(d3-dispatch@3.0.1)(d3-fetch@3.0.1)(d3-path@3.1.0)(d3-random@3.0.1)(d3-scale-chromatic@3.1.0)(d3-scale@4.0.2)(d3-shape@3.2.0)(d3-time@3.1.0)(d3-zoom@3.0.0)
       '@perspective-dev/viewer-datagrid':
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.1
+        version: 4.0.1
       '@perspective-dev/workspace':
         specifier: ^4.0.0
         version: 4.0.0
@@ -380,17 +380,26 @@ packages:
   '@perspective-dev/client@4.0.0':
     resolution: {integrity: sha512-n3IHMIU+WeraAxAcyBMG/Wipegm8PBcDL3+haZecriBvV4v+7EzNvZd8l6pQNbYa+ah5eD2BCgmvZ8Mg/dxUug==}
 
+  '@perspective-dev/client@4.0.1':
+    resolution: {integrity: sha512-zDzO5DyPmryvp7iIQdoGUj0Yy5Zw1os7ole/H8jcXATDUXv0PsdEK3qf2AkOXDlOK2j4pe3ZiodNQ0OdYX/glA==}
+
   '@perspective-dev/server@4.0.0':
     resolution: {integrity: sha512-S25Mr+cgRomU9aDiplXUj2gImuYZFXUUfytLdJC+f9iipFqX3MqFUCPI4jEzb1xTUnP3Fzg9xzs8p1SymHOF9g==}
+
+  '@perspective-dev/server@4.0.1':
+    resolution: {integrity: sha512-MvpgnY4V6HKTRNnjESlGOuhStqSJy6cbsEtosvpDK7SHVVT7F9QN12AKY8wzUZd5n7rfbUL5vms/WgiPhPXQRA==}
 
   '@perspective-dev/viewer-d3fc@4.0.0':
     resolution: {integrity: sha512-kmPLTJxfbuhStp5speTCplx/SSK+sybgukIcIcZ5SQu4zkLea17u9KZjAxley1gDK5MQZNYhW07z5/thIm5xyQ==}
 
-  '@perspective-dev/viewer-datagrid@4.0.0':
-    resolution: {integrity: sha512-iLeSSOHbByVCORY/SZ2C6oN/Z6428037z6tAIfxR7CL1XzPOcoLqIzuUYc4H3dpLnc2jT6j7X8bNUX/YXN4IXw==}
+  '@perspective-dev/viewer-datagrid@4.0.1':
+    resolution: {integrity: sha512-UwfaVt0jGcOzMa5EfT9Uc6YgNK73c83/blteywF9E+wjdSy4VN0ocwisdsQaZeMgZuDJGRbGdtLmsFCU3wClow==}
 
   '@perspective-dev/viewer@4.0.0':
     resolution: {integrity: sha512-qUpOhh7FFmUXZdnMOHa4J8sA2aVww6/JICBUVlwI9xJjvUOTo2MHWmQYmGyakYMnOCIRmL5b6KFKsHOryK7uzA==}
+
+  '@perspective-dev/viewer@4.0.1':
+    resolution: {integrity: sha512-0zZ3eMgY0Jmj27m6WX7CsR2knDPYhBs6NFTVEbzprMqED5w8ocX18DK1ZCKtiynfFSYN0d1hUJFSMp2DhxXzAw==}
 
   '@perspective-dev/workspace@4.0.0':
     resolution: {integrity: sha512-OzMJG7O32PrI9wPWtHfimNQM8VcQ/8r+zR7JtG19elnQUEcC3b7VlIDhK/ePzVsciLotYR9X253ep5rFS+efoA==}
@@ -481,6 +490,9 @@ packages:
 
   chroma-js@3.1.2:
     resolution: {integrity: sha512-IJnETTalXbsLx1eKEgx19d5L6SRM7cH4vINw/99p/M11HCuXGRWL+6YmCm7FWFGIo6dtWuQoQi1dc5yQ7ESIHg==}
+
+  chroma-js@3.2.0:
+    resolution: {integrity: sha512-os/OippSlX1RlWWr+QDPcGUZs0uoqr32urfxESG9U93lhUfbnlyckte84Q8P1UQY/qth983AS1JONKmLS4T0nw==}
 
   color-convert@1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
@@ -1466,6 +1478,7 @@ packages:
   whatwg-encoding@2.0.0:
     resolution: {integrity: sha512-p41ogyeMUrw3jWclHWTQg1k05DSVXPLcVxRTYsXUk+ZooOCZLcoYgPZ/HL/D/N+uQPOtcp1me1WhBEaX02mhWg==}
     engines: {node: '>=12'}
+    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-url@5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
@@ -1815,7 +1828,21 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+  '@perspective-dev/client@4.0.1':
+    dependencies:
+      '@perspective-dev/server': 4.0.1
+      pro_self_extracting_wasm: 0.0.9
+      stoppable: 1.1.0
+      ws: 8.18.3
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - supports-color
+      - utf-8-validate
+
   '@perspective-dev/server@4.0.0': {}
+
+  '@perspective-dev/server@4.0.1': {}
 
   '@perspective-dev/viewer-d3fc@4.0.0(d3-brush@3.0.0)(d3-dispatch@3.0.1)(d3-fetch@3.0.1)(d3-path@3.1.0)(d3-random@3.0.1)(d3-scale-chromatic@3.1.0)(d3-scale@4.0.2)(d3-shape@3.2.0)(d3-time@3.1.0)(d3-zoom@3.0.0)':
     dependencies:
@@ -1847,11 +1874,11 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@perspective-dev/viewer-datagrid@4.0.0':
+  '@perspective-dev/viewer-datagrid@4.0.1':
     dependencies:
-      '@perspective-dev/client': 4.0.0
-      '@perspective-dev/viewer': 4.0.0
-      chroma-js: 3.1.2
+      '@perspective-dev/client': 4.0.1
+      '@perspective-dev/viewer': 4.0.1
+      chroma-js: 3.2.0
       regular-table: 0.6.8
     transitivePeerDependencies:
       - bufferutil
@@ -1862,6 +1889,16 @@ snapshots:
   '@perspective-dev/viewer@4.0.0':
     dependencies:
       '@perspective-dev/client': 4.0.0
+      pro_self_extracting_wasm: 0.0.9
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - supports-color
+      - utf-8-validate
+
+  '@perspective-dev/viewer@4.0.1':
+    dependencies:
+      '@perspective-dev/client': 4.0.1
       pro_self_extracting_wasm: 0.0.9
     transitivePeerDependencies:
       - bufferutil
@@ -1979,6 +2016,8 @@ snapshots:
   chownr@2.0.0: {}
 
   chroma-js@3.1.2: {}
+
+  chroma-js@3.2.0: {}
 
   color-convert@1.9.3:
     dependencies:
