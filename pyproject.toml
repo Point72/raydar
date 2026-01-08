@@ -8,7 +8,7 @@ authors = [{name = "Point72, L.P.", email = "OpenSource@point72.com"}]
 description = "A perspective powered, user editable ray dashboard via ray serve"
 readme = "README.md"
 license = { text = "Apache-2.0" }
-version = "0.2.4"
+version = "0.3.0"
 requires-python = ">=3.10"
 keywords = [
     "perspective",
@@ -73,7 +73,7 @@ Repository = "https://github.com/Point72/raydar"
 Homepage = "https://github.com/Point72/raydar"
 
 [tool.bumpversion]
-current_version = "0.2.4"
+current_version = "0.3.0"
 commit = true
 tag = true
 commit_args = "-s"
@@ -92,11 +92,6 @@ replace = 'version = "{new_version}"'
 filename = "js/package.json"
 search = '"version": "{current_version}"'
 replace = '"version": "{new_version}"'
-
-[[tool.bumpversion.files]]
-filename = "js/src/index.html"
-search = 'Raydar v{current_version}'
-replace = 'Raydar v{new_version}'
 
 [tool.check-manifest]
 ignore = [
