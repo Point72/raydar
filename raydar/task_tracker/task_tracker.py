@@ -3,11 +3,13 @@ import itertools
 import logging
 import os
 from collections.abc import Iterable
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Type
 
 import coolname
 import pandas as pd
 import polars as pl
+import pyarrow.fs as fs
+import pyarrow.parquet as pq
 import ray
 from packaging.version import Version
 from ray.serve import shutdown
@@ -88,8 +90,9 @@ class AsyncMetadataTracker:
         self,
         name: str,
         namespace: str,
-        path: Optional[str] = None,
         enable_perspective_dashboard: bool = False,
+        filesystem: Type[fs.FileSystem] = fs.LocalFileSystem,
+        filesystem_kwargs: Optional[dict] = None,
     ):
         """An async Ray Actor Class to track task level metadata.
 
@@ -114,13 +117,13 @@ class AsyncMetadataTracker:
             lifetime="detached",
             get_if_exists=True,
         ).remote(name, namespace)
-        self.path = path
         self.df = None
         self.finished_tasks = {}
         self.user_defined_metadata = {}
         self.perspective_dashboard_enabled = enable_perspective_dashboard
         self.pending_tasks = []
         self.perspective_table_name = f"{name}_data"
+        self.filesystem = filesystem(**(filesystem_kwargs or dict()))
 
         # WARNING: Do not move this import. Importing these modules elsewhere can cause
         # difficult to diagnose, "There is no current event loop in thread 'ray_client_server_" errors.
@@ -306,14 +309,10 @@ class AsyncMetadataTracker:
             return self.proxy_server
         raise Exception("This task_tracker has no active proxy_server.")
 
-    def save_df(self) -> None:
-        """Saves the internally maintained dataframe of task related information from the ray GCS"""
-        self.get_df()
-        if self.path is not None and self.df is not None:
-            logger.info(f"Writing DataFrame to {self.path}")
-            self.df.write_parquet(self.path)
-            return True
-        return False
+    def save_df(self, path: str) -> None:
+        """Saves the internally maintained dataframe of task related information from the ray GCS to a provided path, using the filesystem attribute"""
+        logger.info(f"Writing DataFrame to {path}")
+        pq.write_table(self.get_df().to_arrow(), path, filesystem=self.filesystem)
 
     def clear_df(self) -> None:
         """Clears the internally maintained dataframe of task related information from the ray GCS"""
@@ -363,9 +362,9 @@ class RayTaskTracker:
             return df_with_user_metadata
         return df
 
-    def save_df(self) -> None:
+    def save_df(self, path: str) -> None:
         """Save the dataframe used by this object's AsyncMetadataTracker actor"""
-        return ray.get(self.tracker.save_df.remote())
+        return ray.get(self.tracker.save_df.remote(path))
 
     def clear(self) -> None:
         """Clear the dataframe used by this object's AsyncMetadataTracker actor"""
