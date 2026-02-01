@@ -1,6 +1,6 @@
 {
   "name": "raydar",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "A perspective powered, user editable ray dashboard via ray serve",
   "repository": "git@github.com:Point72/raydar.git",
   "author": "Point72, L.P. <OpenSource@point72.com>",
