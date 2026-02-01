@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@perspective-dev/client':
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.1.0
+        version: 4.1.0
       '@perspective-dev/server':
         specifier: ^4.0.1
         version: 4.0.1
@@ -377,14 +377,14 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@perspective-dev/client@4.0.0':
-    resolution: {integrity: sha512-n3IHMIU+WeraAxAcyBMG/Wipegm8PBcDL3+haZecriBvV4v+7EzNvZd8l6pQNbYa+ah5eD2BCgmvZ8Mg/dxUug==}
-
-  '@perspective-dev/client@4.0.1':
-    resolution: {integrity: sha512-zDzO5DyPmryvp7iIQdoGUj0Yy5Zw1os7ole/H8jcXATDUXv0PsdEK3qf2AkOXDlOK2j4pe3ZiodNQ0OdYX/glA==}
+  '@perspective-dev/client@4.1.0':
+    resolution: {integrity: sha512-23VTzOmmBo1KynLTygFuM/RuOszSgIbvG68I3MNCS/w5BOoG4XGt+4WuZWTr13c93b+n3dGK18E4YF7hy82nwg==}
 
   '@perspective-dev/server@4.0.1':
     resolution: {integrity: sha512-MvpgnY4V6HKTRNnjESlGOuhStqSJy6cbsEtosvpDK7SHVVT7F9QN12AKY8wzUZd5n7rfbUL5vms/WgiPhPXQRA==}
+
+  '@perspective-dev/server@4.1.0':
+    resolution: {integrity: sha512-ZYZ5dvyTLDy2TxF62SBS5BgJcP/WSuK367K5/Uts2aItS30I/4ElIl68Pt53Cr3qZBvsSU63YhDJGXlVBpMN4A==}
 
   '@perspective-dev/viewer-d3fc@4.0.1':
     resolution: {integrity: sha512-9AR8NsPuHFX0RQ8F2qo6GlAwssk199LVhmJMDukNd491fcj7uEzAZiaQ/VBwGv09vlRgFgGQngh7/R6wRA0C5w==}
@@ -1498,8 +1498,8 @@ packages:
     resolution: {integrity: sha512-HxJdYWq1MTIQbJ3nw0cqssHoTNU267KlrDuGZ1WYlxDStUtKUhOaJmh112/TZmHxxUfuJqPXSOm7tDyas0OSIQ==}
     hasBin: true
 
-  ws@8.18.3:
-    resolution: {integrity: sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==}
+  ws@8.19.0:
+    resolution: {integrity: sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -1811,24 +1811,12 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
-  '@perspective-dev/client@4.0.0':
+  '@perspective-dev/client@4.1.0':
     dependencies:
-      '@perspective-dev/server': 4.0.1
+      '@perspective-dev/server': 4.1.0
       pro_self_extracting_wasm: 0.0.9
       stoppable: 1.1.0
-      ws: 8.18.3
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - supports-color
-      - utf-8-validate
-
-  '@perspective-dev/client@4.0.1':
-    dependencies:
-      '@perspective-dev/server': 4.0.1
-      pro_self_extracting_wasm: 0.0.9
-      stoppable: 1.1.0
-      ws: 8.18.3
+      ws: 8.19.0
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -1837,11 +1825,13 @@ snapshots:
 
   '@perspective-dev/server@4.0.1': {}
 
+  '@perspective-dev/server@4.1.0': {}
+
   '@perspective-dev/viewer-d3fc@4.0.1(d3-brush@3.0.0)(d3-dispatch@3.0.1)(d3-fetch@3.0.1)(d3-path@3.1.0)(d3-random@3.0.1)(d3-scale-chromatic@3.1.0)(d3-scale@4.0.2)(d3-shape@3.2.0)(d3-time@3.1.0)(d3-zoom@3.0.0)':
     dependencies:
       '@d3fc/d3fc-chart': 5.1.9(d3-array@3.2.4)(d3-path@3.1.0)(d3-scale-chromatic@3.1.0)(d3-scale@4.0.2)(d3-selection@3.0.0)(d3-shape@3.2.0)
       '@d3fc/d3fc-element': 6.2.0
-      '@perspective-dev/client': 4.0.1
+      '@perspective-dev/client': 4.1.0
       '@perspective-dev/viewer': 4.0.1
       chroma-js: 3.2.0
       d3: 7.9.0
@@ -1869,7 +1859,7 @@ snapshots:
 
   '@perspective-dev/viewer-datagrid@4.0.1':
     dependencies:
-      '@perspective-dev/client': 4.0.1
+      '@perspective-dev/client': 4.1.0
       '@perspective-dev/viewer': 4.0.1
       chroma-js: 3.2.0
       regular-table: 0.6.8
@@ -1881,7 +1871,7 @@ snapshots:
 
   '@perspective-dev/viewer@4.0.0':
     dependencies:
-      '@perspective-dev/client': 4.0.0
+      '@perspective-dev/client': 4.1.0
       pro_self_extracting_wasm: 0.0.9
     transitivePeerDependencies:
       - bufferutil
@@ -1891,7 +1881,7 @@ snapshots:
 
   '@perspective-dev/viewer@4.0.1':
     dependencies:
-      '@perspective-dev/client': 4.0.1
+      '@perspective-dev/client': 4.1.0
       pro_self_extracting_wasm: 0.0.9
     transitivePeerDependencies:
       - bufferutil
@@ -1909,7 +1899,7 @@ snapshots:
       '@lumino/signaling': 2.1.5
       '@lumino/virtualdom': 2.0.4
       '@lumino/widgets': 2.7.2
-      '@perspective-dev/client': 4.0.1
+      '@perspective-dev/client': 4.1.0
       '@perspective-dev/viewer': 4.0.1
       lodash: 4.17.23
     transitivePeerDependencies:
@@ -3271,7 +3261,7 @@ snapshots:
     dependencies:
       isexe: 2.0.0
 
-  ws@8.18.3: {}
+  ws@8.19.0: {}
 
   yallist@4.0.0: {}
 

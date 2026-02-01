@@ -40,7 +40,7 @@
     "watch": "npm-run-all -p watch:*"
   },
   "dependencies": {
-    "@perspective-dev/client": "^4.0.0",
+    "@perspective-dev/client": "^4.1.0",
     "@perspective-dev/server": "^4.0.1",
     "@perspective-dev/viewer": "^4.0.0",
     "@perspective-dev/viewer-d3fc": "^4.0.1",
