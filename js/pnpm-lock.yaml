@@ -18,8 +18,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       '@perspective-dev/viewer-d3fc':
-        specifier: ^4.0.1
-        version: 4.0.1(d3-brush@3.0.0)(d3-dispatch@3.0.1)(d3-fetch@3.0.1)(d3-path@3.1.0)(d3-random@3.0.1)(d3-scale-chromatic@3.1.0)(d3-scale@4.0.2)(d3-shape@3.2.0)(d3-time@3.1.0)(d3-zoom@3.0.0)
+        specifier: ^4.1.0
+        version: 4.1.0(d3-brush@3.0.0)(d3-dispatch@3.0.1)(d3-fetch@3.0.1)(d3-path@3.1.0)(d3-random@3.0.1)(d3-scale-chromatic@3.1.0)(d3-scale@4.0.2)(d3-shape@3.2.0)(d3-time@3.1.0)(d3-zoom@3.0.0)
       '@perspective-dev/viewer-datagrid':
         specifier: ^4.0.1
         version: 4.0.1
@@ -383,11 +383,17 @@ packages:
   '@perspective-dev/client@4.0.1':
     resolution: {integrity: sha512-zDzO5DyPmryvp7iIQdoGUj0Yy5Zw1os7ole/H8jcXATDUXv0PsdEK3qf2AkOXDlOK2j4pe3ZiodNQ0OdYX/glA==}
 
+  '@perspective-dev/client@4.1.0':
+    resolution: {integrity: sha512-23VTzOmmBo1KynLTygFuM/RuOszSgIbvG68I3MNCS/w5BOoG4XGt+4WuZWTr13c93b+n3dGK18E4YF7hy82nwg==}
+
   '@perspective-dev/server@4.0.1':
     resolution: {integrity: sha512-MvpgnY4V6HKTRNnjESlGOuhStqSJy6cbsEtosvpDK7SHVVT7F9QN12AKY8wzUZd5n7rfbUL5vms/WgiPhPXQRA==}
 
-  '@perspective-dev/viewer-d3fc@4.0.1':
-    resolution: {integrity: sha512-9AR8NsPuHFX0RQ8F2qo6GlAwssk199LVhmJMDukNd491fcj7uEzAZiaQ/VBwGv09vlRgFgGQngh7/R6wRA0C5w==}
+  '@perspective-dev/server@4.1.0':
+    resolution: {integrity: sha512-ZYZ5dvyTLDy2TxF62SBS5BgJcP/WSuK367K5/Uts2aItS30I/4ElIl68Pt53Cr3qZBvsSU63YhDJGXlVBpMN4A==}
+
+  '@perspective-dev/viewer-d3fc@4.1.0':
+    resolution: {integrity: sha512-gG8aLlCeEaVwYWV2pml6ge+RsfJpu3al6IkQoR0LYnWiD/Ek7cyStOqTQgyAMBLtez+4kAfr8sc3gJa+K0wcXA==}
 
   '@perspective-dev/viewer-datagrid@4.0.1':
     resolution: {integrity: sha512-UwfaVt0jGcOzMa5EfT9Uc6YgNK73c83/blteywF9E+wjdSy4VN0ocwisdsQaZeMgZuDJGRbGdtLmsFCU3wClow==}
@@ -397,6 +403,9 @@ packages:
 
   '@perspective-dev/viewer@4.0.1':
     resolution: {integrity: sha512-0zZ3eMgY0Jmj27m6WX7CsR2knDPYhBs6NFTVEbzprMqED5w8ocX18DK1ZCKtiynfFSYN0d1hUJFSMp2DhxXzAw==}
+
+  '@perspective-dev/viewer@4.1.0':
+    resolution: {integrity: sha512-bgXOdDzTQhYd1ulV/Gh5l4phwXwZJqkwYGgZmgZAWHcYk5J7DOCymuOK0HgGpvmL5OXXU0Io/tC2XxdaejlJUg==}
 
   '@perspective-dev/workspace@4.0.1':
     resolution: {integrity: sha512-CXBz12vNggyHhgnIgDwcJ+uZi6tvgNIq/vIStBHd9z+hqreNoZnxbrZERf+7ONCWZtB3FkcLvsx5l0LJlxaGFw==}
@@ -598,8 +607,8 @@ packages:
   d3-format@1.0.2:
     resolution: {integrity: sha512-VHFdLLjGkeGrRL8T/rlIIDhI3vvVX/oOTM/GaDJfB1sIb4dU5ZgiEjg3EeidJdQ/70u60tM015TSWa1gqqLRhg==}
 
-  d3-format@3.1.0:
-    resolution: {integrity: sha512-YyUI6AEuY/Wpt8KWLgZHsIU86atmikuoOmCfommt0LYHiQSPjvX2AcFc38PX0CBpr2RCyZhjex+NS/LPOv6YqA==}
+  d3-format@3.1.2:
+    resolution: {integrity: sha512-AJDdYOdnyRDV5b6ArilzCPPwc1ejkHcoyFarqlPqT7zRYjhavcT3uSrqcMvsgh2CgoPbK3RCwyHaVyxYcP2Arg==}
     engines: {node: '>=12'}
 
   d3-geo@3.1.1:
@@ -1510,6 +1519,18 @@ packages:
       utf-8-validate:
         optional: true
 
+  ws@8.19.0:
+    resolution: {integrity: sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
 
@@ -1835,14 +1856,28 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+  '@perspective-dev/client@4.1.0':
+    dependencies:
+      '@perspective-dev/server': 4.1.0
+      pro_self_extracting_wasm: 0.0.9
+      stoppable: 1.1.0
+      ws: 8.19.0
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - supports-color
+      - utf-8-validate
+
   '@perspective-dev/server@4.0.1': {}
 
-  '@perspective-dev/viewer-d3fc@4.0.1(d3-brush@3.0.0)(d3-dispatch@3.0.1)(d3-fetch@3.0.1)(d3-path@3.1.0)(d3-random@3.0.1)(d3-scale-chromatic@3.1.0)(d3-scale@4.0.2)(d3-shape@3.2.0)(d3-time@3.1.0)(d3-zoom@3.0.0)':
+  '@perspective-dev/server@4.1.0': {}
+
+  '@perspective-dev/viewer-d3fc@4.1.0(d3-brush@3.0.0)(d3-dispatch@3.0.1)(d3-fetch@3.0.1)(d3-path@3.1.0)(d3-random@3.0.1)(d3-scale-chromatic@3.1.0)(d3-scale@4.0.2)(d3-shape@3.2.0)(d3-time@3.1.0)(d3-zoom@3.0.0)':
     dependencies:
       '@d3fc/d3fc-chart': 5.1.9(d3-array@3.2.4)(d3-path@3.1.0)(d3-scale-chromatic@3.1.0)(d3-scale@4.0.2)(d3-selection@3.0.0)(d3-shape@3.2.0)
       '@d3fc/d3fc-element': 6.2.0
-      '@perspective-dev/client': 4.0.1
-      '@perspective-dev/viewer': 4.0.1
+      '@perspective-dev/client': 4.1.0
+      '@perspective-dev/viewer': 4.1.0
       chroma-js: 3.2.0
       d3: 7.9.0
       d3-array: 3.2.4
@@ -1891,7 +1926,17 @@ snapshots:
 
   '@perspective-dev/viewer@4.0.1':
     dependencies:
-      '@perspective-dev/client': 4.0.1
+      '@perspective-dev/client': 4.1.0
+      pro_self_extracting_wasm: 0.0.9
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - supports-color
+      - utf-8-validate
+
+  '@perspective-dev/viewer@4.1.0':
+    dependencies:
+      '@perspective-dev/client': 4.1.0
       pro_self_extracting_wasm: 0.0.9
     transitivePeerDependencies:
       - bufferutil
@@ -2119,7 +2164,7 @@ snapshots:
 
   d3-format@1.0.2: {}
 
-  d3-format@3.1.0: {}
+  d3-format@3.1.2: {}
 
   d3-geo@3.1.1:
     dependencies:
@@ -2161,7 +2206,7 @@ snapshots:
   d3-scale@4.0.2:
     dependencies:
       d3-array: 3.2.4
-      d3-format: 3.1.0
+      d3-format: 3.1.2
       d3-interpolate: 3.0.1
       d3-time: 3.1.0
       d3-time-format: 4.1.0
@@ -2243,7 +2288,7 @@ snapshots:
       d3-ease: 3.0.1
       d3-fetch: 3.0.1
       d3-force: 3.0.0
-      d3-format: 3.1.0
+      d3-format: 3.1.2
       d3-geo: 3.1.1
       d3-hierarchy: 3.1.2
       d3-interpolate: 3.0.1
@@ -3272,6 +3317,8 @@ snapshots:
       isexe: 2.0.0
 
   ws@8.18.3: {}
+
+  ws@8.19.0: {}
 
   yallist@4.0.0: {}
 
