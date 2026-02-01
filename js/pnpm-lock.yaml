@@ -12,8 +12,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       '@perspective-dev/server':
-        specifier: ^4.0.1
-        version: 4.0.1
+        specifier: ^4.1.0
+        version: 4.1.0
       '@perspective-dev/viewer':
         specifier: ^4.0.0
         version: 4.0.0
@@ -383,8 +383,8 @@ packages:
   '@perspective-dev/client@4.0.1':
     resolution: {integrity: sha512-zDzO5DyPmryvp7iIQdoGUj0Yy5Zw1os7ole/H8jcXATDUXv0PsdEK3qf2AkOXDlOK2j4pe3ZiodNQ0OdYX/glA==}
 
-  '@perspective-dev/server@4.0.1':
-    resolution: {integrity: sha512-MvpgnY4V6HKTRNnjESlGOuhStqSJy6cbsEtosvpDK7SHVVT7F9QN12AKY8wzUZd5n7rfbUL5vms/WgiPhPXQRA==}
+  '@perspective-dev/server@4.1.0':
+    resolution: {integrity: sha512-ZYZ5dvyTLDy2TxF62SBS5BgJcP/WSuK367K5/Uts2aItS30I/4ElIl68Pt53Cr3qZBvsSU63YhDJGXlVBpMN4A==}
 
   '@perspective-dev/viewer-d3fc@4.0.1':
     resolution: {integrity: sha512-9AR8NsPuHFX0RQ8F2qo6GlAwssk199LVhmJMDukNd491fcj7uEzAZiaQ/VBwGv09vlRgFgGQngh7/R6wRA0C5w==}
@@ -1813,7 +1813,7 @@ snapshots:
 
   '@perspective-dev/client@4.0.0':
     dependencies:
-      '@perspective-dev/server': 4.0.1
+      '@perspective-dev/server': 4.1.0
       pro_self_extracting_wasm: 0.0.9
       stoppable: 1.1.0
       ws: 8.18.3
@@ -1825,7 +1825,7 @@ snapshots:
 
   '@perspective-dev/client@4.0.1':
     dependencies:
-      '@perspective-dev/server': 4.0.1
+      '@perspective-dev/server': 4.1.0
       pro_self_extracting_wasm: 0.0.9
       stoppable: 1.1.0
       ws: 8.18.3
@@ -1835,7 +1835,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@perspective-dev/server@4.0.1': {}
+  '@perspective-dev/server@4.1.0': {}
 
   '@perspective-dev/viewer-d3fc@4.0.1(d3-brush@3.0.0)(d3-dispatch@3.0.1)(d3-fetch@3.0.1)(d3-path@3.1.0)(d3-random@3.0.1)(d3-scale-chromatic@3.1.0)(d3-scale@4.0.2)(d3-shape@3.2.0)(d3-time@3.1.0)(d3-zoom@3.0.0)':
     dependencies:
