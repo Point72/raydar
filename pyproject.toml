@@ -160,13 +160,9 @@ exclude = [
 path = "js"
 build_cmd = "build"
 tool = "pnpm"
-<<<<<<< before updating
-targets = ["raydar/dashboard/static/index.js"]
-=======
 targets = [
-    "raydar/extension/cdn/index.js",
+    "raydar/dashboard/static/index.js",
 ]
->>>>>>> after updating
 
 [tool.pytest.ini_options]
 addopts = [
