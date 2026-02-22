@@ -141,12 +141,8 @@ js/node_modules
 js/test-results
 js/playwright-report
 js/*.tgz
-<<<<<<< before updating
-raydar/extension
 raydar/dashboard/static/*
 !raydar/dashboard/static/index.psp2.js
-=======
->>>>>>> after updating
 
 # Jupyter
 .ipynb_checkpoints
