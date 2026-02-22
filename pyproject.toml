@@ -3,7 +3,7 @@ requires = [
     "hatchling",
     "hatch-js",
 ]
-build-backend="hatchling.build"
+build-backend = "hatchling.build"
 
 [project]
 name = "raydar"
@@ -54,17 +54,21 @@ dependencies = [
 develop = [
     "build",
     "bump-my-version",
-    "check-manifest",
-    "codespell>=2.4,<2.5",
+    "check-dist",
+    "codespell",
     "hatch-js",
     "hatchling",
-    "mdformat>=0.7.22,<1.1",
+    "mdformat",
     "mdformat-tables>=1",
     "pytest",
     "pytest-asyncio",
     "pytest-cov",
+<<<<<<< before updating
     "pytest-sugar",
     "ruff>=0.9,<0.15",
+=======
+    "ruff",
+>>>>>>> after updating
     "twine",
     "ty",
     "uv",
@@ -100,6 +104,7 @@ filename = "js/package.json"
 search = '"version": "{current_version}"'
 replace = '"version": "{new_version}"'
 
+<<<<<<< before updating
 [[tool.bumpversion.files]]
 filename = "js/src/index.html"
 search = 'Raydar v{current_version}'
@@ -116,6 +121,8 @@ ignore = [
     "raydar/dashboard/static/**/*",
 ]
 
+=======
+>>>>>>> after updating
 [tool.coverage.run]
 branch = true
 omit = [
@@ -144,8 +151,8 @@ packages = [
     "js",
 ]
 exclude = [
-    "/js/dist",
-    "/js/node_modules",
+    "js/dist",
+    "js/node_modules",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -153,7 +160,7 @@ packages = [
     "raydar",
 ]
 exclude = [
-    "/js",
+    "js",
 ]
 
 [tool.hatch.build.hooks.hatch-js]
