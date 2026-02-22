@@ -63,12 +63,8 @@ develop = [
     "pytest",
     "pytest-asyncio",
     "pytest-cov",
-<<<<<<< before updating
     "pytest-sugar",
-    "ruff>=0.9,<0.15",
-=======
     "ruff",
->>>>>>> after updating
     "twine",
     "ty",
     "uv",
@@ -104,30 +100,17 @@ filename = "js/package.json"
 search = '"version": "{current_version}"'
 replace = '"version": "{new_version}"'
 
-<<<<<<< before updating
 [[tool.bumpversion.files]]
 filename = "js/src/index.html"
 search = 'Raydar v{current_version}'
 replace = 'Raydar v{new_version}'
 
-[tool.check-manifest]
-ignore = [
-    ".copier-answers.yaml",
-    "js/pnpm-lock.yaml",
-    "Makefile",
-    ".vscode/*",
-    "docs/**/*",
-    "js/dist/**/*",
-    "raydar/dashboard/static/**/*",
-]
-
-=======
->>>>>>> after updating
 [tool.coverage.run]
 branch = true
 omit = [
     "raydar/tests/integration/",
 ]
+
 [tool.coverage.report]
 exclude_also = [
     "raise NotImplementedError",
