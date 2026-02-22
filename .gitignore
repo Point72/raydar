@@ -141,7 +141,6 @@ js/node_modules
 js/test-results
 js/playwright-report
 js/*.tgz
-raydar/extension
 raydar/dashboard/static/*
 !raydar/dashboard/static/index.psp2.js
 
@@ -149,8 +148,7 @@ raydar/dashboard/static/*
 .ipynb_checkpoints
 .autoversion
 Untitled*.ipynb
-!raydar/extension/raydar.json
-!raydar/extension/install.json
+raydar/extension
 raydar/nbextension
 raydar/labextension
 
@@ -159,3 +157,7 @@ raydar/labextension
 
 # Rust
 target
+
+# Hydra
+outputs/
+multirun/

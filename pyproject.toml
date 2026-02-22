@@ -3,7 +3,7 @@ requires = [
     "hatchling",
     "hatch-js",
 ]
-build-backend="hatchling.build"
+build-backend = "hatchling.build"
 
 [project]
 name = "raydar"
@@ -54,17 +54,17 @@ dependencies = [
 develop = [
     "build",
     "bump-my-version",
-    "check-manifest",
-    "codespell>=2.4,<2.5",
+    "check-dist",
+    "codespell",
     "hatch-js",
     "hatchling",
-    "mdformat>=0.7.22,<1.1",
+    "mdformat",
     "mdformat-tables>=1",
     "pytest",
     "pytest-asyncio",
     "pytest-cov",
     "pytest-sugar",
-    "ruff>=0.9,<0.15",
+    "ruff",
     "twine",
     "ty",
     "uv",
@@ -105,22 +105,12 @@ filename = "js/src/index.html"
 search = 'Raydar v{current_version}'
 replace = 'Raydar v{new_version}'
 
-[tool.check-manifest]
-ignore = [
-    ".copier-answers.yaml",
-    "js/pnpm-lock.yaml",
-    "Makefile",
-    ".vscode/*",
-    "docs/**/*",
-    "js/dist/**/*",
-    "raydar/dashboard/static/**/*",
-]
-
 [tool.coverage.run]
 branch = true
 omit = [
     "raydar/tests/integration/",
 ]
+
 [tool.coverage.report]
 exclude_also = [
     "raise NotImplementedError",
@@ -144,8 +134,8 @@ packages = [
     "js",
 ]
 exclude = [
-    "/js/dist",
-    "/js/node_modules",
+    "js/dist",
+    "js/node_modules",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -153,7 +143,7 @@ packages = [
     "raydar",
 ]
 exclude = [
-    "/js",
+    "js",
 ]
 
 [tool.hatch.build.hooks.hatch-js]
