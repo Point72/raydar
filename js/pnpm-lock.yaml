@@ -31,8 +31,8 @@ importers:
         specifier: ^3.2.1
         version: 3.2.1
       '@prospective.co/procss':
-        specifier: ^0.1.17
-        version: 0.1.17
+        specifier: ^0.1.18
+        version: 0.1.18
       cpy:
         specifier: ^12.1.0
         version: 12.1.0
@@ -401,8 +401,8 @@ packages:
   '@perspective-dev/workspace@4.0.1':
     resolution: {integrity: sha512-CXBz12vNggyHhgnIgDwcJ+uZi6tvgNIq/vIStBHd9z+hqreNoZnxbrZERf+7ONCWZtB3FkcLvsx5l0LJlxaGFw==}
 
-  '@prospective.co/procss@0.1.17':
-    resolution: {integrity: sha512-jZCbEji9gTgJIJ41a0VQQV8GARUNKp9ils8/6347fbNkGBtA3cRwhQfRAxnqc0dhyo6pTSjMSflqop5ToIiSwQ==}
+  '@prospective.co/procss@0.1.18':
+    resolution: {integrity: sha512-odl+Vd/Lm2XdkB223/eghsGS4A5x5q8D9f/vCei2Wb/ljyLCGFWvP7w4Dtglid9xpvDCpJZtogeZASLcitMxug==}
 
   '@sindresorhus/merge-streams@4.0.0':
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
@@ -1918,7 +1918,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@prospective.co/procss@0.1.17': {}
+  '@prospective.co/procss@0.1.18': {}
 
   '@sindresorhus/merge-streams@4.0.0': {}
 
