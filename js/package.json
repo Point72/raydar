@@ -31,9 +31,8 @@
     "build": "npm-run-all -s build:*",
     "clean": "rm -rf dist playwright-report ../raydar/dashboard/static",
     "dev": "npm-run-all -p start watch",
-<<<<<<< before updating
-    "lint": "prettier --check \"src/**/*.{js,ts,jsx,tsx,less,css}\" \"*.mjs\" \"*.json\"",
-    "fix": "prettier  --write \"src/**/*.{js,ts,jsx,tsx,less,css}\" \"*.mjs\" \"*.json\"",
+    "lint": "prettier --check \"src/**/*.{js,ts,jsx,tsx,css}\" \"*.mjs\" \"*.json\"",
+    "fix": "prettier  --write \"src/**/*.{js,ts,jsx,tsx,css}\" \"*.mjs\" \"*.json\"",
     "preinstall": "npx only-allow pnpm",
     "prepack": "npm run build",
     "test": ":",
@@ -47,37 +46,13 @@
     "@perspective-dev/viewer-d3fc": "^4.3.0",
     "@perspective-dev/viewer-datagrid": "^4.3.0",
     "@perspective-dev/workspace": "^4.3.0"
-=======
-    "lint": "prettier --check \"src/**/*.{js,ts,jsx,tsx,css}\" \"tests/**/*.{js,ts,jsx,tsx}\" \"*.mjs\" \"*.json\"",
-    "fix": "prettier  --write \"src/**/*.{js,ts,jsx,tsx,css}\" \"tests/**/*.{js,ts,jsx,tsx}\" \"*.mjs\" \"*.json\"",
-    "preinstall": "npx only-allow pnpm",
-    "prepack": "npm run build",
-    "start": "http-server -p 3000 -o examples/",
-    "start:tests": "http-server -p 3000 ",
-    "test": "TZ=UTC playwright test",
-    "watch": "nodemon --watch src -e ts,css,html --exec \"pnpm build:debug\""
->>>>>>> after updating
   },
   "devDependencies": {
-    "@finos/perspective-esbuild-plugin": "^3.2.1",
-<<<<<<< before updating
-    "@prospective.co/procss": "^0.1.18",
-    "cpy": "^13.2.1",
-    "esbuild": "^0.27.2",
-    "esbuild-plugin-less": "^1.3.35",
-    "mkdirp": "^3.0.1",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^3.8.1"
-=======
-    "@playwright/test": "^1.59.0",
     "cpy": "^13.2.1",
     "esbuild": "^0.27.2",
     "lightningcss": "^1.29.3",
-    "http-server": "^14.1.1",
-    "nodemon": "^3.1.10",
+    "mkdirp": "^3.0.1",
     "npm-run-all": "^4.1.5",
-    "prettier": "^3.8.1",
-    "typescript": "^6.0.2"
->>>>>>> after updating
+    "prettier": "^3.8.1"
   }
 }
