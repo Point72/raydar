@@ -1,8 +1,7 @@
-import { build } from "@finos/perspective-esbuild-plugin/build.js";
-import { BuildCss } from "@prospective.co/procss/target/cjs/procss.js";
-import cpy from "cpy";
+import { build } from "./tools/build.js";
+import { compile } from "./tools/css.js";
 import fs from "fs";
-import { createRequire } from "node:module";
+import cpy from "cpy";
 
 const BUILD = [
   {
@@ -26,66 +25,6 @@ const BUILD = [
   },
 ];
 
-const require = createRequire(import.meta.url);
-function add(builder, path, path2) {
-  builder.add(path, fs.readFileSync(require.resolve(path2 || path)).toString());
-}
-
-async function compile_css() {
-  const builder1 = new BuildCss("");
-  add(builder1, "./src/index.css");
-  add(
-    builder1,
-    "perspective-viewer-pro.css",
-    "@perspective-dev/viewer/dist/css/pro.css",
-  );
-  add(
-    builder1,
-    "perspective-viewer-pro-dark.css",
-    "@perspective-dev/viewer/dist/css/pro-dark.css",
-  );
-  add(
-    builder1,
-    "perspective-viewer-monokai.css",
-    "@perspective-dev/viewer/dist/css/monokai.css",
-  );
-  add(
-    builder1,
-    "perspective-viewer-vaporwave.css",
-    "@perspective-dev/viewer/dist/css/vaporwave.css",
-  );
-  add(
-    builder1,
-    "perspective-viewer-dracula.css",
-    "@perspective-dev/viewer/dist/css/dracula.css",
-  );
-  add(
-    builder1,
-    "perspective-viewer-gruvbox.css",
-    "@perspective-dev/viewer/dist/css/gruvbox.css",
-  );
-  add(
-    builder1,
-    "perspective-viewer-gruvbox-dark.css",
-    "@perspective-dev/viewer/dist/css/gruvbox-dark.css",
-  );
-  add(
-    builder1,
-    "perspective-viewer-solarized.css",
-    "@perspective-dev/viewer/dist/css/solarized.css",
-  );
-  add(
-    builder1,
-    "perspective-viewer-solarized-dark.css",
-    "@perspective-dev/viewer/dist/css/solarized-dark.css",
-  );
-
-  const css = builder1.compile().get("index.css");
-
-  // write to extension
-  fs.writeFileSync("./dist/index.css", css);
-}
-
 async function build_all() {
   /* make directories */
   fs.mkdirSync("../raydar/dashboard/static/", { recursive: true });
@@ -107,7 +46,7 @@ async function build_all() {
   );
 
   /* Compile css */
-  await compile_css();
+  await compile();
 
   /* Copy to raydar static */
   await cpy("./dist/*", "../raydar/dashboard/static/", {
