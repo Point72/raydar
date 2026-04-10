@@ -1061,8 +1061,8 @@ packages:
     resolution: {integrity: sha512-Kx8hMakjX03tiGTLAIdJ+lL0htKnXjEZN6hk/tozf/WOuYGdZBJrZ+rCJRbVCugsjB3jMLn9746NsQIf5VjBMw==}
     engines: {node: '>=4'}
 
-  lodash@4.17.23:
-    resolution: {integrity: sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==}
+  lodash@4.18.1:
+    resolution: {integrity: sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==}
 
   make-dir@2.1.0:
     resolution: {integrity: sha512-LS9X+dc8KLxXCb8dni79fLIIUA5VyZoyjSMCwTluaXA0o27cCK0bhXkpgw+sTXVpPy/lSO57ilRixqk0vDmtRA==}
@@ -1882,7 +1882,7 @@ snapshots:
       '@lumino/virtualdom': 2.0.4
       '@lumino/widgets': 2.7.5
       '@perspective-dev/client': 4.3.0
-      lodash: 4.17.23
+      lodash: 4.18.1
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -2751,7 +2751,7 @@ snapshots:
       pify: 3.0.0
       strip-bom: 3.0.0
 
-  lodash@4.17.23: {}
+  lodash@4.18.1: {}
 
   make-dir@2.1.0:
     dependencies:
