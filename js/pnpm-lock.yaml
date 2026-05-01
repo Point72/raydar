@@ -21,8 +21,8 @@ importers:
         specifier: ^4.3.0
         version: 4.3.0(d3-brush@3.0.0)(d3-dispatch@3.0.1)(d3-fetch@3.0.1)(d3-path@3.1.0)(d3-random@3.0.1)(d3-scale-chromatic@3.1.0)(d3-scale@4.0.2)(d3-shape@3.2.0)(d3-time@3.1.0)(d3-zoom@3.0.0)
       '@perspective-dev/viewer-datagrid':
-        specifier: ^4.3.0
-        version: 4.3.0
+        specifier: ^4.4.1
+        version: 4.4.1
       '@perspective-dev/workspace':
         specifier: ^4.3.0
         version: 4.3.0
@@ -371,17 +371,26 @@ packages:
   '@perspective-dev/client@4.3.0':
     resolution: {integrity: sha512-LhVDyYzZrSmtuU04qX+MzpnA1BKPEW9nMi4RPE6y3KiGAWwFFqEFgZKF233U8/Fx3v2URCijcwmXn0qTVfoPMQ==}
 
+  '@perspective-dev/client@4.4.1':
+    resolution: {integrity: sha512-2CWBNx1yOjXpbGdFcRrk34TDodeGojWVhUJWFAQmBCacF8YLRueC16iJeqqDGQP0NQ+dWfkDy5uABVi/6YoAvQ==}
+
   '@perspective-dev/server@4.3.0':
     resolution: {integrity: sha512-UH3ADscynozVx42RF07DTBmPE/0PUwH+SS0cgvMLuLfBjtvnPm6msfOU0tHlgFnNZOHJO0q6RZ9WI5fD6wF07A==}
+
+  '@perspective-dev/server@4.4.1':
+    resolution: {integrity: sha512-eOWr0qy2T2KwClbYgRjfDrcnkR023gHn/7J/tQEPa6rEYTfqXwicWsObFU4mZHi3rTySxYf6qsY6O+SJIM+BzA==}
 
   '@perspective-dev/viewer-d3fc@4.3.0':
     resolution: {integrity: sha512-Su0pcno2RLnzotnMGLBSlLsCL3qE2BSTtso6KcUXFNO+Cbx2jzTo+5hDk+kcZtDYbMpZk/a7p+NoUhltL5qOGA==}
 
-  '@perspective-dev/viewer-datagrid@4.3.0':
-    resolution: {integrity: sha512-edzgMCzhXcB+gfh7SoPnjVjzQxd5UB7O4RUZq+fB9dgSqh7KkdwTGz4XxHLr8VHhDB9cb8mbTmaVT4Mk32b9AQ==}
+  '@perspective-dev/viewer-datagrid@4.4.1':
+    resolution: {integrity: sha512-vQkI4x9kqY+Nrj+YSijvXXqoBrCvlUp1+sKS81S913CkFbLLQMJGLtso/KP1JGw9bQkNUanpQ5B5Otkmrb8Gcw==}
 
   '@perspective-dev/viewer@4.3.0':
     resolution: {integrity: sha512-zF2xRqk4DfemMJ0Y1CCFFQKSk6L+v/hcQCPs0jVUs3cwS73bOVRnz1Hl9V3rwpfXSviILS+66d2HIlllvyd2vg==}
+
+  '@perspective-dev/viewer@4.4.1':
+    resolution: {integrity: sha512-Mkox9AywVVgZJfMsdrMqtANIZrrJodbfumHzHv9NhlKneNAtTa1Wvpof7E9r9M25Mo9nDkoKmEM4MdlsdU6Ulw==}
 
   '@perspective-dev/workspace@4.3.0':
     resolution: {integrity: sha512-sEdeyw0jcPj6l7hCdckDm4KfCP8PuoomLG0/FrMQASKYscMq+Z1RDjo2T+5YJWOezEFCjpJy284YHnr4Vq2guw==}
@@ -1236,8 +1245,8 @@ packages:
     resolution: {integrity: sha512-dYqgNSZbDwkaJ2ceRd9ojCGjBq+mOm9LmtXnAnEGyHhN/5R7iDW2TRw3h+o/jCFxus3P2LfWIIiwowAjANm7IA==}
     engines: {node: '>= 0.4'}
 
-  regular-table@0.8.3:
-    resolution: {integrity: sha512-GANAV656dyTza89S1pz1NwQdcIZv+uUyV5z9k2mPnVfQxWVY150Ft75p35El0ICGpKvUG9mz6BP5vq4+d9BwUg==}
+  regular-table@0.8.4:
+    resolution: {integrity: sha512-VmV3kxmkXX0BehXSFBeF6FMBqyYdciY6d/wI6/5hvXomH7K9nfGASOmitF3WeLsL9eiiattwR+o3tcu4En/Xaw==}
     engines: {node: '>=16'}
 
   requires-port@1.0.0:
@@ -1763,7 +1772,21 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+  '@perspective-dev/client@4.4.1':
+    dependencies:
+      '@perspective-dev/server': 4.4.1
+      pro_self_extracting_wasm: 0.0.9
+      stoppable: 1.1.0
+      ws: 8.20.0
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - supports-color
+      - utf-8-validate
+
   '@perspective-dev/server@4.3.0': {}
+
+  '@perspective-dev/server@4.4.1': {}
 
   '@perspective-dev/viewer-d3fc@4.3.0(d3-brush@3.0.0)(d3-dispatch@3.0.1)(d3-fetch@3.0.1)(d3-path@3.1.0)(d3-random@3.0.1)(d3-scale-chromatic@3.1.0)(d3-scale@4.0.2)(d3-shape@3.2.0)(d3-time@3.1.0)(d3-zoom@3.0.0)':
     dependencies:
@@ -1795,12 +1818,11 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@perspective-dev/viewer-datagrid@4.3.0':
+  '@perspective-dev/viewer-datagrid@4.4.1':
     dependencies:
-      '@perspective-dev/client': 4.3.0
-      '@perspective-dev/viewer': 4.3.0
-      chroma-js: 3.2.0
-      regular-table: 0.8.3
+      '@perspective-dev/client': 4.4.1
+      '@perspective-dev/viewer': 4.4.1
+      regular-table: 0.8.4
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -1810,6 +1832,16 @@ snapshots:
   '@perspective-dev/viewer@4.3.0':
     dependencies:
       '@perspective-dev/client': 4.3.0
+      pro_self_extracting_wasm: 0.0.9
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - supports-color
+      - utf-8-validate
+
+  '@perspective-dev/viewer@4.4.1':
+    dependencies:
+      '@perspective-dev/client': 4.4.1
       pro_self_extracting_wasm: 0.0.9
     transitivePeerDependencies:
       - bufferutil
@@ -2854,7 +2886,7 @@ snapshots:
       gopd: 1.2.0
       set-function-name: 2.0.2
 
-  regular-table@0.8.3: {}
+  regular-table@0.8.4: {}
 
   requires-port@1.0.0: {}
 
