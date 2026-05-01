@@ -18,8 +18,8 @@ importers:
         specifier: ^4.3.0
         version: 4.3.0
       '@perspective-dev/viewer-d3fc':
-        specifier: ^4.3.0
-        version: 4.3.0(d3-brush@3.0.0)(d3-dispatch@3.0.1)(d3-fetch@3.0.1)(d3-path@3.1.0)(d3-random@3.0.1)(d3-scale-chromatic@3.1.0)(d3-scale@4.0.2)(d3-shape@3.2.0)(d3-time@3.1.0)(d3-zoom@3.0.0)
+        specifier: ^4.4.1
+        version: 4.4.1(d3-brush@3.0.0)(d3-dispatch@3.0.1)(d3-fetch@3.0.1)(d3-path@3.1.0)(d3-random@3.0.1)(d3-scale-chromatic@3.1.0)(d3-scale@4.0.2)(d3-shape@3.2.0)(d3-time@3.1.0)(d3-zoom@3.0.0)
       '@perspective-dev/viewer-datagrid':
         specifier: ^4.3.0
         version: 4.3.0
@@ -371,17 +371,26 @@ packages:
   '@perspective-dev/client@4.3.0':
     resolution: {integrity: sha512-LhVDyYzZrSmtuU04qX+MzpnA1BKPEW9nMi4RPE6y3KiGAWwFFqEFgZKF233U8/Fx3v2URCijcwmXn0qTVfoPMQ==}
 
+  '@perspective-dev/client@4.4.1':
+    resolution: {integrity: sha512-2CWBNx1yOjXpbGdFcRrk34TDodeGojWVhUJWFAQmBCacF8YLRueC16iJeqqDGQP0NQ+dWfkDy5uABVi/6YoAvQ==}
+
   '@perspective-dev/server@4.3.0':
     resolution: {integrity: sha512-UH3ADscynozVx42RF07DTBmPE/0PUwH+SS0cgvMLuLfBjtvnPm6msfOU0tHlgFnNZOHJO0q6RZ9WI5fD6wF07A==}
 
-  '@perspective-dev/viewer-d3fc@4.3.0':
-    resolution: {integrity: sha512-Su0pcno2RLnzotnMGLBSlLsCL3qE2BSTtso6KcUXFNO+Cbx2jzTo+5hDk+kcZtDYbMpZk/a7p+NoUhltL5qOGA==}
+  '@perspective-dev/server@4.4.1':
+    resolution: {integrity: sha512-eOWr0qy2T2KwClbYgRjfDrcnkR023gHn/7J/tQEPa6rEYTfqXwicWsObFU4mZHi3rTySxYf6qsY6O+SJIM+BzA==}
+
+  '@perspective-dev/viewer-d3fc@4.4.1':
+    resolution: {integrity: sha512-sVM0DAP1hLWjenkRZRBVZ1PEEtzvFITvFeoR2R9Iqdfhrkj6qaW/m1dmRkCEnenCSpbXuOD35Y2g2wxwmp7Fqg==}
 
   '@perspective-dev/viewer-datagrid@4.3.0':
     resolution: {integrity: sha512-edzgMCzhXcB+gfh7SoPnjVjzQxd5UB7O4RUZq+fB9dgSqh7KkdwTGz4XxHLr8VHhDB9cb8mbTmaVT4Mk32b9AQ==}
 
   '@perspective-dev/viewer@4.3.0':
     resolution: {integrity: sha512-zF2xRqk4DfemMJ0Y1CCFFQKSk6L+v/hcQCPs0jVUs3cwS73bOVRnz1Hl9V3rwpfXSviILS+66d2HIlllvyd2vg==}
+
+  '@perspective-dev/viewer@4.4.1':
+    resolution: {integrity: sha512-Mkox9AywVVgZJfMsdrMqtANIZrrJodbfumHzHv9NhlKneNAtTa1Wvpof7E9r9M25Mo9nDkoKmEM4MdlsdU6Ulw==}
 
   '@perspective-dev/workspace@4.3.0':
     resolution: {integrity: sha512-sEdeyw0jcPj6l7hCdckDm4KfCP8PuoomLG0/FrMQASKYscMq+Z1RDjo2T+5YJWOezEFCjpJy284YHnr4Vq2guw==}
@@ -1763,14 +1772,28 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+  '@perspective-dev/client@4.4.1':
+    dependencies:
+      '@perspective-dev/server': 4.4.1
+      pro_self_extracting_wasm: 0.0.9
+      stoppable: 1.1.0
+      ws: 8.20.0
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - supports-color
+      - utf-8-validate
+
   '@perspective-dev/server@4.3.0': {}
 
-  '@perspective-dev/viewer-d3fc@4.3.0(d3-brush@3.0.0)(d3-dispatch@3.0.1)(d3-fetch@3.0.1)(d3-path@3.1.0)(d3-random@3.0.1)(d3-scale-chromatic@3.1.0)(d3-scale@4.0.2)(d3-shape@3.2.0)(d3-time@3.1.0)(d3-zoom@3.0.0)':
+  '@perspective-dev/server@4.4.1': {}
+
+  '@perspective-dev/viewer-d3fc@4.4.1(d3-brush@3.0.0)(d3-dispatch@3.0.1)(d3-fetch@3.0.1)(d3-path@3.1.0)(d3-random@3.0.1)(d3-scale-chromatic@3.1.0)(d3-scale@4.0.2)(d3-shape@3.2.0)(d3-time@3.1.0)(d3-zoom@3.0.0)':
     dependencies:
       '@d3fc/d3fc-chart': 5.1.9(d3-array@3.2.4)(d3-path@3.1.0)(d3-scale-chromatic@3.1.0)(d3-scale@4.0.2)(d3-selection@3.0.0)(d3-shape@3.2.0)
       '@d3fc/d3fc-element': 6.2.0
-      '@perspective-dev/client': 4.3.0
-      '@perspective-dev/viewer': 4.3.0
+      '@perspective-dev/client': 4.4.1
+      '@perspective-dev/viewer': 4.4.1
       chroma-js: 3.2.0
       d3: 7.9.0
       d3-array: 3.2.4
@@ -1810,6 +1833,16 @@ snapshots:
   '@perspective-dev/viewer@4.3.0':
     dependencies:
       '@perspective-dev/client': 4.3.0
+      pro_self_extracting_wasm: 0.0.9
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - supports-color
+      - utf-8-validate
+
+  '@perspective-dev/viewer@4.4.1':
+    dependencies:
+      '@perspective-dev/client': 4.4.1
       pro_self_extracting_wasm: 0.0.9
     transitivePeerDependencies:
       - bufferutil
