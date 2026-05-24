@@ -20,8 +20,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - run: cp README.md docs/wiki/Home.md
-      - uses: Andrew-Chen-Wang/github-wiki-action@v5
+      - uses: Andrew-Chen-Wang/github-wiki-action@64efa0a9436db17670a2259e0ac249d6f08bb352 # v5
         with:
           path: docs/wiki
