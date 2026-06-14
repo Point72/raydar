@@ -29,11 +29,17 @@ jobs:
 
     strategy:
       matrix:
+<<<<<<< before updating
         os: [ubuntu-latest, macos-latest]
         python-version: [3.11]
+=======
+        os: [ubuntu-latest]
+        python-version: ["3.11"]
+        node-version: [22.x]
+>>>>>>> after updating
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
     - uses: actions-ext/python/setup@main
       with:
@@ -41,7 +47,7 @@ jobs:
 
     - uses: actions-ext/node/setup@main
       with:
-        version: 22.x
+        version: ${{ matrix.node-version }}
 
     - name: Install dependencies
       run: make develop
@@ -62,20 +68,24 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
 
     - name: Upload test results
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
       with:
         name: test-results-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.node-version }}
         path: '**/junit.xml'
       if: ${{ always() }}
 
     - name: Publish Unit Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v2
+      uses: EnricoMi/publish-unit-test-result-action@c950f6fb443cb5af20a377fd0dfaa78838901040 # v2
       with:
         files: '**/junit.xml'
       if: matrix.os == 'ubuntu-latest'
 
     - name: Upload coverage
+<<<<<<< before updating
       uses: codecov/codecov-action@v7
+=======
+      uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+>>>>>>> after updating
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
 
@@ -83,7 +93,17 @@ jobs:
       run: make dist
       if: matrix.os == 'ubuntu-latest'
 
-    - uses: actions/upload-artifact@v7
+    - uses: actions-ext/python/test-wheel@main
+      with:
+        module: raydar
+      if: matrix.os == 'ubuntu-latest'
+
+    - uses: actions-ext/python/test-sdist@main
+      with:
+        module: raydar
+      if: matrix.os == 'ubuntu-latest'
+
+    - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
       with:
         name: dist-${{matrix.os}}
         path: dist

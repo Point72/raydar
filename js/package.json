@@ -48,7 +48,12 @@
     "@perspective-dev/workspace": "^4.3.0"
   },
   "devDependencies": {
+<<<<<<< before updating
     "cpy": "^13.2.1",
+=======
+    "@playwright/test": "^1.60.0",
+    "cpy": "^13.2.2",
+>>>>>>> after updating
     "esbuild": "^0.28.0",
     "lightningcss": "^1.29.3",
     "mkdirp": "^3.0.1",
