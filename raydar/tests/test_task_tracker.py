@@ -1,5 +1,8 @@
+import os
+import tempfile
 import time
 
+import pandas as pd
 import pytest
 import ray
 import requests
@@ -39,3 +42,15 @@ class TestRayTaskTracker:
         time.sleep(2)
         response = requests.get("http://localhost:8000/tables")
         assert eval(response.text) == ["test_table"]
+
+    def test_save_df(self):
+        task_tracker = RayTaskTracker()
+        refs = [do_some_work.remote() for _ in range(100)]
+        task_tracker.process(refs)
+        _ = ray.get(refs)
+        df = task_tracker.get_df()
+        with tempfile.TemporaryDirectory() as tempdir:
+            path = os.path.join(tempdir, "output_dir")
+            task_tracker.save_df(path)
+            loaded_df = pd.read_parquet(path)
+            assert loaded_df.equals(df.to_pandas())
