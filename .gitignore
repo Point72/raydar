@@ -5,6 +5,8 @@ __pycache__/
 
 # C extensions
 *.a
+*.o
+*.dSYM
 *.so
 *.obj
 *.dll
@@ -13,6 +15,7 @@ __pycache__/
 
 # Rust
 target
+target-capi
 
 # Distribution / packaging
 .Python
@@ -139,17 +142,18 @@ raydar/extension
 raydar/nbextension
 raydar/labextension
 
+# Emscripten SDK (locally installed)
+emsdk
+
 # Mac
 .DS_Store
 
-# Rust
-target
-
 # Hydra
-outputs/
-multirun/
+/outputs/
+/multirun/
 
 # AI
 ROADMAP.md
 AGENTS.md
 .github/hooks/sdlc.json
+.superpowers
