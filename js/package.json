@@ -48,7 +48,7 @@
     "@perspective-dev/workspace": "^4.3.0"
   },
   "devDependencies": {
-    "cpy": "^13.2.1",
+    "cpy": "^13.2.2",
     "esbuild": "^0.28.1",
     "lightningcss": "^1.29.3",
     "mkdirp": "^3.0.1",
