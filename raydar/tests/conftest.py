@@ -5,7 +5,7 @@ import pytest
 import ray
 
 
-class RayFixture(object):
+class RayFixture:
     def __init__(self, config):
         self.config = config
 
@@ -32,10 +32,10 @@ class RayFixture(object):
 def unittest_ray_config():
     # Unit tests run on Jenkins, which may require special configuration
     # With the wrong configuration, it could mysteriously freeze
-    config = dict(
-        num_cpus=5,
-        include_dashboard=True,
-    )
+    config = {
+        "num_cpus": 5,
+        "include_dashboard": True,
+    }
     return config
 
 

@@ -116,19 +116,16 @@ class PerspectiveProxyRayServer:
         self._psp_handle = psp_handle
 
     def __call__(self, op, tablename, data_or_schema):
-        if op == "new":
-            if tablename and data_or_schema:
-                self._psp_handle.new_table.remote(tablename, data_or_schema)
-        if op == "update":
-            if tablename and data_or_schema:
-                self._psp_handle.update.remote(tablename, data_or_schema)
-        if op == "clear":
-            if tablename:
-                self._psp_handle.clear_table.remote(tablename, data_or_schema)
+        if op == "new" and tablename and data_or_schema:
+            self._psp_handle.new_table.remote(tablename, data_or_schema)
+        if op == "update" and tablename and data_or_schema:
+            self._psp_handle.update.remote(tablename, data_or_schema)
+        if op == "clear" and tablename:
+            self._psp_handle.clear_table.remote(tablename, data_or_schema)
 
 
 def main(args: PerspectiveRayServerArgs = None) -> Application:
     args = args or PerspectiveRayServerArgs()
     if environ.get("RAY_SERVE_ENABLE_EXPERIMENTAL_STREAMING") is not None:
         return PerspectiveProxyRayServer.bind(PerspectiveRayServer.bind(args))
-    raise Exception("Perspective server requires websockets, rerun with RAY_SERVE_ENABLE_EXPERIMENTAL_STREAMING=1")
+    raise RuntimeError("Perspective server requires websockets, rerun with RAY_SERVE_ENABLE_EXPERIMENTAL_STREAMING=1")

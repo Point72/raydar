@@ -3,7 +3,6 @@ import itertools
 import logging
 import os
 from collections.abc import Iterable
-from typing import Dict, List, Optional
 
 import coolname
 import pandas as pd
@@ -75,7 +74,6 @@ class AsyncMetadataTrackerCallback:
                         finished_tasks.append(done[0])
             if len(finished_tasks) > 0:
                 self.actor.callback.remote(finished_tasks)
-        return
 
     def exit(self) -> None:
         """Terminate this actor"""
@@ -88,7 +86,7 @@ class AsyncMetadataTracker:
         self,
         name: str,
         namespace: str,
-        path: Optional[str] = None,
+        path: str | None = None,
         enable_perspective_dashboard: bool = False,
     ):
         """An async Ray Actor Class to track task level metadata.
@@ -132,14 +130,14 @@ class AsyncMetadataTracker:
         if self.perspective_dashboard_enabled:
             from raydar.dashboard.server import PerspectiveRayServer
 
-            kwargs = dict(
-                target=PerspectiveRayServer.bind(),
-                name="webserver",
-                route_prefix="/",
-            )
+            kwargs = {
+                "target": PerspectiveRayServer.bind(),
+                "name": "webserver",
+                "route_prefix": "/",
+            }
 
             if Version(ray.__version__) < Version("2.10"):
-                kwargs["port"] = os.environ.get("RAYDAR_PORT", 8000)
+                kwargs["port"] = int(os.environ.get("RAYDAR_PORT", "8000"))
 
             self.proxy_server = setup_proxy_server(**kwargs)
             self.proxy_server.remote(
@@ -222,32 +220,32 @@ class AsyncMetadataTracker:
             completed_tasks: A list of tuples of the form (ObjectReference, TaskMetadata), where the ObjectReferences are neither Running nor Pending Assignment.
         """
         data = [
-            dict(
-                task_id=metadata.task_id,
-                attempt_number=metadata.attempt_number,
-                name=metadata.name,
-                state=metadata.state,
-                job_id=metadata.job_id,
-                actor_id=metadata.actor_id,
-                type=metadata.type,
-                func_or_class_name=metadata.func_or_class_name,
-                parent_task_id=metadata.parent_task_id,
-                node_id=metadata.node_id,
-                worker_id=metadata.worker_id,
-                error_type=metadata.error_type,
-                language=metadata.language,
-                placement_group_id=metadata.placement_group_id,
-                creation_time_ms=metadata.creation_time_ms,
-                start_time_ms=metadata.start_time_ms,
-                end_time_ms=metadata.end_time_ms,
-                error_message=metadata.error_message,
-                user_defined_metadata=self.user_defined_metadata.get(task.task_id().hex()),
-            )
+            {
+                "task_id": metadata.task_id,
+                "attempt_number": metadata.attempt_number,
+                "name": metadata.name,
+                "state": metadata.state,
+                "job_id": metadata.job_id,
+                "actor_id": metadata.actor_id,
+                "type": metadata.type,
+                "func_or_class_name": metadata.func_or_class_name,
+                "parent_task_id": metadata.parent_task_id,
+                "node_id": metadata.node_id,
+                "worker_id": metadata.worker_id,
+                "error_type": metadata.error_type,
+                "language": metadata.language,
+                "placement_group_id": metadata.placement_group_id,
+                "creation_time_ms": metadata.creation_time_ms,
+                "start_time_ms": metadata.start_time_ms,
+                "end_time_ms": metadata.end_time_ms,
+                "error_message": metadata.error_message,
+                "user_defined_metadata": self.user_defined_metadata.get(task.task_id().hex()),
+            }
             for task, metadata in completed_tasks
         ]
         self.proxy_server.remote("update", self.perspective_table_name, data)
 
-    async def process(self, obj_refs: Iterable[ray.ObjectRef], metadata: Optional[Iterable[str]] = None, chunk_size: int = 25_000) -> None:
+    async def process(self, obj_refs: Iterable[ray.ObjectRef], metadata: Iterable[str] | None = None, chunk_size: int = 25_000) -> None:
         """An asynchronous function to process a collection of Ray object references.
 
         Sends sub-collections of object references of size chunk_size to its AsyncMetadataTrackerCallback actor.
@@ -267,7 +265,6 @@ class AsyncMetadataTracker:
         """Retrieves an internally maintained dataframe of task related information pulled from the ray GCS"""
         self.df = pl.DataFrame(
             data={
-                # fmt: off
                 "task_id": [task.task_id for task in self.finished_tasks.values()],
                 "user_defined_metadata": [self.user_defined_metadata.get(task.task_id) for task in self.finished_tasks.values()],
                 "attempt_number": [task.attempt_number for task in self.finished_tasks.values()],
@@ -292,7 +289,6 @@ class AsyncMetadataTracker:
                 "end_time_ms": [task.end_time_ms for task in self.finished_tasks.values()],
                 "task_log_info": [task.task_log_info for task in self.finished_tasks.values()],
                 "error_message": [task.error_message for task in self.finished_tasks.values()],
-                # fmt: on
             },
             schema_overrides=default_schema,
         )
@@ -304,7 +300,7 @@ class AsyncMetadataTracker:
         """
         if self.proxy_server:
             return self.proxy_server
-        raise Exception("This task_tracker has no active proxy_server.")
+        raise RuntimeError("This task_tracker has no active proxy_server.")
 
     def save_df(self) -> None:
         """Saves the internally maintained dataframe of task related information from the ray GCS"""
@@ -324,7 +320,7 @@ class AsyncMetadataTracker:
 
 
 class RayTaskTracker:
-    def __init__(self, name: str = "task_tracker", namespace: str = None, **kwargs):
+    def __init__(self, name: str = "task_tracker", namespace: str | None = None, **kwargs):
         """A utility to construct AsyncMetadataTracker actors.
 
         Wraps several remote AsyncMetadataTracker functions in a ray.get() call for convenience.
@@ -350,7 +346,7 @@ class RayTaskTracker:
             **kwargs,
         )
 
-    def process(self, object_refs: Iterable[ray.ObjectRef], metadata: Optional[Iterable[str]] = None, chunk_size: int = 25_000) -> None:
+    def process(self, object_refs: Iterable[ray.ObjectRef], metadata: Iterable[str] | None = None, chunk_size: int = 25_000) -> None:
         """A helper function, to send this object's AsyncMetadataTracker actor a collection of object references to track"""
         self.tracker.process.remote(object_refs, metadata=metadata, chunk_size=chunk_size)
 
@@ -371,12 +367,12 @@ class RayTaskTracker:
         """Clear the dataframe used by this object's AsyncMetadataTracker actor"""
         return ray.get(self.tracker.clear_df.remote())
 
-    def create_table(self, table_name: str, table_schema: Dict[str, str]) -> None:
+    def create_table(self, table_name: str, table_schema: dict[str, str]) -> None:
         """Create a new perspective table using the proxy server used by the RayTaskTracker's AsyncMetadataTracker actor"""
         proxy_server = self.proxy_server()
         return proxy_server.remote("new", table_name, table_schema)
 
-    def update_table(self, table_name: str, data: List[Dict]) -> None:
+    def update_table(self, table_name: str, data: list[dict]) -> None:
         """Update rows of perspective table held by the proxy server used by the RayTaskTracker's AsyncMetadataTracker actor"""
         proxy_server = self.proxy_server()
         return proxy_server.remote("update", table_name, data)

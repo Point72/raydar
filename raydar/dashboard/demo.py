@@ -13,7 +13,7 @@ def test_job(backoff, tablename, proxy):
     time.sleep(backoff)
     end = time.time()
     runtime = end - start
-    data = dict(start=start, end=end, runtime=runtime, backoff=backoff, random=random.random())
+    data = {"start": start, "end": end, "runtime": runtime, "backoff": backoff, "random": random.random()}
     proxy.remote("update", tablename, data)
     return data
 
