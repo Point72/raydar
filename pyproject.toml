@@ -43,7 +43,7 @@ dependencies = [
     "fastapi<0.139.2",
     "jinja2",
     "packaging",
-    "perspective-python>=3.4,<3.5",
+    "perspective-python>=3.4,<5.1",
     "polars",
     "pyarrow",
     "pydantic",
