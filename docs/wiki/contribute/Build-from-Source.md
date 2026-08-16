@@ -70,7 +70,7 @@ make build
 | :--------- | :---------- | :------------ | :---------- |
 | Python     | `ruff`      | `ruff`        | Style       |
 | Python     | `ruff`      | `ruff`        | Imports     |
-| JavaScript | `prettier`  | `prettier`    | Style       |
+| JavaScript | `oxlint`    | `oxfmt`       | Style       |
 | Markdown   | `mdformat`  | `mdformat`    | Style       |
 | Markdown   | `codespell` |               | Spelling    |
 
