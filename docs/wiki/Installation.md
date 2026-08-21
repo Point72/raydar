@@ -1,6 +1,6 @@
 ## Pre-requisites
 
-You need Python >=3.10 on your machine to install `raydar`.
+You need Python >=3.11 on your machine to install `raydar`.
 
 ## Install with `pip`
 

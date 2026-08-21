@@ -39,10 +39,6 @@ jobs:
       with:
         version: ${{ matrix.python-version }}
 
-    - uses: actions-ext/node/setup@main
-      with:
-        version: 22.x
-
     - name: Install dependencies
       run: make develop
 
@@ -64,7 +60,7 @@ jobs:
     - name: Upload test results
       uses: actions/upload-artifact@v7
       with:
-        name: test-results-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.node-version }}
+        name: test-results-${{ matrix.os }}-${{ matrix.python-version }}
         path: '**/junit.xml'
       if: ${{ always() }}
 

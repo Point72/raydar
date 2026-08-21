@@ -1,4 +1,4 @@
-`raydar` is written in Python and JavaScript. While prebuilt wheels are provided for end users, it is also straightforward to build `raydar` from either the Python [source distribution](https://packaging.python.org/en/latest/specifications/source-distribution-format/) or the GitHub repository.
+`raydar` is written in Python. While prebuilt wheels are provided for end users, it is also straightforward to build `raydar` from either the Python [source distribution](https://packaging.python.org/en/latest/specifications/source-distribution-format/) or the GitHub repository.
 
 - [Make commands](#make-commands)
 - [Prerequisites](#prerequisites)
@@ -36,14 +36,6 @@ git clone https://github.com/Point72/raydar.git
 cd raydar
 ```
 
-## Install NodeJS
-
-Follow the instructions for [installing NodeJS](https://nodejs.org/en/download/package-manager/all) for your system. Once installed, you can [install `pnpm`](https://pnpm.io/installation) with:
-
-```bash
-npm install --global pnpm
-```
-
 ## Install Python dependencies
 
 Python build and develop dependencies are specified in the `pyproject.toml`, but you can manually install them:
@@ -66,13 +58,12 @@ make build
 
 `raydar` has linting and auto formatting.
 
-| Language   | Linter      | Autoformatter | Description |
-| :--------- | :---------- | :------------ | :---------- |
-| Python     | `ruff`      | `ruff`        | Style       |
-| Python     | `ruff`      | `ruff`        | Imports     |
-| JavaScript | `prettier`  | `prettier`    | Style       |
-| Markdown   | `mdformat`  | `mdformat`    | Style       |
-| Markdown   | `codespell` |               | Spelling    |
+| Language | Linter      | Autoformatter | Description |
+| :------- | :---------- | :------------ | :---------- |
+| Python   | `ruff`      | `ruff`        | Style       |
+| Python   | `ruff`      | `ruff`        | Imports     |
+| Markdown | `mdformat`  | `mdformat`    | Style       |
+| Markdown | `codespell` |               | Spelling    |
 
 **Python Linting**
 
@@ -84,18 +75,6 @@ make lint-py
 
 ```bash
 make fix-py
-```
-
-**JavaScript Linting**
-
-```bash
-make lint-js
-```
-
-**JavaScript Autoformatting**
-
-```bash
-make fix-js
 ```
 
 **Documentation Linting**
@@ -122,10 +101,4 @@ make develop
 
 ```bash
 make test-py
-```
-
-**JavaScript**
-
-```bash
-make test-js
 ```

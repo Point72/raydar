@@ -1,7 +1,6 @@
 [build-system]
 requires = [
     "hatchling",
-    "hatch-js",
 ]
 build-backend = "hatchling.build"
 
@@ -10,11 +9,11 @@ name = "raydar"
 authors = [
     {name = "Point72, L.P.", email = "OpenSource@point72.com"},
 ]
-description = "A perspective powered, user editable ray dashboard via ray serve"
+description = "A perspective powered, user editable ray dashboard"
 readme = "README.md"
 license = { text = "Apache-2.0" }
 version = "0.3.0"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 keywords = [
     "perspective",
     "ray",
@@ -31,7 +30,6 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -40,14 +38,18 @@ classifiers = [
 
 dependencies = [
     "coolname",
-    "fastapi<0.139.2",
-    "jinja2",
-    "packaging",
-    "perspective-python>=3.4,<3.5",
+    "perspective-python>=4.5,<4.6",
     "polars",
     "pyarrow",
-    "pydantic",
+    "pydantic>=2",
     "ray[serve]>=2.8",
+    "spaday>=0.7,<0.8",
+    "spaday-perspective>=0.2,<0.3",
+    "spaday-webawesome>=0.2,<0.3",
+    "starlette",
+    "transports>=0.8,<0.9",
+    "uvicorn",
+    "websockets",
 ]
 
 [project.optional-dependencies]
@@ -56,8 +58,8 @@ develop = [
     "bump-my-version",
     "check-dist",
     "codespell",
-    "hatch-js",
     "hatchling",
+    "httpx",
     "mdformat",
     "mdformat-tables>=1",
     "pytest",
@@ -95,16 +97,6 @@ filename = "pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
 
-[[tool.bumpversion.files]]
-filename = "js/package.json"
-search = '"version": "{current_version}"'
-replace = '"version": "{new_version}"'
-
-[[tool.bumpversion.files]]
-filename = "js/src/index.html"
-search = 'Raydar v{current_version}'
-replace = 'Raydar v{new_version}'
-
 [tool.coverage.run]
 branch = true
 omit = [
@@ -120,38 +112,17 @@ exclude_also = [
 ignore_errors = true
 fail_under = 40
 
-[tool.hatch.build]
-artifacts = [
-    "raydar/dashboard/static"
-]
-
 [tool.hatch.build.sources]
 src = "/"
 
 [tool.hatch.build.targets.sdist]
 packages = [
     "raydar",
-    "js",
-]
-exclude = [
-    "js/dist",
-    "js/node_modules",
 ]
 
 [tool.hatch.build.targets.wheel]
 packages = [
     "raydar",
-]
-exclude = [
-    "js",
-]
-
-[tool.hatch.build.hooks.hatch-js]
-path = "js"
-build_cmd = "build"
-tool = "pnpm"
-targets = [
-    "raydar/dashboard/static/index.js",
 ]
 
 [tool.pytest.ini_options]

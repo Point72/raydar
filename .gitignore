@@ -120,17 +120,6 @@ docs/src/_build/
 docs/superpowers
 index.md
 
-# JS
-js/coverage
-js/dist
-js/lib
-js/node_modules
-js/test-results
-js/playwright-report
-js/*.tgz
-raydar/dashboard/static/*
-!raydar/dashboard/static/index.psp2.js
-
 # Jupyter
 .ipynb_checkpoints
 .autoversion

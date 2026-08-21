@@ -37,42 +37,41 @@ This internal dataframe can be accessed via the `.get_df()` method.
 | e0dc174c83... | `null`                | 0              | `example_remote_function` | ... | 2024-01-29 07:17:09.343 EST     | 2024-01-29 07:17:12.115 EST     | `{"/tmp/ray/session_2024-01-29_07...` | `null`        |
 | f4402ec78d... | `null`                | 0              | `example_remote_function` | ... | 2024-01-29 07:17:09.343 EST     | 2024-01-29 07:17:12.115 EST     | `{"/tmp/ray/session_2024-01-29_07...` | `null`        |
 
-Additionally, setting the `enable_perspective_dashboard` flag to `True` in the `RayTaskTracker`'s construction serves a perspective dashboard with live views of your completed references.
+Additionally, passing `dashboard="local"` to the `RayTaskTracker`'s construction serves a perspective dashboard with live views of your completed references.
 
 ```python
-task_tracker = RayTaskTracker(enable_perspective_dashboard=True)
+task_tracker = RayTaskTracker(dashboard="local")
+print(task_tracker.dashboard_url)
 ```
+
+The dashboard runs in this process and pulls updates from the tracker actor over Ray, so the cluster needs no inbound port. Use `dashboard="cluster"` to serve it from Ray Serve instead, when the cluster's HTTP ingress is reachable.
 
 ![Example](images/example_perspective_dashboard.gif)
 
 ## Create/Store Custom Views
 
-From the developer console, save your workspace layout locally.
+Layouts live in Python. Pass a [perspective-workspace](https://perspective.finos.org/) layout and it is restored in every connected tab:
 
-```javascript
-let workspace = document.getElementById("perspective-workspace");
+```python
+layout = {
+    "sizes": [1],
+    "detail": {"main": {"type": "tab-area", "widgets": ["task_tracker_data"], "currentIndex": 0}},
+    "master": {"sizes": [], "widgets": []},
+    "mode": "globalFilters",
+    "viewers": {
+        "task_tracker_data": {
+            "table": "task_tracker_data",
+            "plugin": "Datagrid",
+            "group_by": ["func_or_class_name"],
+            "columns": ["state"],
+        }
+    },
+}
 
-// Save the current layout
-workspace.save().then((config) => {
-  // Convert the configuration object to a JSON string
-  let json = JSON.stringify(config);
-
-  // Create a Blob object from the JSON string
-  let blob = new Blob([json], { type: "application/json" });
-
-  // Create a download link
-  let link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "workspace.json";
-
-  // Append the link to the document body and click it to start the download
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-});
+task_tracker = RayTaskTracker(dashboard="local", dashboard_options={"layout": layout})
 ```
 
-Then, move this json file to `js/src/layouts/default.json`.
+`dashboard_options` also accepts `title` and `limit` (a per-table row cap). Without a layout override, raydar generates one datagrid tab per table.
 
 ![Example](images/example_perspective_dashboard_layouts.gif)
 
@@ -111,13 +110,11 @@ Specifically, tracked fields include:
 
 ## Custom Sources / Update Logic
 
-The proxy server helpd by the `RayTaskTracker` is exposed via the `.proxy_server()` property, meaning we can create new tables as follows:
+The `RayTaskTracker` can create and update arbitrary tables:
 
 ```python
-task_tracker = RayTaskTracker(enable_perspective_dashboard=True)
-proxy_server = task_tracker.proxy_server()
-proxy_server.remote(
-    "new",
+task_tracker = RayTaskTracker(dashboard="local")
+task_tracker.create_table(
     "metrics_table",
     {
         "node_id": "string",
@@ -133,18 +130,17 @@ proxy_server.remote(
 If a user were to then update this table with data coming from, for example, a pytorch model training loop with metrics:
 
 ```python
-def my_model_training_loop()
-
-	for epoch in range(num_epochs):
+def my_model_training_loop():
+    for epoch in range(num_epochs):
         # ... my training code here ...
 
-		data = dict(
-			node_id=ray.get_runtime_context().get_node_id(),
-			metric_name="loss",
-			value=loss.item(),
-			timestamp=time.time(),
-		)
-		proxy_server.remote("update", "metrics_table", [data])
+        data = dict(
+            node_id=ray.get_runtime_context().get_node_id(),
+            metric_name="loss",
+            value=loss.item(),
+            timestamp=time.time(),
+        )
+        task_tracker.update_table("metrics_table", [data])
 ```
 
 Then they can expose a live view at per-node loss metrics across our model training process:
