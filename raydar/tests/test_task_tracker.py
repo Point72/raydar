@@ -66,6 +66,17 @@ class TestRayTaskTracker:
         task_tracker = trackers()
         assert task_tracker.dashboard_url is None
 
+    def test_a_single_task_is_still_recorded(self, trackers):
+        # One task completes in one wait round, so the tracker gets exactly one
+        # callback. The GCS has not published the task's state that early, so
+        # nothing was recorded until the processor learned to wait for it.
+        task_tracker = trackers(dashboard="local")
+        task_tracker.process([do_some_work.remote()])
+
+        df = wait_for(task_tracker.get_df, lambda d: not d.is_empty(), timeout=90)
+        assert not df.is_empty(), "the only task the tracker was given went unrecorded"
+        assert df[["name", "state"]].row(0) == ("do_some_work", "FINISHED")
+
     def test_dashboard_options_reach_the_dashboard(self, trackers):
         layout = {"sizes": [1], "viewers": {}}
         task_tracker = trackers(dashboard="local", dashboard_options={"title": "custom", "layout": layout})

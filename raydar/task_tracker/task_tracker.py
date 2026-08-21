@@ -1,6 +1,7 @@
 import asyncio
 import itertools
 import logging
+import time
 from collections.abc import Iterable
 from typing import Literal
 
@@ -34,7 +35,7 @@ class AsyncMetadataTrackerCallback:
     def __init__(self, name: str, namespace: str):
         self.actor = ray.get_actor(name, namespace)
 
-    def process(self, obj_refs: Iterable[ray.ObjectRef]) -> None:
+    def process(self, obj_refs: Iterable[ray.ObjectRef], settle_timeout: float = 60.0, settle_interval: float = 0.5) -> None:
         """Processes an interable collection of ray.ObjectRefs.
 
         Iterates through the collection, finds completed references, and returns those references to the
@@ -42,6 +43,9 @@ class AsyncMetadataTrackerCallback:
 
         Args:
             obj_refs: An iterable collection of (possibly) in-progress ray object references
+            settle_timeout: How long to keep asking the tracker to re-resolve tasks whose
+                metadata the GCS has not published yet.
+            settle_interval: How long to wait between those attempts.
         """
         active_tasks = set(obj_refs)
         while len(active_tasks) > 0:
@@ -54,6 +58,16 @@ class AsyncMetadataTrackerCallback:
                         finished_tasks.append(done[0])
             if len(finished_tasks) > 0:
                 self.actor.callback.remote(finished_tasks)
+
+        # ray.wait reports an object ready before the GCS has published the task's final
+        # state, so tasks the tracker could not resolve are held in its pending list. Only
+        # a later callback revisits that list, and the loop above has just run out of
+        # tasks to send, so the last batch would otherwise never be recorded. Calling back
+        # with nothing re-resolves the pending list on its own.
+        deadline = time.monotonic() + settle_timeout
+        while time.monotonic() < deadline and ray.get(self.actor.has_pending_tasks.remote()):
+            time.sleep(settle_interval)
+            ray.get(self.actor.callback.remote([]))
 
     def exit(self) -> None:
         """Terminate this actor"""
@@ -164,6 +178,10 @@ class AsyncMetadataTracker:
 
     def get_dashboard_mode(self) -> str | None:
         return self.dashboard_mode
+
+    def has_pending_tasks(self) -> bool:
+        """Whether any task is still waiting on the GCS to publish its final state."""
+        return bool(self.pending_tasks)
 
     def callback(self, tasks: Iterable[ray.ObjectRef]) -> None:
         """A remote function used by this actor's processor actor attribute. Will be called by a separate actor
