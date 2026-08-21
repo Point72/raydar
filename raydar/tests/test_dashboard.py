@@ -1,6 +1,7 @@
 import json
 import socket
 import time
+from datetime import UTC, date, datetime
 
 import pytest
 from starlette.testclient import TestClient
@@ -81,6 +82,20 @@ class TestDashboard:
         # Schemas are replayed on every drain, so this is the steady-state batch.
         dashboard.apply({"schemas": {"t": SCHEMA}, "updates": {}, "cleared": []})
         assert dashboard.state == before
+
+    def test_datetime_values_are_accepted(self, dashboard):
+        # Perspective encodes rows as JSON, which rejects datetime outright.
+        moment = datetime(2026, 8, 21, 12, 30, 15, tzinfo=UTC)
+        dashboard.apply(
+            {
+                "schemas": {"t": {"when": "datetime", "day": "date"}},
+                "updates": {"t": [{"when": moment, "day": date(2026, 8, 21)}]},
+            }
+        )
+
+        assert dashboard.tables.total_rows() == 1
+        stored = dashboard.tables._tables["t"].view().to_columns()["when"][0]
+        assert stored == int(moment.timestamp() * 1000)
 
 
 class TestDashboardApp:

@@ -10,7 +10,7 @@ standalone.
 import asyncio
 from collections.abc import Awaitable, Callable, Sequence
 from contextlib import asynccontextmanager
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime, time
 from typing import Any
 
 import perspective
@@ -29,6 +29,17 @@ from .state import DashboardState, default_layout
 
 __all__ = ("Dashboard", "TableHost")
 
+_TEMPORAL_TYPES = ("datetime", "date")
+
+
+def _to_epoch_millis(value):
+    """Perspective encodes rows as JSON, which has no datetime, so send millis."""
+    if isinstance(value, datetime):
+        return int(value.timestamp() * 1000)
+    if isinstance(value, date):
+        return int(datetime.combine(value, time()).timestamp() * 1000)
+    return value
+
 
 class TableHost:
     """Owns a Perspective server and the tables served over its websocket."""
@@ -39,6 +50,7 @@ class TableHost:
         self._limit = limit
         self._schemas: dict[str, dict] = {}
         self._tables: dict[str, Any] = {}
+        self._temporal_columns: dict[str, set[str]] = {}
 
     def names(self) -> list[str]:
         return list(self._schemas)
@@ -52,6 +64,7 @@ class TableHost:
         if tablename in self._schemas:
             return False
         self._schemas[tablename] = schema
+        self._temporal_columns[tablename] = {column for column, kind in schema.items() if kind in _TEMPORAL_TYPES}
         kwargs = {"name": tablename}
         if self._limit is not None:
             kwargs["limit"] = self._limit
@@ -63,6 +76,9 @@ class TableHost:
             data = [data]
         if tablename not in self._tables:
             raise KeyError(f"No such table: {tablename}")
+        temporal = self._temporal_columns[tablename]
+        if temporal:
+            data = [{key: _to_epoch_millis(value) if key in temporal else value for key, value in row.items()} for row in data]
         self._tables[tablename].update(data)
 
     def clear(self, tablename: str) -> None:

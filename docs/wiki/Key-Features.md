@@ -138,7 +138,7 @@ def my_model_training_loop():
             node_id=ray.get_runtime_context().get_node_id(),
             metric_name="loss",
             value=loss.item(),
-            timestamp=time.time(),
+            timestamp=datetime.datetime.now(),
         )
         task_tracker.update_table("metrics_table", [data])
 ```

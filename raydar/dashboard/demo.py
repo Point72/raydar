@@ -6,6 +6,7 @@ actor over Ray, so the cluster needs no inbound port.
 
 import random
 import time
+from datetime import UTC, datetime
 
 import ray
 
@@ -23,13 +24,13 @@ SCHEMA = {
 
 @ray.remote
 def demo_job(backoff: float) -> dict:
-    start = time.time()
+    start = datetime.now(tz=UTC)
     time.sleep(backoff)
-    end = time.time()
+    end = datetime.now(tz=UTC)
     return {
         "start": start,
         "end": end,
-        "runtime": end - start,
+        "runtime": (end - start).total_seconds(),
         "backoff": backoff,
         "random": random.random(),
     }
