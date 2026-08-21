@@ -45,7 +45,7 @@ dependencies = [
     "polars",
     "pyarrow",
     "pydantic>=2",
-    "ray[serve]>=2.8",
+    "ray[serve]>=2.57.0",
     "spaday>=0.7,<0.8",
     "spaday-perspective>=0.2,<0.3",
     "spaday-webawesome>=0.2,<0.3",
