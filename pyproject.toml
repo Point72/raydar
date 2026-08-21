@@ -44,7 +44,7 @@ dependencies = [
     "perspective-python>=4.5,<4.6",
     "polars",
     "pyarrow",
-    "pydantic>=2",
+    "pydantic>=2.13.4",
     "ray[serve]>=2.8",
     "spaday>=0.7,<0.8",
     "spaday-perspective>=0.2,<0.3",
