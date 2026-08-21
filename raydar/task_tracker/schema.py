@@ -6,7 +6,7 @@ schema = {
     "name": pl.Utf8,
     "state": pl.Utf8,
     "job_id": pl.Utf8,
-    "actor_id": pl.Float32,
+    "actor_id": pl.Utf8,
     "type": pl.Utf8,
     "func_or_class_name": pl.Utf8,
     "parent_task_id": pl.Utf8,
@@ -29,7 +29,7 @@ schema = {
             ),
         ]
     ),
-    "placement_group_id": pl.Float32,
+    "placement_group_id": pl.Utf8,
     "events": pl.List(pl.Struct([pl.Field("state", pl.Utf8), pl.Field("created_ms", pl.Float64)])),
     "profiling_data": pl.Struct(
         [

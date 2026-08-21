@@ -68,6 +68,19 @@ class TestDashboard:
         with pytest.raises(KeyError):
             dashboard.apply({"updates": {"nope": [{"a": 1}]}})
 
+    def test_a_failed_batch_still_syncs_what_landed(self, dashboard):
+        with pytest.raises(KeyError):
+            dashboard.apply(
+                {
+                    "schemas": {"t": SCHEMA},
+                    "updates": {"t": [{"a": 1, "b": "x"}], "nope": [{"a": 1}]},
+                }
+            )
+
+        # The good table landed, so it must be visible even though the batch raised.
+        assert dashboard.state.tables == ["t"]
+        assert dashboard.state.rows == "1"
+
     def test_limit_caps_retained_rows(self):
         dashboard = Dashboard(limit=2)
         dashboard.apply({"schemas": {"t": SCHEMA}, "updates": {"t": [{"a": i, "b": "x"} for i in range(5)]}})
