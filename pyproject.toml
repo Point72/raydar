@@ -38,6 +38,9 @@ classifiers = [
 
 dependencies = [
     "coolname",
+    # ray.serve imports jinja2 at import time but does not declare it
+    "jinja2",
+    "pandas",
     "perspective-python>=4.5,<4.6",
     "polars",
     "pyarrow",
@@ -71,8 +74,6 @@ develop = [
     "ty",
     "uv",
     "wheel",
-    # Test deps
-    "pandas",
 ]
 
 [project.scripts]
