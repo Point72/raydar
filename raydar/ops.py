@@ -40,7 +40,8 @@ class OpBuffer:
 
     def clear(self, tablename: str) -> None:
         self._updates.pop(tablename, None)
-        self._cleared.append(tablename)
+        if tablename not in self._cleared:
+            self._cleared.append(tablename)
 
     def extend(self, batch: dict) -> None:
         """Absorb a batch in the same shape :meth:`drain` produces."""

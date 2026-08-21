@@ -39,19 +39,24 @@ class TableHost:
         self._limit = limit
         self._schemas: dict[str, dict] = {}
         self._tables: dict[str, Any] = {}
-        self.total_rows = 0
 
     def names(self) -> list[str]:
         return list(self._schemas)
 
-    def new_table(self, tablename: str, schema: dict) -> None:
+    def total_rows(self) -> int:
+        """Rows currently held, which `limit` and `clear` both reduce."""
+        return sum(table.size() for table in self._tables.values())
+
+    def new_table(self, tablename: str, schema: dict) -> bool:
+        """Create a table, returning whether it did not already exist."""
         if tablename in self._schemas:
-            return
+            return False
         self._schemas[tablename] = schema
         kwargs = {"name": tablename}
         if self._limit is not None:
             kwargs["limit"] = self._limit
         self._tables[tablename] = self._client.table(schema, **kwargs)
+        return True
 
     def update(self, tablename: str, data) -> None:
         if isinstance(data, dict):
@@ -59,7 +64,6 @@ class TableHost:
         if tablename not in self._tables:
             raise KeyError(f"No such table: {tablename}")
         self._tables[tablename].update(data)
-        self.total_rows += len(data)
 
     def clear(self, tablename: str) -> None:
         if tablename in self._tables:
@@ -130,19 +134,26 @@ class Dashboard:
 
     def apply(self, batch: dict) -> None:
         """Apply a drained :class:`~raydar.ops.OpBuffer` batch to the tables."""
+        changed = False
         for tablename, schema in (batch.get("schemas") or {}).items():
-            self.tables.new_table(tablename, schema)
+            changed |= self.tables.new_table(tablename, schema)
         for tablename in batch.get("cleared") or ():
             self.tables.clear(tablename)
+            changed = True
         for tablename, rows in (batch.get("updates") or {}).items():
-            self.tables.update(tablename, rows)
-        self._refresh_state()
+            if rows:
+                self.tables.update(tablename, rows)
+                changed = True
+        # Schemas are replayed on every drain, so most batches are empty; only
+        # touch the synced model when something actually moved.
+        if changed:
+            self._refresh_state()
 
     def _refresh_state(self) -> None:
         names = self.tables.names()
         if names != self.state.tables:
             self.state.tables = names
             self.state.layout = self._layout_override or default_layout(names)
-        self.state.rows = f"{self.tables.total_rows:,}"
+        self.state.rows = f"{self.tables.total_rows():,}"
         self.state.status = "Live" if names else "Waiting for data"
         self.state.updated = datetime.now(tz=UTC).astimezone().strftime("%H:%M:%S")

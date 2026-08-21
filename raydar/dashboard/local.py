@@ -47,6 +47,9 @@ class LocalDashboard:
         self._poll_interval = poll_interval
         self._thread: threading.Thread | None = None
 
+        if host not in ("127.0.0.1", "localhost", "::1"):
+            logger.warning(f"raydar dashboard is bound to {host} and serves Ray task metadata without authentication")
+
         # Bind up front so `url` is accurate before the server thread starts.
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -66,18 +69,19 @@ class LocalDashboard:
 
     async def _poll(self) -> None:
         while True:
+            # Applying is inside the guard too: one bad row must not kill the loop
+            # and leave the dashboard silently frozen.
             try:
                 batch = await asyncio.to_thread(self._drain)
+                if batch:
+                    self.dashboard.apply(batch)
             except Exception:
-                logger.exception("Failed to fetch dashboard updates")
-                batch = None
-            if batch:
-                self.dashboard.apply(batch)
+                logger.exception("Failed to apply dashboard updates")
             await asyncio.sleep(self._poll_interval)
 
     def start(self) -> str:
         """Start serving in a daemon thread and return the dashboard URL."""
-        if self._thread is not None:
+        if self._thread is not None and self._thread.is_alive():
             return self.url
         self._thread = threading.Thread(
             target=lambda: asyncio.run(self._server.serve(sockets=[self._socket])),
@@ -89,8 +93,14 @@ class LocalDashboard:
         return self.url
 
     def stop(self) -> None:
-        """Ask the server to exit and wait for the thread to finish."""
+        """Ask the server to exit and wait for the thread to finish. Idempotent."""
         self._server.should_exit = True
-        if self._thread is not None:
-            self._thread.join(timeout=5)
+        thread = self._thread
+        if thread is not None:
+            thread.join(timeout=5)
+            if thread.is_alive():
+                # Keep the reference so `start` cannot bind a second server to this socket.
+                logger.warning("raydar dashboard thread did not stop within 5s")
+                return
             self._thread = None
+        self._socket.close()

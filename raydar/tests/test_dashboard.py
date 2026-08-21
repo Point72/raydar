@@ -1,9 +1,11 @@
 import json
+import socket
+import time
 
 import pytest
 from starlette.testclient import TestClient
 
-from raydar.dashboard import Dashboard, default_layout
+from raydar.dashboard import Dashboard, LocalDashboard, default_layout
 
 SCHEMA = {"a": "integer", "b": "string"}
 
@@ -56,16 +58,29 @@ class TestDashboard:
     def test_clear_empties_the_table(self, dashboard):
         dashboard.apply({"schemas": {"t": SCHEMA}, "updates": {"t": [{"a": 1, "b": "x"}]}})
         dashboard.apply({"cleared": ["t"]})
+
         assert dashboard.tables.names() == ["t"]
+        assert dashboard.tables.total_rows() == 0
+        assert dashboard.state.rows == "0"
 
     def test_update_of_an_unknown_table_raises(self, dashboard):
         with pytest.raises(KeyError):
             dashboard.apply({"updates": {"nope": [{"a": 1}]}})
 
-    def test_limit_is_applied_to_new_tables(self):
+    def test_limit_caps_retained_rows(self):
         dashboard = Dashboard(limit=2)
         dashboard.apply({"schemas": {"t": SCHEMA}, "updates": {"t": [{"a": i, "b": "x"} for i in range(5)]}})
-        assert dashboard.tables.names() == ["t"]
+
+        assert dashboard.tables.total_rows() == 2
+        assert dashboard.state.rows == "2"
+
+    def test_an_empty_batch_does_not_touch_the_synced_state(self, dashboard):
+        dashboard.apply({"schemas": {"t": SCHEMA}})
+        before = dashboard.state.model_copy(deep=True)
+
+        # Schemas are replayed on every drain, so this is the steady-state batch.
+        dashboard.apply({"schemas": {"t": SCHEMA}, "updates": {}, "cleared": []})
+        assert dashboard.state == before
 
 
 class TestDashboardApp:
@@ -94,3 +109,40 @@ class TestDashboardApp:
     def test_perspective_has_its_own_socket(self, dashboard):
         with TestClient(dashboard.app) as client, client.websocket_connect("/perspective") as ws:
             assert ws is not None
+
+
+class TestLocalDashboard:
+    def test_poll_loop_survives_a_bad_batch(self):
+        batches = [
+            {"updates": {"missing": [{"a": 1}]}},  # unknown table -> KeyError
+            {"schemas": {"t": SCHEMA}, "updates": {"t": [{"a": 1, "b": "x"}]}},
+        ]
+        local = LocalDashboard(drain=lambda: batches.pop(0) if batches else {}, poll_interval=0.05)
+        local.start()
+        try:
+            deadline = time.time() + 10
+            while time.time() < deadline and local.dashboard.tables.names() != ["t"]:
+                time.sleep(0.1)
+            # The good batch only lands if the failed one did not kill the loop.
+            assert local.dashboard.tables.names() == ["t"]
+            assert local.dashboard.tables.total_rows() == 1
+        finally:
+            local.stop()
+
+    def test_stop_is_idempotent_and_releases_the_port(self):
+        local = LocalDashboard(drain=lambda: None, poll_interval=0.05)
+        port = local.port
+        local.start()
+        local.stop()
+        local.stop()
+
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+            probe.bind(("127.0.0.1", port))
+
+    def test_an_unstarted_dashboard_releases_its_socket(self):
+        local = LocalDashboard(drain=lambda: None)
+        port = local.port
+        local.stop()
+
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+            probe.bind(("127.0.0.1", port))

@@ -8,7 +8,7 @@ import coolname
 import pandas as pd
 import polars as pl
 import ray
-from ray.serve import shutdown
+from ray.serve import delete as delete_serve_app
 
 from ..ops import OpBuffer
 from .schema import schema as default_schema
@@ -161,6 +161,9 @@ class AsyncMetadataTracker:
         if self._buffer is None:
             return None
         return self._buffer.drain()
+
+    def get_dashboard_mode(self) -> str | None:
+        return self.dashboard_mode
 
     def callback(self, tasks: Iterable[ray.ObjectRef]) -> None:
         """A remote function used by this actor's processor actor attribute. Will be called by a separate actor
@@ -357,6 +360,15 @@ class RayTaskTracker:
         if dashboard == "local":
             from raydar.dashboard import LocalDashboard
 
+            # `get_if_exists` returns a pre-existing actor and drops these constructor
+            # args, so a mode mismatch would otherwise show as an empty dashboard.
+            active = ray.get(self.tracker.get_dashboard_mode.remote())
+            if active != dashboard:
+                logger.warning(
+                    f'Actor "{name}" in namespace "{namespace}" already exists with dashboard={active!r}, '
+                    f"so it will not feed a {dashboard!r} dashboard. Use a new name or namespace."
+                )
+
             self.dashboard = LocalDashboard(
                 drain=lambda: ray.get(self.tracker.drain.remote()),
                 host=dashboard_host,
@@ -407,4 +419,7 @@ class RayTaskTracker:
             self.dashboard = None
         ray.kill(ray.get_actor(name=self.name, namespace=self.namespace))
         ray.kill(ray.get_actor(name=get_callback_actor_name(self.name), namespace=self.namespace))
-        shutdown()
+        if self.dashboard_mode == "cluster":
+            # Delete only our own application; a global serve shutdown would take
+            # unrelated deployments with it.
+            delete_serve_app("raydar")
