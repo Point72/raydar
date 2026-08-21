@@ -131,7 +131,7 @@ class AsyncMetadataTracker:
                             "name": "string",
                             "state": "string",
                             "job_id": "string",
-                            "actor_id": "float",
+                            "actor_id": "string",
                             "type": "string",
                             "func_or_class_name": "string",
                             "parent_task_id": "string",
@@ -139,7 +139,7 @@ class AsyncMetadataTracker:
                             "worker_id": "string",
                             "error_type": "string",
                             "language": "string",
-                            "placement_group_id": "float",
+                            "placement_group_id": "string",
                             "creation_time_ms": "datetime",
                             "start_time_ms": "datetime",
                             "end_time_ms": "datetime",
@@ -357,17 +357,17 @@ class RayTaskTracker:
             **kwargs,
         )
 
+        # `get_if_exists` returns a pre-existing actor and drops these constructor
+        # args, so a mode mismatch would otherwise show as an empty dashboard.
+        active = ray.get(self.tracker.get_dashboard_mode.remote())
+        if active != dashboard:
+            logger.warning(
+                f'Actor "{name}" in namespace "{namespace}" already exists with dashboard={active!r}, '
+                f"not the requested {dashboard!r}. Use a new name or namespace."
+            )
+
         if dashboard == "local":
             from raydar.dashboard import LocalDashboard
-
-            # `get_if_exists` returns a pre-existing actor and drops these constructor
-            # args, so a mode mismatch would otherwise show as an empty dashboard.
-            active = ray.get(self.tracker.get_dashboard_mode.remote())
-            if active != dashboard:
-                logger.warning(
-                    f'Actor "{name}" in namespace "{namespace}" already exists with dashboard={active!r}, '
-                    f"so it will not feed a {dashboard!r} dashboard. Use a new name or namespace."
-                )
 
             self.dashboard = LocalDashboard(
                 drain=lambda: ray.get(self.tracker.drain.remote()),

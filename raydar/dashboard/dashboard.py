@@ -151,19 +151,21 @@ class Dashboard:
     def apply(self, batch: dict) -> None:
         """Apply a drained :class:`~raydar.ops.OpBuffer` batch to the tables."""
         changed = False
-        for tablename, schema in (batch.get("schemas") or {}).items():
-            changed |= self.tables.new_table(tablename, schema)
-        for tablename in batch.get("cleared") or ():
-            self.tables.clear(tablename)
-            changed = True
-        for tablename, rows in (batch.get("updates") or {}).items():
-            if rows:
-                self.tables.update(tablename, rows)
+        try:
+            for tablename, schema in (batch.get("schemas") or {}).items():
+                changed |= self.tables.new_table(tablename, schema)
+            for tablename in batch.get("cleared") or ():
+                self.tables.clear(tablename)
                 changed = True
-        # Schemas are replayed on every drain, so most batches are empty; only
-        # touch the synced model when something actually moved.
-        if changed:
-            self._refresh_state()
+            for tablename, rows in (batch.get("updates") or {}).items():
+                if rows:
+                    self.tables.update(tablename, rows)
+                    changed = True
+        finally:
+            # Sync whatever landed before a bad row raised, otherwise those tables
+            # stay invisible: replayed schemas report no change on the next batch.
+            if changed:
+                self._refresh_state()
 
     def _refresh_state(self) -> None:
         names = self.tables.names()
