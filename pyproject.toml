@@ -41,13 +41,13 @@ dependencies = [
     # ray.serve imports jinja2 at import time but does not declare it
     "jinja2",
     "pandas",
-    "perspective-python>=4.5,<4.6",
     "polars",
     "pyarrow",
     "pydantic>=2",
     "ray[serve]>=2.8",
     "spaday>=0.7,<0.8",
-    "spaday-perspective>=0.2,<0.3",
+    # Supplies perspective-python, pinned to the version its browser bundle speaks
+    "spaday-perspective>=0.3,<0.4",
     "spaday-webawesome>=0.2,<0.3",
     "starlette",
     "transports>=0.8,<0.9",
