@@ -13,6 +13,16 @@ def do_some_work():
     return True
 
 
+def wait_for(fetch, ready, timeout=120, interval=0.5):
+    """Poll `fetch` until `ready` accepts the value, then return it."""
+    deadline = time.time() + timeout
+    value = fetch()
+    while not ready(value) and time.time() < deadline:
+        time.sleep(interval)
+        value = fetch()
+    return value
+
+
 @pytest.mark.usefixtures("unittest_ray_cluster")
 class TestRayTaskTracker:
     def test_construction_and_dataframe(self):
@@ -21,8 +31,11 @@ class TestRayTaskTracker:
             assert len(task_tracker.namespace.split("-")) == 2
             refs = [do_some_work.remote() for _ in range(10)]
             task_tracker.process(refs)
-            time.sleep(30)
-            df = task_tracker.get_df()
+
+            # Metadata arrives via GCS polling, so wait on the result rather than
+            # on a fixed sleep, which was slow on a fast box and flaky on a slow one.
+            df = wait_for(task_tracker.get_df, lambda d: not d.is_empty())
+            assert not df.is_empty(), "tracker recorded no finished tasks"
             assert df[["name", "state"]].row(0) == ("do_some_work", "FINISHED")
         finally:
             task_tracker.dashboard.stop()
@@ -51,11 +64,9 @@ class TestRayTaskTracker:
 
             tables = task_tracker.dashboard.dashboard.tables
             expected = ["custom", "task_tracker_data"]
-            deadline = time.time() + 30
-            while time.time() < deadline and sorted(tables.names()) != expected:
-                time.sleep(0.5)
+            names = wait_for(lambda: sorted(tables.names()), lambda n: n == expected, timeout=60)
 
-            assert sorted(tables.names()) == expected
+            assert names == expected
             assert httpx.get(task_tracker.dashboard_url).status_code == 200
         finally:
             task_tracker.dashboard.stop()
