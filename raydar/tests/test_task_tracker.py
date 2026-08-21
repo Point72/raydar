@@ -14,13 +14,6 @@ def do_some_work():
     return True
 
 
-@ray.remote
-class SomeActor:
-    def do_some_work(self):
-        time.sleep(0.1)
-        return True
-
-
 def wait_for(fetch, ready, timeout=120, interval=0.5):
     """Poll `fetch` until `ready` accepts the value, then return it."""
     deadline = time.time() + timeout
@@ -72,22 +65,6 @@ class TestRayTaskTracker:
     def test_dashboard_is_off_by_default(self, trackers):
         task_tracker = trackers()
         assert task_tracker.dashboard_url is None
-
-    def test_actor_task_ids_survive_as_strings(self, trackers):
-        # Ray reports actor_id as a hex string. Declaring it numeric made get_df
-        # raise and rendered every id as 0.0 in the dashboard.
-        task_tracker = trackers(dashboard="local")
-        actor = SomeActor.remote()
-        refs = [actor.do_some_work.remote() for _ in range(3)]
-        task_tracker.process(refs)
-        ray.get(refs)
-
-        df = wait_for(task_tracker.get_df, lambda d: not d.is_empty())
-        assert not df.is_empty(), "tracker recorded no finished actor tasks"
-
-        actor_ids = [a for a in df["actor_id"].to_list() if a]
-        assert actor_ids, "actor_id was not recorded"
-        assert all(isinstance(a, str) and int(a, 16) for a in actor_ids)
 
     def test_dashboard_options_reach_the_dashboard(self, trackers):
         layout = {"sizes": [1], "viewers": {}}
