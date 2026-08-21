@@ -1,47 +1,27 @@
 import asyncio
 import itertools
 import logging
-import os
 from collections.abc import Iterable
+from typing import Literal
 
 import coolname
 import pandas as pd
 import polars as pl
 import ray
-from packaging.version import Version
-from ray.serve import shutdown
-from ray.serve.handle import DeploymentHandle
+from ray.serve import delete as delete_serve_app
 
+from ..ops import OpBuffer
 from .schema import schema as default_schema
 
 logger = logging.getLogger(__name__)
 
-__all__ = ("AsyncMetadataTracker", "RayTaskTracker", "setup_proxy_server")
+DashboardMode = Literal["local", "cluster"]
+
+__all__ = ("AsyncMetadataTracker", "RayTaskTracker")
 
 
 def get_callback_actor_name(name: str) -> str:
     return f"{name}_callback_actor"
-
-
-def setup_proxy_server(proxy_server_name="proxy", proxy_server_route_prefix="/proxy", **kwargs) -> DeploymentHandle:
-    """Construct a webserver, and bind it to a PerspectiveProxyRayServer.
-
-    Args:
-        proxy_server_name: the name passed to ray.serve.run for the PerspectiveProxyRayServer
-        proxy_server_route_prefix: the route_prefix passed to ray.serve.run for the PerspectiveProxyRayServer
-        **kwargs: arguments forwarded to ray.serve.run() for the webserver
-
-    Returns: A DeploymentHandle for the PerspectiveProxyRayServer
-    """
-    from raydar.dashboard.server import PerspectiveProxyRayServer
-
-    webserver = ray.serve.run(**kwargs)
-    proxy_server = ray.serve.run(
-        PerspectiveProxyRayServer.bind(webserver),
-        name=proxy_server_name,
-        route_prefix=proxy_server_route_prefix,
-    )
-    return proxy_server
 
 
 @ray.remote(resources={"node:__internal_head__": 0.1}, num_cpus=0)
@@ -87,7 +67,8 @@ class AsyncMetadataTracker:
         name: str,
         namespace: str,
         path: str | None = None,
-        enable_perspective_dashboard: bool = False,
+        dashboard: DashboardMode | None = None,
+        max_buffered_rows: int = 100_000,
     ):
         """An async Ray Actor Class to track task level metadata.
 
@@ -99,8 +80,9 @@ class AsyncMetadataTracker:
             name: Ray actor name, used to construct its AsyncMetadataTrackerCallback actor attribute.
             namespace: Ray Namespace
             path: A Cloudpathlib.AnyPath, used for saving its internal polars DataFrame object.
-            enable_perspective_dashboard: To enable an experimental perspective dashboard.
-
+            dashboard: "local" buffers table operations for a dashboard running outside the cluster to
+                drain; "cluster" pushes them to a Ray Serve deployment; None disables the dashboard.
+            max_buffered_rows: Per-table cap on rows held for a "local" dashboard to drain.
         """
         logger.info(f"Initializing an AsyncMetadataTracker in namespace {namespace} with name {name}.")
         # Passing 'self' to the AsyncMetadataTrackerCallback converts this actor class to a
@@ -116,9 +98,11 @@ class AsyncMetadataTracker:
         self.df = None
         self.finished_tasks = {}
         self.user_defined_metadata = {}
-        self.perspective_dashboard_enabled = enable_perspective_dashboard
+        self.dashboard_mode = dashboard
         self.pending_tasks = []
         self.perspective_table_name = f"{name}_data"
+        self._buffer = None
+        self._handle = None
 
         # WARNING: Do not move this import. Importing these modules elsewhere can cause
         # difficult to diagnose, "There is no current event loop in thread 'ray_client_server_" errors.
@@ -127,44 +111,59 @@ class AsyncMetadataTracker:
 
         self.client = StateApiClient(address=ray.get_runtime_context().gcs_address)
 
-        if self.perspective_dashboard_enabled:
-            from raydar.dashboard.server import PerspectiveRayServer
+        if dashboard == "local":
+            self._buffer = OpBuffer(max_rows_per_table=max_buffered_rows)
+        elif dashboard == "cluster":
+            from raydar.dashboard.serve import RaydarDeployment
 
-            kwargs = {
-                "target": PerspectiveRayServer.bind(),
-                "name": "webserver",
-                "route_prefix": "/",
-            }
+            self._handle = ray.serve.run(RaydarDeployment.bind(), name="raydar", route_prefix="/")
+        elif dashboard is not None:
+            raise ValueError(f"Unknown dashboard mode: {dashboard!r}")
 
-            if Version(ray.__version__) < Version("2.10"):
-                kwargs["port"] = int(os.environ.get("RAYDAR_PORT", "8000"))
-
-            self.proxy_server = setup_proxy_server(**kwargs)
-            self.proxy_server.remote(
-                "new",
-                self.perspective_table_name,
+        if dashboard is not None:
+            self.emit(
                 {
-                    "task_id": "string",
-                    "user_defined_metadata": "string",
-                    "attempt_number": "integer",
-                    "name": "string",
-                    "state": "string",
-                    "job_id": "string",
-                    "actor_id": "float",
-                    "type": "string",
-                    "func_or_class_name": "string",
-                    "parent_task_id": "string",
-                    "node_id": "string",
-                    "worker_id": "string",
-                    "error_type": "string",
-                    "language": "string",
-                    "placement_group_id": "float",
-                    "creation_time_ms": "datetime",
-                    "start_time_ms": "datetime",
-                    "end_time_ms": "datetime",
-                    "error_message": "string",
-                },
+                    "schemas": {
+                        self.perspective_table_name: {
+                            "task_id": "string",
+                            "user_defined_metadata": "string",
+                            "attempt_number": "integer",
+                            "name": "string",
+                            "state": "string",
+                            "job_id": "string",
+                            "actor_id": "float",
+                            "type": "string",
+                            "func_or_class_name": "string",
+                            "parent_task_id": "string",
+                            "node_id": "string",
+                            "worker_id": "string",
+                            "error_type": "string",
+                            "language": "string",
+                            "placement_group_id": "float",
+                            "creation_time_ms": "datetime",
+                            "start_time_ms": "datetime",
+                            "end_time_ms": "datetime",
+                            "error_message": "string",
+                        }
+                    }
+                }
             )
+
+    def emit(self, batch: dict) -> None:
+        """Route a batch of table operations to whichever dashboard is configured."""
+        if self._buffer is not None:
+            self._buffer.extend(batch)
+        elif self._handle is not None:
+            self._handle.apply.remote(batch)
+
+    def drain(self) -> dict | None:
+        """Return buffered table operations for a dashboard running outside the cluster."""
+        if self._buffer is None:
+            return None
+        return self._buffer.drain()
+
+    def get_dashboard_mode(self) -> str | None:
+        return self.dashboard_mode
 
     def callback(self, tasks: Iterable[ray.ObjectRef]) -> None:
         """A remote function used by this actor's processor actor attribute. Will be called by a separate actor
@@ -208,13 +207,11 @@ class AsyncMetadataTracker:
         for task, metadata in completed_tasks:
             self.finished_tasks[task.task_id().hex()] = metadata
 
-        if self.perspective_dashboard_enabled:
-            self.update_perspective_dashboard(completed_tasks)
+        if self.dashboard_mode is not None:
+            self.publish_tasks(completed_tasks)
 
-    def update_perspective_dashboard(self, completed_tasks) -> None:
-        """A helper function, which updates this actor's proxy_server attribute with processed data.
-
-        That proxy_server serves perspective tables which anticipate the data formats we provide.
+    def publish_tasks(self, completed_tasks) -> None:
+        """Emit completed task metadata as rows for the dashboard's task table.
 
         Args:
             completed_tasks: A list of tuples of the form (ObjectReference, TaskMetadata), where the ObjectReferences are neither Running nor Pending Assignment.
@@ -243,7 +240,7 @@ class AsyncMetadataTracker:
             }
             for task, metadata in completed_tasks
         ]
-        self.proxy_server.remote("update", self.perspective_table_name, data)
+        self.emit({"updates": {self.perspective_table_name: data}})
 
     async def process(self, obj_refs: Iterable[ray.ObjectRef], metadata: Iterable[str] | None = None, chunk_size: int = 25_000) -> None:
         """An asynchronous function to process a collection of Ray object references.
@@ -294,14 +291,6 @@ class AsyncMetadataTracker:
         )
         return self.df
 
-    def get_proxy_server(self) -> ray.serve.handle.DeploymentHandle:
-        """A getter for this actors proxy server attribute. Can be used to create custom perspective visuals.
-        Returns: this actors proxy_server attribute
-        """
-        if self.proxy_server:
-            return self.proxy_server
-        raise RuntimeError("This task_tracker has no active proxy_server.")
-
     def save_df(self) -> None:
         """Saves the internally maintained dataframe of task related information from the ray GCS"""
         self.get_df()
@@ -315,19 +304,38 @@ class AsyncMetadataTracker:
         """Clears the internally maintained dataframe of task related information from the ray GCS"""
         self.df = None
         self.finished_tasks = {}
-        if self.perspective_dashboard_enabled:
-            self.proxy_server.remote("clear", self.perspective_table_name, None)
+        if self.dashboard_mode is not None:
+            self.emit({"cleared": [self.perspective_table_name]})
 
 
 class RayTaskTracker:
-    def __init__(self, name: str = "task_tracker", namespace: str | None = None, **kwargs):
+    def __init__(
+        self,
+        name: str = "task_tracker",
+        namespace: str | None = None,
+        dashboard: DashboardMode | None = None,
+        dashboard_host: str = "127.0.0.1",
+        dashboard_port: int = 0,
+        dashboard_options: dict | None = None,
+        poll_interval: float = 0.5,
+        **kwargs,
+    ):
         """A utility to construct AsyncMetadataTracker actors.
 
         Wraps several remote AsyncMetadataTracker functions in a ray.get() call for convenience.
 
         Args:
-            Optional[name]: The named used to construct a AsyncMetadataTracker, also used to form the name of its AsyncMetadataTrackerCallback.
-            Optional[namespace]: Ray namespace for the AsyncMetadataTracker and its AsyncMetadataTrackerCallback.
+            name: The name used to construct a AsyncMetadataTracker, also used to form the name of its AsyncMetadataTrackerCallback.
+            namespace: Ray namespace for the AsyncMetadataTracker and its AsyncMetadataTrackerCallback.
+            dashboard: "local" serves the dashboard from this process and pulls updates over Ray,
+                so the cluster needs no inbound port. "cluster" serves it from Ray Serve, which
+                does. None disables the dashboard.
+            dashboard_host: Interface the "local" dashboard binds.
+            dashboard_port: Port the "local" dashboard binds, or 0 to pick a free one.
+            dashboard_options: Forwarded to :class:`~raydar.dashboard.dashboard.Dashboard`
+                (``title``, ``layout``, ``limit``).
+            poll_interval: Seconds between "local" dashboard polls of the tracker actor.
+            **kwargs: Forwarded to the AsyncMetadataTracker actor.
         """
         if namespace is None:
             namespace = coolname.generate_slug(2)
@@ -335,6 +343,8 @@ class RayTaskTracker:
 
         self.name = name
         self.namespace = namespace
+        self.dashboard_mode = dashboard
+        self.dashboard = None
         self.tracker = AsyncMetadataTracker.options(
             lifetime="detached",
             name=name,
@@ -343,8 +353,35 @@ class RayTaskTracker:
         ).remote(
             name=name,
             namespace=namespace,
+            dashboard=dashboard,
             **kwargs,
         )
+
+        if dashboard == "local":
+            from raydar.dashboard import LocalDashboard
+
+            # `get_if_exists` returns a pre-existing actor and drops these constructor
+            # args, so a mode mismatch would otherwise show as an empty dashboard.
+            active = ray.get(self.tracker.get_dashboard_mode.remote())
+            if active != dashboard:
+                logger.warning(
+                    f'Actor "{name}" in namespace "{namespace}" already exists with dashboard={active!r}, '
+                    f"so it will not feed a {dashboard!r} dashboard. Use a new name or namespace."
+                )
+
+            self.dashboard = LocalDashboard(
+                drain=lambda: ray.get(self.tracker.drain.remote()),
+                host=dashboard_host,
+                port=dashboard_port,
+                poll_interval=poll_interval,
+                **(dashboard_options or {}),
+            )
+            self.dashboard.start()
+
+    @property
+    def dashboard_url(self) -> str | None:
+        """The URL of the local dashboard, or None when it is not running in this process."""
+        return self.dashboard.url if self.dashboard else None
 
     def process(self, object_refs: Iterable[ray.ObjectRef], metadata: Iterable[str] | None = None, chunk_size: int = 25_000) -> None:
         """A helper function, to send this object's AsyncMetadataTracker actor a collection of object references to track"""
@@ -368,21 +405,21 @@ class RayTaskTracker:
         return ray.get(self.tracker.clear_df.remote())
 
     def create_table(self, table_name: str, table_schema: dict[str, str]) -> None:
-        """Create a new perspective table using the proxy server used by the RayTaskTracker's AsyncMetadataTracker actor"""
-        proxy_server = self.proxy_server()
-        return proxy_server.remote("new", table_name, table_schema)
+        """Create a new perspective table on the dashboard"""
+        self.tracker.emit.remote({"schemas": {table_name: table_schema}})
 
     def update_table(self, table_name: str, data: list[dict]) -> None:
-        """Update rows of perspective table held by the proxy server used by the RayTaskTracker's AsyncMetadataTracker actor"""
-        proxy_server = self.proxy_server()
-        return proxy_server.remote("update", table_name, data)
-
-    def proxy_server(self) -> ray.serve.handle.DeploymentHandle:
-        """Fetch the proxy server used by this object's AsyncMetadataTracker actor"""
-        return ray.get(self.tracker.get_proxy_server.remote())
+        """Append rows to a perspective table on the dashboard"""
+        self.tracker.emit.remote({"updates": {table_name: data}})
 
     def exit(self) -> None:
         """Perform cleanup tasks, kill associated actors, and shutdown."""
+        if self.dashboard is not None:
+            self.dashboard.stop()
+            self.dashboard = None
         ray.kill(ray.get_actor(name=self.name, namespace=self.namespace))
         ray.kill(ray.get_actor(name=get_callback_actor_name(self.name), namespace=self.namespace))
-        shutdown()
+        if self.dashboard_mode == "cluster":
+            # Delete only our own application; a global serve shutdown would take
+            # unrelated deployments with it.
+            delete_serve_app("raydar")

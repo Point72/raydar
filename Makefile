@@ -1,33 +1,19 @@
 #########
 # BUILD #
 #########
-.PHONY: develop-py develop-js develop
-develop-py:
+.PHONY: develop
+develop:  ## setup project for development
 	uv pip install -e .[develop]
 
-develop-js: requirements-js
-
-develop: develop-js develop-py  ## setup project for development
-
-.PHONY: requirements-py requirements-js requirements
-requirements-py:  ## install prerequisite python build requirements
+.PHONY: requirements
+requirements:  ## install prerequisite python build requirements
 	python -m pip install --upgrade pip toml
 	python -m pip install `python -c 'import toml; c = toml.load("pyproject.toml"); print("\n".join(c["build-system"]["requires"]))'`
 	python -m pip install `python -c 'import toml; c = toml.load("pyproject.toml"); print(" ".join(c["project"]["optional-dependencies"]["develop"]))'`
 
-requirements-js:  ## install prerequisite javascript build requirements
-	cd js; pnpm install && npx playwright install
-
-requirements: requirements-js requirements-py  ## setup project for development
-
-.PHONY: build-py build-js build
-build-py:
+.PHONY: build
+build:  ## build the project
 	python -m build -w -n
-
-build-js:
-	cd js; pnpm build
-
-build: build-js build-py  ## build the project
 
 .PHONY: install
 install:  ## install python library
@@ -36,36 +22,30 @@ install:  ## install python library
 #########
 # LINTS #
 #########
-.PHONY: lint-py lint-js lint lints
+.PHONY: lint-py lint-docs lint lints
 lint-py:  ## run python linter with ruff
 	python -m ruff check raydar
 	python -m ruff format --check raydar
-
-lint-js:  ## run js linter
-	cd js; pnpm lint
 
 lint-docs:  ## lint docs with mdformat and codespell
 	python -m mdformat --check README.md docs/wiki/
 	python -m codespell_lib README.md docs/wiki/
 
-lint: lint-js lint-py lint-docs  ## run project linters
+lint: lint-py lint-docs  ## run project linters
 
 # alias
 lints: lint
 
-.PHONY: fix-py fix-js fix-docs fix format
+.PHONY: fix-py fix-docs fix format
 fix-py:  ## fix python formatting with ruff
 	python -m ruff check --fix raydar
 	python -m ruff format raydar
-
-fix-js:  ## fix js formatting
-	cd js; pnpm fix
 
 fix-docs:  ## autoformat docs with mdformat and codespell
 	python -m mdformat README.md docs/wiki/
 	python -m codespell_lib --write README.md docs/wiki/
 
-fix: fix-js fix-py fix-docs  ## run project autoformatters
+fix: fix-py fix-docs  ## run project autoformatters
 
 # alias
 format: fix
@@ -99,18 +79,9 @@ tests-py: test-py
 coverage-py:  ## run python tests and collect test coverage
 	python -m pytest -v raydar/tests --cov=raydar --cov-report term-missing --cov-report xml
 
-.PHONY: test-js tests-js coverage-js
-test-js:  ## run js tests
-	cd js; pnpm test
-
-# alias
-tests-js: test-js
-
-coverage-js: test-js  ## run js tests and collect test coverage
-
 .PHONY: test coverage tests
-test: test-py test-js  ## run all tests
-coverage: coverage-py coverage-js  ## run all tests and collect test coverage
+test: test-py  ## run all tests
+coverage: coverage-py  ## run all tests and collect test coverage
 
 # alias
 tests: test
@@ -135,18 +106,15 @@ major:  ## bump a major version
 ########
 # DIST #
 ########
-.PHONY: dist dist-py dist-js dist-check publish
+.PHONY: dist dist-py dist-check publish
 
 dist-py:  ## build python dists
 	python -m build -w -s
 
-dist-js:  # build js dists
-	cd js; pnpm pack
-
 dist-check:  ## run python dist checker with twine
 	python -m twine check dist/*
 
-dist: clean build dist-js dist-py dist-check  ## build all dists
+dist: clean build dist-py dist-check  ## build all dists
 
 publish: dist  ## publish python assets
 

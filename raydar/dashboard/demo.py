@@ -1,48 +1,53 @@
-import os
+"""A runnable example of the local dashboard: `python -m raydar.dashboard.demo`.
+
+The dashboard is served from this process and pulls updates from the tracker
+actor over Ray, so the cluster needs no inbound port.
+"""
+
 import random
 import time
+from datetime import UTC, datetime
 
 import ray
 
-from .server import PerspectiveProxyRayServer, PerspectiveRayServer
+from ..task_tracker import RayTaskTracker
+
+TABLE = "demo"
+SCHEMA = {
+    "start": "datetime",
+    "end": "datetime",
+    "runtime": "float",
+    "backoff": "float",
+    "random": "float",
+}
 
 
 @ray.remote
-def test_job(backoff, tablename, proxy):
-    start = time.time()
+def demo_job(backoff: float) -> dict:
+    start = datetime.now(tz=UTC)
     time.sleep(backoff)
-    end = time.time()
-    runtime = end - start
-    data = {"start": start, "end": end, "runtime": runtime, "backoff": backoff, "random": random.random()}
-    proxy.remote("update", tablename, data)
-    return data
+    end = datetime.now(tz=UTC)
+    return {
+        "start": start,
+        "end": end,
+        "runtime": (end - start).total_seconds(),
+        "backoff": backoff,
+        "random": random.random(),
+    }
 
 
 if __name__ == "__main__":
-    os.environ["RAY_SERVE_ENABLE_EXPERIMENTAL_STREAMING"] = "1"
+    ray.init()
 
-    host = "127.0.0.1"  # NOTE: change if you run on another machine
-    port = 8989
-    ray.init(dashboard_host=host, dashboard_port=port)
-    ray.serve.start(http_options={"host": host, "port": port + 1})
+    task_tracker = RayTaskTracker(namespace="raydar-demo", dashboard="local")
+    task_tracker.create_table(TABLE, SCHEMA)
+    print(f"raydar dashboard: {task_tracker.dashboard_url}")
 
-    webserver = ray.serve.run(PerspectiveRayServer.bind(), name="webserver", route_prefix="/")
-    proxy_server = ray.serve.run(PerspectiveProxyRayServer.bind(webserver), name="proxy", route_prefix="/proxy")
-
-    # setup perspective table
-    proxy_server.remote(
-        "new",
-        "data",
-        {
-            "start": "datetime",
-            "end": "datetime",
-            "runtime": "float",
-            "backoff": "float",
-            "random": "float",
-        },
-    )
-
-    # launch jobs
-    while True:
-        test_job.remote(backoff=random.random(), tablename="data", proxy=proxy_server)
-        time.sleep(0.5)
+    try:
+        while True:
+            ref = demo_job.remote(backoff=random.random())
+            task_tracker.process([ref])
+            task_tracker.update_table(TABLE, [ray.get(ref)])
+            time.sleep(0.5)
+    except KeyboardInterrupt:
+        task_tracker.exit()
