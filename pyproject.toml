@@ -41,7 +41,7 @@ dependencies = [
     # ray.serve imports jinja2 at import time but does not declare it
     "jinja2",
     "pandas",
-    "perspective-python>=4.5,<4.6",
+    "perspective-python>=5.2.0,<5.3",
     "polars",
     "pyarrow",
     "pydantic>=2",
