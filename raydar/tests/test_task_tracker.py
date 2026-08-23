@@ -77,6 +77,26 @@ class TestRayTaskTracker:
         assert not df.is_empty(), "the only task the tracker was given went unrecorded"
         assert df[["name", "state"]].row(0) == ("do_some_work", "FINISHED")
 
+    def test_callback_reports_tasks_the_gcs_has_not_published(self, trackers):
+        # The caller cannot ask the tracker whether work is outstanding: it is an
+        # async actor, so a separate query can be answered before the callback it
+        # was meant to observe has run. The callback has to say so itself.
+        task_tracker = trackers(dashboard="local")
+        ref = do_some_work.remote()
+        ray.wait([ref], fetch_local=False)
+
+        tracker = task_tracker.tracker
+        pending = ray.get(tracker.callback.remote([ref]))
+        assert isinstance(pending, bool), "callback must report whether it still has work"
+
+        deadline = time.time() + 60
+        while pending and time.time() < deadline:
+            time.sleep(0.5)
+            pending = ray.get(tracker.callback.remote([]))
+
+        assert not pending, "tracker never resolved the task"
+        assert not ray.get(tracker.get_df.remote()).is_empty()
+
     def test_dashboard_options_reach_the_dashboard(self, trackers):
         layout = {"sizes": [1], "viewers": {}}
         task_tracker = trackers(dashboard="local", dashboard_options={"title": "custom", "layout": layout})

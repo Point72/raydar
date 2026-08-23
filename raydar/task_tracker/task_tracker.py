@@ -43,11 +43,12 @@ class AsyncMetadataTrackerCallback:
 
         Args:
             obj_refs: An iterable collection of (possibly) in-progress ray object references
-            settle_timeout: How long to keep asking the tracker to re-resolve tasks whose
-                metadata the GCS has not published yet.
+            settle_timeout: How long to keep retrying tasks whose metadata the GCS has
+                not published yet.
             settle_interval: How long to wait between those attempts.
         """
         active_tasks = set(obj_refs)
+        pending = False
         while len(active_tasks) > 0:
             finished_tasks = []
             for obj_ref in obj_refs:
@@ -57,17 +58,16 @@ class AsyncMetadataTrackerCallback:
                         active_tasks.remove(done[0])
                         finished_tasks.append(done[0])
             if len(finished_tasks) > 0:
-                self.actor.callback.remote(finished_tasks)
+                pending = ray.get(self.actor.callback.remote(finished_tasks))
 
         # ray.wait reports an object ready before the GCS has published the task's final
-        # state, so tasks the tracker could not resolve are held in its pending list. Only
-        # a later callback revisits that list, and the loop above has just run out of
-        # tasks to send, so the last batch would otherwise never be recorded. Calling back
-        # with nothing re-resolves the pending list on its own.
+        # state, so tasks the tracker could not resolve are held for a later callback to
+        # retry. The loop above has just run out of tasks to send, so without this the
+        # last batch is never looked at again. Calling back with nothing retries them.
         deadline = time.monotonic() + settle_timeout
-        while time.monotonic() < deadline and ray.get(self.actor.has_pending_tasks.remote()):
+        while pending and time.monotonic() < deadline:
             time.sleep(settle_interval)
-            ray.get(self.actor.callback.remote([]))
+            pending = ray.get(self.actor.callback.remote([]))
 
     def exit(self) -> None:
         """Terminate this actor"""
@@ -179,14 +179,12 @@ class AsyncMetadataTracker:
     def get_dashboard_mode(self) -> str | None:
         return self.dashboard_mode
 
-    def has_pending_tasks(self) -> bool:
-        """Whether any task is still waiting on the GCS to publish its final state."""
-        return bool(self.pending_tasks)
-
-    def callback(self, tasks: Iterable[ray.ObjectRef]) -> None:
+    def callback(self, tasks: Iterable[ray.ObjectRef]) -> bool:
         """A remote function used by this actor's processor actor attribute. Will be called by a separate actor
         with a collection of ray object references once those ObjectReferences are not in the "RUNNING" or
         "PENDING" state.
+
+        Returns whether any task is still waiting on the GCS, so the caller knows to retry.
         """
         # WARNING: Do not move this import. Importing these modules elsewhere can cause
         # difficult to diagnose, "There is no current event loop in thread 'ray_client_server_" errors.
@@ -227,6 +225,8 @@ class AsyncMetadataTracker:
 
         if self.dashboard_mode is not None:
             self.publish_tasks(completed_tasks)
+
+        return bool(self.pending_tasks)
 
     def publish_tasks(self, completed_tasks) -> None:
         """Emit completed task metadata as rows for the dashboard's task table.
