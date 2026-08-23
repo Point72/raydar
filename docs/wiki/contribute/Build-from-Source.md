@@ -61,7 +61,6 @@ make build
 | Language | Linter      | Autoformatter | Description |
 | :------- | :---------- | :------------ | :---------- |
 | Python   | `ruff`      | `ruff`        | Style       |
-| Python   | `ruff`      | `ruff`        | Imports     |
 | Markdown | `mdformat`  | `mdformat`    | Style       |
 | Markdown | `codespell` |               | Spelling    |
 
@@ -91,7 +90,7 @@ make fix-docs
 
 ## Testing
 
-`raydar` has both Python and JavaScript tests. The bulk of the functionality is tested in Python, which can be run via `pytest`. First, install the Python development dependencies with
+`raydar` has extensive Python tests. The tests can be run via `pytest`. First, install the Python development dependencies with
 
 ```bash
 make develop
@@ -100,5 +99,5 @@ make develop
 **Python**
 
 ```bash
-make test-py
+make test
 ```

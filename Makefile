@@ -1,29 +1,26 @@
 #########
 # BUILD #
 #########
-.PHONY: develop
-develop:  ## setup project for development
+.PHONY: develop build install
+
+develop:  ## install dependencies and build library
 	uv pip install -e .[develop]
 
-.PHONY: requirements
 requirements:  ## install prerequisite python build requirements
-	python -m pip install --upgrade pip toml
-	python -m pip install `python -c 'import toml; c = toml.load("pyproject.toml"); print("\n".join(c["build-system"]["requires"]))'`
-	python -m pip install `python -c 'import toml; c = toml.load("pyproject.toml"); print(" ".join(c["project"]["optional-dependencies"]["develop"]))'`
+	uv pip install -r pyproject.toml --extra develop
 
-.PHONY: build
-build:  ## build the project
-	python -m build -w -n
+build:  ## build the python library
+	python -m build -n
 
-.PHONY: install
-install:  ## install python library
+install:  ## install library
 	uv pip install .
 
 #########
 # LINTS #
 #########
-.PHONY: lint-py lint-docs lint lints
-lint-py:  ## run python linter with ruff
+.PHONY: lint-py lint-docs fix-py fix-docs lint lints fix format
+
+lint-py:  ## lint python with ruff
 	python -m ruff check raydar
 	python -m ruff format --check raydar
 
@@ -31,13 +28,7 @@ lint-docs:  ## lint docs with mdformat and codespell
 	python -m mdformat --check README.md docs/wiki/
 	python -m codespell_lib README.md docs/wiki/
 
-lint: lint-py lint-docs  ## run project linters
-
-# alias
-lints: lint
-
-.PHONY: fix-py fix-docs fix format
-fix-py:  ## fix python formatting with ruff
+fix-py:  ## autoformat python code with ruff
 	python -m ruff check --fix raydar
 	python -m ruff format raydar
 
@@ -45,9 +36,9 @@ fix-docs:  ## autoformat docs with mdformat and codespell
 	python -m mdformat README.md docs/wiki/
 	python -m codespell_lib --write README.md docs/wiki/
 
-fix: fix-py fix-docs  ## run project autoformatters
-
-# alias
+lint: lint-py lint-docs  ## run all linters
+lints: lint
+fix: fix-py fix-docs  ## run all autoformatters
 format: fix
 
 ################
@@ -63,27 +54,21 @@ check-types:  ## check python types with ty
 
 checks: check-dist
 
-# alias
+# Alias
 check: checks
 
 #########
 # TESTS #
 #########
-.PHONY: test-py tests-py coverage-py
-test-py:  ## run python tests
+.PHONY: test coverage tests
+
+test:  ## run python tests
 	python -m pytest -v raydar/tests
 
-# alias
-tests-py: test-py
-
-coverage-py:  ## run python tests and collect test coverage
+coverage:  ## run tests and collect test coverage
 	python -m pytest -v raydar/tests --cov=raydar --cov-report term-missing --cov-report xml
 
-.PHONY: test coverage tests
-test: test-py  ## run all tests
-coverage: coverage-py  ## run all tests and collect test coverage
-
-# alias
+# Alias
 tests: test
 
 ###########
@@ -106,15 +91,15 @@ major:  ## bump a major version
 ########
 # DIST #
 ########
-.PHONY: dist dist-py dist-check publish
+.PHONY: dist dist-build dist-sdist dist-local-wheel publish
 
-dist-py:  ## build python dists
+dist-build:  # build python dists
 	python -m build -w -s
 
 dist-check:  ## run python dist checker with twine
 	python -m twine check dist/*
 
-dist: clean build dist-py dist-check  ## build all dists
+dist: clean dist-build dist-check  ## build all dists
 
 publish: dist  ## publish python assets
 
