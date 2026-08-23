@@ -12,6 +12,7 @@ authors = [
 description = "A perspective powered, user editable ray dashboard"
 readme = "README.md"
 license = { text = "Apache-2.0" }
+<<<<<<< before updating
 version = "0.3.0"
 requires-python = ">=3.11"
 keywords = [
@@ -23,6 +24,11 @@ keywords = [
     "cluster",
     "cluster visualization",
 ]
+=======
+version = "0.1.0"
+requires-python = ">=3.11"
+keywords = []
+>>>>>>> after updating
 
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -87,6 +93,10 @@ current_version = "0.3.0"
 commit = true
 tag = true
 commit_args = "-s"
+pre_commit_hooks = [
+    "pnpm --dir js install --lockfile-only --no-frozen-lockfile --ignore-scripts",
+    "git add js/pnpm-lock.yaml",
+]
 
 [[tool.bumpversion.files]]
 filename = "raydar/__init__.py"

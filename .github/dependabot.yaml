@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     labels:
       - "part: github_actions"
 
@@ -11,6 +11,21 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    cooldown:
+      default-days: 7
     labels:
       - "lang: python"
       - "part: dependencies"
+<<<<<<< before updating
+=======
+
+  - package-ecosystem: "npm"
+    directory: "/js"
+    schedule:
+      interval: "monthly"
+    cooldown:
+      default-days: 7
+    labels:
+      - "lang: javascript"
+      - "part: dependencies"
+>>>>>>> after updating

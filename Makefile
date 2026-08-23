@@ -5,11 +5,21 @@
 develop:  ## setup project for development
 	uv pip install -e .[develop]
 
+<<<<<<< before updating
 .PHONY: requirements
 requirements:  ## install prerequisite python build requirements
 	python -m pip install --upgrade pip toml
 	python -m pip install `python -c 'import toml; c = toml.load("pyproject.toml"); print("\n".join(c["build-system"]["requires"]))'`
 	python -m pip install `python -c 'import toml; c = toml.load("pyproject.toml"); print(" ".join(c["project"]["optional-dependencies"]["develop"]))'`
+=======
+develop-js: requirements-js
+
+develop: develop-js develop-py  ## setup project for development
+
+.PHONY: requirements-py requirements-js requirements
+requirements-py:  ## install prerequisite python build requirements
+	uv pip install -r pyproject.toml --extra develop
+>>>>>>> after updating
 
 .PHONY: build
 build:  ## build the project

@@ -58,12 +58,22 @@ make build
 
 `raydar` has linting and auto formatting.
 
+<<<<<<< before updating
 | Language | Linter      | Autoformatter | Description |
 | :------- | :---------- | :------------ | :---------- |
 | Python   | `ruff`      | `ruff`        | Style       |
 | Python   | `ruff`      | `ruff`        | Imports     |
 | Markdown | `mdformat`  | `mdformat`    | Style       |
 | Markdown | `codespell` |               | Spelling    |
+=======
+| Language   | Linter      | Autoformatter | Description |
+| :--------- | :---------- | :------------ | :---------- |
+| Python     | `ruff`      | `ruff`        | Style       |
+| Python     | `ruff`      | `ruff`        | Imports     |
+| JavaScript | `oxlint`    | `oxfmt`       | Style       |
+| Markdown   | `mdformat`  | `mdformat`    | Style       |
+| Markdown   | `codespell` |               | Spelling    |
+>>>>>>> after updating
 
 **Python Linting**
 
