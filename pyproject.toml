@@ -12,7 +12,7 @@ authors = [
 description = "A perspective powered, user editable ray dashboard"
 readme = "README.md"
 license = { text = "Apache-2.0" }
-version = "0.3.0"
+version = "0.4.0"
 requires-python = ">=3.11"
 keywords = [
     "perspective",
@@ -83,7 +83,7 @@ Repository = "https://github.com/Point72/raydar"
 Homepage = "https://github.com/Point72/raydar"
 
 [tool.bumpversion]
-current_version = "0.3.0"
+current_version = "0.4.0"
 commit = true
 tag = true
 commit_args = "-s"
