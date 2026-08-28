@@ -62,7 +62,7 @@ develop = [
     "check-dist",
     "codespell",
     "hatchling",
-    "httpx",
+    "httpx2",
     "mdformat",
     "mdformat-tables>=1",
     "pytest",

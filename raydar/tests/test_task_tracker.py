@@ -1,7 +1,7 @@
 import logging
 import time
 
-import httpx
+import httpx2
 import pytest
 import ray
 
@@ -103,7 +103,7 @@ class TestRayTaskTracker:
         dashboard = task_tracker.dashboard.dashboard
         dashboard.apply({"schemas": {"t": {"a": "integer"}}})
         assert dashboard.state.layout == layout
-        assert "custom" in httpx.get(task_tracker.dashboard_url).text
+        assert "custom" in httpx2.get(task_tracker.dashboard_url).text
 
     def test_local_dashboard_serves_tables_pulled_from_the_actor(self, trackers):
         task_tracker = trackers(dashboard="local")
@@ -119,4 +119,4 @@ class TestRayTaskTracker:
         # Wait on the row too: names alone pass before the update is applied.
         rows = wait_for(lambda: tables._tables["custom"].size(), lambda n: n > 0, timeout=60)
         assert rows == 1
-        assert httpx.get(task_tracker.dashboard_url).status_code == 200
+        assert httpx2.get(task_tracker.dashboard_url).status_code == 200
