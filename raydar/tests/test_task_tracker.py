@@ -98,7 +98,7 @@ class TestRayTaskTracker:
         assert not ray.get(tracker.get_df.remote()).is_empty()
 
     def test_dashboard_options_reach_the_dashboard(self, trackers):
-        layout = {"sizes": [1], "viewers": {}}
+        layout = {"layout": {"type": "tab-layout", "tabs": []}, "panels": {}}
         task_tracker = trackers(dashboard="local", dashboard_options={"title": "custom", "layout": layout})
         dashboard = task_tracker.dashboard.dashboard
         dashboard.apply({"schemas": {"t": {"a": "integer"}}})

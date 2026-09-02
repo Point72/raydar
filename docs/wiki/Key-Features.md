@@ -50,15 +50,12 @@ The dashboard runs in this process and pulls updates from the tracker actor over
 
 ## Create/Store Custom Views
 
-Layouts live in Python. Pass a [perspective-workspace](https://perspective.finos.org/) layout and it is restored in every connected tab:
+Layouts live in Python. Pass a [perspective](https://perspective.finos.org/) layout and it is restored in every connected tab:
 
 ```python
 layout = {
-    "sizes": [1],
-    "detail": {"main": {"type": "tab-area", "widgets": ["task_tracker_data"], "currentIndex": 0}},
-    "master": {"sizes": [], "widgets": []},
-    "mode": "globalFilters",
-    "viewers": {
+    "layout": {"type": "tab-layout", "tabs": ["task_tracker_data"]},
+    "panels": {
         "task_tracker_data": {
             "table": "task_tracker_data",
             "plugin": "Datagrid",

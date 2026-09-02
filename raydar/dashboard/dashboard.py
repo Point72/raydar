@@ -92,7 +92,7 @@ class Dashboard:
     Args:
         title: Page title and brand text.
         limit: Optional per-table row cap, applied to every table created.
-        layout: A perspective-workspace layout to use instead of the generated
+        layout: A perspective layout to use instead of the generated
             one-tab-per-table default.
         background: Factories for coroutines to run for the lifetime of the app.
             Factories rather than coroutines so nothing is created for a

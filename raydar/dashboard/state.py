@@ -20,13 +20,10 @@ class DashboardState(BaseModel):
 
 
 def default_layout(tables: list[str]) -> dict:
-    """A perspective-workspace layout showing one datagrid tab per table."""
+    """A perspective layout showing one datagrid tab per table."""
     if not tables:
         return {}
     return {
-        "sizes": [1],
-        "detail": {"main": {"type": "tab-area", "widgets": list(tables), "currentIndex": 0}},
-        "master": {"sizes": [], "widgets": []},
-        "mode": "globalFilters",
-        "viewers": {name: {"table": name, "plugin": "Datagrid", "title": name} for name in tables},
+        "layout": {"type": "tab-layout", "tabs": list(tables)},
+        "panels": {name: {"table": name, "plugin": "Datagrid", "title": name} for name in tables},
     }
