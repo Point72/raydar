@@ -18,7 +18,7 @@ Raydar, enables out-of-the-box live cluster metrics and user visualizations for 
 
 By default the dashboard runs in **your** process and pulls data over the Ray connection you already have, so the cluster never needs an inbound port.
 
-![Example](https://media.githubusercontent.com/media/Point72/raydar/refs/heads/main/docs/img/ml_example.gif)
+![Example](https://raw.githubusercontent.com/Point72/raydar/main/docs/img/ml_example.gif)
 
 ## Features
 
@@ -63,7 +63,7 @@ The UI is served from this process on a free local port, printed by `task_tracke
 
 If your cluster already exposes Ray Serve's HTTP ingress, `dashboard="cluster"` serves the same UI from a Ray Serve deployment instead.
 
-![Example](https://media.githubusercontent.com/media/Point72/raydar/refs/heads/main/docs/img/example_perspective_dashboard.gif)
+![Example](https://raw.githubusercontent.com/Point72/raydar/main/docs/img/example_perspective_dashboard.gif)
 
 Passing a `name` and `namespace` arguments allows the RayTaskTracker to skip construction when an actor already exists. This also means we can access the correct ray actor handle from arbitrary ray code, once the correct name and namespace are provided.
 
@@ -109,7 +109,7 @@ for i in range(100):
     ray.get(add_data_to_demo_table.remote(i))
 ```
 
-![Example](https://media.githubusercontent.com/media/Point72/raydar/refs/heads/main/docs/img/custom_user_table.gif)
+![Example](https://raw.githubusercontent.com/Point72/raydar/main/docs/img/custom_user_table.gif)
 
 ## FAQ
 
