@@ -22,9 +22,9 @@ class TestDefaultLayout:
 
     def test_each_table_gets_a_widget_and_a_viewer(self):
         layout = default_layout(["x", "y"])
-        assert layout["detail"]["main"]["widgets"] == ["x", "y"]
-        assert set(layout["viewers"]) == {"x", "y"}
-        assert layout["viewers"]["x"]["table"] == "x"
+        assert layout["layout"]["tabs"] == ["x", "y"]
+        assert set(layout["panels"]) == {"x", "y"}
+        assert layout["panels"]["x"]["table"] == "x"
 
 
 class TestDashboard:
@@ -46,7 +46,7 @@ class TestDashboard:
         assert dashboard.state.layout == default_layout(["t"])
 
     def test_layout_override_wins(self):
-        override = {"sizes": [1], "viewers": {}}
+        override = {"layout": {"type": "tab-layout", "tabs": []}, "panels": {}}
         dashboard = Dashboard(layout=override)
         dashboard.apply({"schemas": {"t": SCHEMA}})
         assert dashboard.state.layout == override

@@ -123,7 +123,7 @@ Not with `dashboard="local"`, the default topology. The dashboard binds a port o
 
 - _How can I save and restore my perspective layouts?_
 
-Layouts are Python-side. Pass a perspective-workspace layout to the dashboard and it is restored in every connected tab.
+Layouts are Python-side. Pass a perspective layout to the dashboard and it is restored in every connected tab.
 
 ## License
 

@@ -47,7 +47,7 @@ dependencies = [
     "ray[serve]>=2.8",
     "spaday>=0.7,<0.8",
     # Supplies perspective-python, pinned to the version its browser bundle speaks
-    "spaday-perspective>=0.3,<0.5",
+    "spaday-perspective>=0.5,<0.6",
     "spaday-webawesome>=0.2,<0.3",
     "starlette",
     "transports>=0.8,<0.9",
