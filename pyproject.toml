@@ -50,7 +50,7 @@ dependencies = [
     "spaday-perspective>=0.5,<0.6",
     "spaday-webawesome>=0.2,<0.3",
     "starlette",
-    "transports>=0.8,<0.9",
+    "transports>=0.8,<0.10",
     "uvicorn",
     "websockets",
 ]
