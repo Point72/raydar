@@ -45,12 +45,12 @@ dependencies = [
     "pyarrow",
     "pydantic>=2",
     "ray[serve]>=2.8",
-    "spaday>=0.7,<0.11",
+    "spaday>=0.7,<0.12",
     # Supplies perspective-python, pinned to the version its browser bundle speaks
     "spaday-perspective>=0.5,<0.8",
-    "spaday-webawesome>=0.2,<0.6",
+    "spaday-webawesome>=0.2,<0.7",
     "starlette",
-    "transports>=0.8,<0.10",
+    "transports>=0.8,<0.11",
     "uvicorn",
     "websockets",
 ]
