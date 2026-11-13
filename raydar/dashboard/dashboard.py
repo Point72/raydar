@@ -63,12 +63,13 @@ class TableHost:
         """Create a table, returning whether it did not already exist."""
         if tablename in self._schemas:
             return False
-        self._schemas[tablename] = schema
-        self._temporal_columns[tablename] = {column for column, kind in schema.items() if kind in _TEMPORAL_TYPES}
         kwargs = {"name": tablename}
         if self._limit is not None:
             kwargs["limit"] = self._limit
-        self._tables[tablename] = self._client.table(schema, **kwargs)
+        table = self._client.table(schema, **kwargs)
+        self._schemas[tablename] = schema
+        self._temporal_columns[tablename] = {column for column, kind in schema.items() if kind in _TEMPORAL_TYPES}
+        self._tables[tablename] = table
         return True
 
     def update(self, tablename: str, data) -> None:
