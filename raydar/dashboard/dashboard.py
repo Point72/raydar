@@ -32,12 +32,12 @@ __all__ = ("Dashboard", "TableHost")
 _TEMPORAL_TYPES = ("datetime", "date")
 
 
-def _to_epoch_millis(value):
+def _to_epoch_millis(value, kind):
     """Perspective encodes rows as JSON, which has no datetime, so send millis."""
     if isinstance(value, datetime):
         return int(value.timestamp() * 1000)
     if isinstance(value, date):
-        return int(datetime.combine(value, time()).timestamp() * 1000)
+        return int(datetime.combine(value, time(), tzinfo=UTC if kind == "date" else None).timestamp() * 1000)
     return value
 
 
@@ -63,12 +63,13 @@ class TableHost:
         """Create a table, returning whether it did not already exist."""
         if tablename in self._schemas:
             return False
-        self._schemas[tablename] = schema
-        self._temporal_columns[tablename] = {column for column, kind in schema.items() if kind in _TEMPORAL_TYPES}
         kwargs = {"name": tablename}
         if self._limit is not None:
             kwargs["limit"] = self._limit
-        self._tables[tablename] = self._client.table(schema, **kwargs)
+        table = self._client.table(schema, **kwargs)
+        self._schemas[tablename] = schema
+        self._temporal_columns[tablename] = {column for column, kind in schema.items() if kind in _TEMPORAL_TYPES}
+        self._tables[tablename] = table
         return True
 
     def update(self, tablename: str, data) -> None:
@@ -78,7 +79,8 @@ class TableHost:
             raise KeyError(f"No such table: {tablename}")
         temporal = self._temporal_columns[tablename]
         if temporal:
-            data = [{key: _to_epoch_millis(value) if key in temporal else value for key, value in row.items()} for row in data]
+            schema = self._schemas[tablename]
+            data = [{key: _to_epoch_millis(value, schema[key]) if key in temporal else value for key, value in row.items()} for row in data]
         self._tables[tablename].update(data)
 
     def clear(self, tablename: str) -> None:
