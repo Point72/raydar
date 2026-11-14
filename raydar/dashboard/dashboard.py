@@ -37,7 +37,7 @@ def _to_epoch_millis(value):
     if isinstance(value, datetime):
         return int(value.timestamp() * 1000)
     if isinstance(value, date):
-        return int(datetime.combine(value, time()).timestamp() * 1000)
+        return int(datetime.combine(value, time(), tzinfo=UTC).timestamp() * 1000)
     return value
 
 
