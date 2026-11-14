@@ -4,9 +4,10 @@ import time
 from datetime import UTC, date, datetime
 
 import pytest
+from perspective import PerspectiveError
 from starlette.testclient import TestClient
 
-from raydar.dashboard import Dashboard, LocalDashboard, default_layout
+from raydar.dashboard import Dashboard, LocalDashboard, TableHost, default_layout
 
 SCHEMA = {"a": "integer", "b": "string"}
 
@@ -14,6 +15,20 @@ SCHEMA = {"a": "integer", "b": "string"}
 @pytest.fixture
 def dashboard():
     return Dashboard(title="test")
+
+
+@pytest.fixture(params=["UTC0", "UTC-8", "UTC+5"] if hasattr(time, "tzset") else [None])
+def local_timezone(request, monkeypatch):
+    if request.param is None:
+        yield
+        return
+    try:
+        with monkeypatch.context() as patch:
+            patch.setenv("TZ", request.param)
+            time.tzset()
+            yield
+    finally:
+        time.tzset()
 
 
 class TestDefaultLayout:
@@ -25,6 +40,30 @@ class TestDefaultLayout:
         assert layout["layout"]["tabs"] == ["x", "y"]
         assert set(layout["panels"]) == {"x", "y"}
         assert layout["panels"]["x"]["table"] == "x"
+
+
+class TestTableHost:
+    def test_failed_table_creation_does_not_register_metadata(self):
+        host = TableHost()
+        with pytest.raises(PerspectiveError):
+            host.new_table("t", {"a": "not-a-perspective-type"})
+
+        assert host.names() == []
+        assert "t" not in host._tables
+        assert "t" not in host._temporal_columns
+
+    def test_corrected_schema_can_retry_after_failed_table_creation(self):
+        host = TableHost()
+        with pytest.raises(PerspectiveError):
+            host.new_table("t", {"a": "not-a-perspective-type"})
+
+        assert host.new_table("t", SCHEMA)
+        host.update("t", [{"a": 1, "b": "x"}])
+        view = host._tables["t"].view()
+        try:
+            assert view.to_columns() == {"a": [1], "b": ["x"]}
+        finally:
+            view.delete()
 
 
 class TestDashboard:
@@ -81,6 +120,17 @@ class TestDashboard:
         assert dashboard.state.tables == ["t"]
         assert dashboard.state.rows == "1"
 
+    def test_failed_table_creation_does_not_publish_a_phantom_tab(self, dashboard):
+        with pytest.raises(PerspectiveError):
+            dashboard.apply({"schemas": {"existing": SCHEMA, "t": {"a": "not-a-perspective-type"}}})
+
+        assert dashboard.state.tables == ["existing"]
+        assert dashboard.tables.names() == ["existing"]
+
+        dashboard.apply({"schemas": {"t": SCHEMA}, "updates": {"existing": [{"a": 1, "b": "x"}], "t": [{"a": 2, "b": "y"}]}})
+        assert dashboard.state.tables == ["existing", "t"]
+        assert dashboard.state.rows == "2"
+
     def test_limit_caps_retained_rows(self):
         dashboard = Dashboard(limit=2)
         dashboard.apply({"schemas": {"t": SCHEMA}, "updates": {"t": [{"a": i, "b": "x"} for i in range(5)]}})
@@ -109,6 +159,26 @@ class TestDashboard:
         assert dashboard.tables.total_rows() == 1
         stored = dashboard.tables._tables["t"].view().to_columns()["when"][0]
         assert stored == int(moment.timestamp() * 1000)
+
+    def test_date_columns_preserve_calendar_days(self, dashboard, local_timezone):
+        days = [date(2026, 8, 21), date(2024, 2, 29), date(1969, 12, 31)]
+        dashboard.apply({"schemas": {"t": {"day": "date"}}, "updates": {"t": [{"day": day} for day in days]}})
+
+        view = dashboard.tables._tables["t"].view()
+        try:
+            stored = view.to_columns()["day"]
+        finally:
+            view.delete()
+        assert [datetime.fromtimestamp(value / 1000, UTC).date() for value in stored] == days
+
+    def test_plain_dates_in_datetime_columns_use_local_midnight(self, dashboard, local_timezone):
+        dashboard.apply({"schemas": {"t": {"when": "datetime"}}, "updates": {"t": [{"when": date(2026, 8, 21)}]}})
+
+        view = dashboard.tables._tables["t"].view()
+        try:
+            assert view.to_columns()["when"] == [int(datetime(2026, 8, 21).timestamp() * 1000)]
+        finally:
+            view.delete()
 
 
 class TestDashboardApp:
